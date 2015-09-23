@@ -3,6 +3,7 @@ MAINTAINER ccondit@randomcoder.com
 
 # setup
 RUN \
+	set -xe && \
 	echo "deb http://ftp.us.debian.org/debian/ jessie main" \
 		> /etc/apt/sources.list && \
         echo "deb http://security.debian.org/ jessie/updates main" \
@@ -16,18 +17,15 @@ RUN \
 
 # zlib
 RUN \
-	echo "Downloading zlib..." >&2 && \
+	set -xe && \
 	curl -ksSL http://www.zlib.net/zlib-1.2.8.tar.xz > \
 		/download/zlib-1.2.8.tar.xz && \
 	cd /build && \
-	echo "Unpacking zlib..." >&2 && \
 	tar xf /download/zlib-1.2.8.tar.xz && \
 	cd /build/zlib-1.2.8 && \
 	echo "Configuring zlib..." >&2 && \
 	./configure --prefix=/usr --shared --libdir=/lib && \
-	echo "Building zlib..." >&2 && \
 	make && \
-	echo "Installing zlib..." >&2 && \
 	mkdir -p /build/zlib-root && \
 	make DESTDIR=/build/zlib-root install && \
 	rm -rf \
@@ -45,17 +43,15 @@ RUN \
 
 # glibc
 RUN \
-	echo "Downloading linux..." >&2 && \
+	set -xe && \
 	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz >  \
 		/download/linux-4.2.1.tar.xz && \
 	cd /build && \
-	echo "Unpacking linux..." >&2 && \
 	tar Pxf /download/linux-4.2.1.tar.xz && \
 	echo "Building linux headers..." >&2 && \
 	cd /build/linux-4.2.1 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
-	echo "Installing linux headers..." >&2 && \
 	mkdir -p /build/linux-include && \
 	cp -r dest/include/* /build/linux-include && \
 	cd /build && \
@@ -117,21 +113,18 @@ RUN \
 
 # busybox
 RUN \
-	echo "Downloading busybox..." >&2 && \
+	set -xe && \
         curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
                 /download/busybox-1.23.2.tar.bz2 && \
 	cd /build && \
-	echo "Unpacking busybox..." >&2 && \
 	tar xf /download/busybox-1.23.2.tar.bz2 && \
 	cd busybox-1.23.2 && \
-	echo "Configuring busybox..." >&2 && \
 	confs=' \
 		CONFIG_AR \
 		CONFIG_FEATURE_AR_LONG_FILENAMES \
 		CONFIG_FEATURE_AR_CREATE \
 		CONFIG_DPKG \
 		CONFIG_DPKG_DEB' && \
-	set -xe && \
 	make defconfig && \
 	for conf in $confs; do \
 		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
@@ -139,9 +132,7 @@ RUN \
 	done && \
 	make oldconfig && \
 	for conf in $confs; do grep -q "^$conf=y" .config; done && \
-	echo "Building busybox..." >&2 && \
 	MAKE="make -j4" make && \
-	echo "Installing busybox..." >&2 && \
 	make install && \
 	rm -f _install/linuxrc && \
 	cp -an _install/* /build/root/ && \
@@ -151,19 +142,15 @@ RUN \
 
 # openssl
 RUN \
-	echo "Downloading openssl..." >&2 && \
+	set -xe && \
 	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
 		/download/openssl-1.0.2d.tar.gz && \
 	cd /build && \
-	echo "Unpacking openssl..." >&2 && \
 	tar xf /download/openssl-1.0.2d.tar.gz && \
 	cd openssl-1.0.2d && \
-	echo "Configuring openssl..." >&2 && \
 	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
 	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
-	echo "Building openssl..." >&2 && \
 	make && \
-	echo "Installing openssl..." >&2 && \
 	mkdir -p /build/openssl-root && \
 	make INSTALL_PREFIX=/build/openssl-root install && \
 	rm -rf /build/openssl-root/etc/ssl/man && \
@@ -179,6 +166,7 @@ RUN \
 	
 # filesystem mods
 RUN \
+	set -xe && \
 	install -d -m 1777 /build/root/tmp && \
 	mkdir -p /build/root/var && \
 	ln -sf /tmp /build/root/var/tmp && \
@@ -242,9 +230,8 @@ RUN \
 	echo 'nogroup:*::' >> /etc/gshaow && \
 	echo 'users:*::' >> /build/root/etc/gshadow && \
 	chmod 640 /build/root/etc/gshadow && \
-	echo '#!/bin/sh' > /build/root/bin/bash && \
-	echo 'exec /bin/sh "$@"' >> /build/root/bin/bash && \
-	chmod 755 /build/root/bin/bash
+	mkdir -p /var/lib/dpkg/info && \
+	touch /var/lib/dpkg/status
 
 CMD ["/bin/bash"]	
 	
