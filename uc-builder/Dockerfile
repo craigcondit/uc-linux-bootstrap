@@ -204,6 +204,8 @@ RUN \
 	cd /build/binutils-build && \
 	mkdir -p /build/binutils-root && \
 	make DESTDIR=/build/binutils-root install && \
+	rm -f /build/binutils-root/usr/bin/strings && \
+	rm -f /build/binutils-root/usr/bin/ar && \
 	strip /build/binutils-root/usr/bin/* && \
 	strip /build/binutils-root/usr/x86_64-unknown-linux-gnu/bin/* && \
 	rm -rf /build/binutils-root/usr/share && \
