@@ -23,6 +23,5 @@ Implement (simple package) support so that images built from this can do
 things like:
 
 ```
-RUN \
-	uc-install postgresql-7.5.0-1uc jdk-8u60-1uc
+RUN uc-install postgresql-7.5.0-1uc jdk-8u60-1uc
 ```
