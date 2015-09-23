@@ -165,6 +165,7 @@ RUN \
         rm -rf /build/openssl-1.0.2d /build/openssl-root
 	
 # filesystem mods
+ADD filesystem /build/root
 RUN \
 	set -xe && \
 	install -d -m 1777 /build/root/tmp && \
@@ -172,63 +173,9 @@ RUN \
 	ln -sf /tmp /build/root/var/tmp && \
 	mkdir -p /build/root/root && \
 	mkdir -p /build/root/home && \
-	echo 'root:x:0:0:root:/root:/bin/bash' > /build/root/etc/passwd && \
-	echo 'bin:x:1:1:bin:/dev/null:/bin/false' >> /build/root/etc/passwd && \
-	echo 'daemon:x:6:6:Daemon User:/dev/null:/bin/false' >> /build/root/etc/passwd && \
-	echo 'messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false' >> /build/root/etc/passwd && \
-	echo 'nobody:x:99:99:Unprivileged User:/dev/null:/bin/false' >> /build/root/etc/passwd && \
 	chmod 644 /build/root/etc/passwd && \
-	echo 'root:*:14095:0:99999:7:::' > /build/root/etc/shadow && \
-	echo 'bin:*:14095:0:99999:7:::' >> /build/root/etc/shadow && \
-	echo 'daemon:*:14095:0:99999:7:::' >> /build/root/etc/shadow && \
-	echo 'messagebus:*:14095:0:99999:7:::' >> /build/root/etc/shadow && \
-	echo 'nobody:*:14095:0:99999:7:::' >> /build/root/etc/shadow && \
 	chmod 640 /build/root/etc/shadow && \
-	echo 'root:x:0:' > /build/root/etc/group && \
-	echo 'bin:x:1:daemon' >> /build/root/etc/group && \
-	echo 'sys:x:2:' >> /build/root/etc/group && \
-	echo 'kmem:x:3:' >> /build/root/etc/group && \
-	echo 'tape:x:4:' >> /build/root/etc/group && \
-	echo 'tty:x:5:' >> /build/root/etc/group && \
-	echo 'daemon:x:6:' >> /build/root/etc/group && \
-	echo 'floppy:x:7:' >> /build/root/etc/group && \
-	echo 'disk:x:8:' >> /build/root/etc/group && \
-	echo 'lp:x:9:' >> /build/root/etc/group && \
-	echo 'dialout:x:10:' >> /build/root/etc/group && \
-	echo 'audio:x:11:' >> /build/root/etc/group && \
-	echo 'video:x:12:' >> /build/root/etc/group && \
-	echo 'utmp:x:13:' >> /build/root/etc/group && \
-	echo 'usb:x:14:' >> /build/root/etc/group && \
-	echo 'cdrom:x:15:' >> /build/root/etc/group && \
-	echo 'adm:x:16:' >> /build/root/etc/group && \
-	echo 'messagebus:x:18:' >> /build/root/etc/group && \
-	echo 'input:x:24:' >> /build/root/etc/group && \
-	echo 'mail:x:34:' >> /build/root/etc/group && \
-	echo 'nogroup:x:99:' >> /build/root/etc/group && \
-	echo 'users:x:999:' >> /build/root/etc/group && \
 	chmod 644 /build/root/etc/group && \
-	echo 'root:*::' > /build/root/etc/gshadow && \
-	echo 'bin:*::' >> /build/root/etc/gshadow && \
-	echo 'sys:*::' >> /build/root/etc/gshadow && \
-	echo 'kmem:*::' >> /build/root/etc/gshadow && \
-	echo 'tape:*::' >> /build/root/etc/gshadow && \
-	echo 'tty:*::' >> /build/root/etc/gshadow && \
-	echo 'daemon:*::' >> /build/root/etc/gshadow && \
-	echo 'floppy:*::' >> /build/root/etc/gshadow && \
-	echo 'disk:*::' >> /build/root/etc/gshadow && \
-	echo 'lp:*::' >> /build/root/etc/gshadow && \
-	echo 'dialout:*::' >> /build/root/etc/gshadow && \
-	echo 'audio:*::' >> /build/root/etc/gshadow && \
-	echo 'video:*::' >> /build/root/etc/gshadow && \
-	echo 'utmp:*::' >> /build/root/etc/gshadow && \
-	echo 'usb:*::' >> /build/root/etc/gshadow && \
-	echo 'cdrom:*::' >> /build/root/etc/gshadow && \
-	echo 'adm:*::' >> /build/root/etc/gshadow && \
-	echo 'messagebus:*::' >> /build/root/etc/gshadow && \
-	echo 'input:*::' >> /build/root/etc/gshadow && \
-	echo 'mail:*::' >> /build/root/etc/gshadow && \
-	echo 'nogroup:*::' >> /etc/gshaow && \
-	echo 'users:*::' >> /build/root/etc/gshadow && \
 	chmod 640 /build/root/etc/gshadow && \
 	mkdir -p /var/lib/dpkg/info && \
 	touch /var/lib/dpkg/status
