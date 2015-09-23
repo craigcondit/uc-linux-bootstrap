@@ -1,6 +1,7 @@
 FROM debian:jessie
 MAINTAINER ccondit@randomcoder.com
 
+# setup
 RUN \
 	echo "deb http://ftp.us.debian.org/debian/ jessie main" \
 		> /etc/apt/sources.list && \
@@ -9,10 +10,11 @@ RUN \
         echo "deb http://ftp.us.debian.org/debian/ jessie-updates main" \
 		>> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install --no-install-recommends -y -q build-essential curl gawk && \
+	apt-get install --no-install-recommends -y -q build-essential curl gawk zlib1g-dev && \
 	rm -rf /var/cache/apt && \
 	mkdir -p /download /build /build/root
 
+# zlib
 RUN \
 	echo "Downloading zlib..." >&2 && \
 	curl -ksSL http://www.zlib.net/zlib-1.2.8.tar.xz > \
@@ -41,6 +43,7 @@ RUN \
 	cd /build && \
 	rm -rf /build/zlib-1.2.8 /build/zlib-root
 
+# glibc
 RUN \
 	echo "Downloading linux..." >&2 && \
 	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz >  \
@@ -112,19 +115,22 @@ RUN \
         cd /build && \
         rm -rf /build/glibc-2.22 /build/glibc-build /build/glibc-root /build/linux-include
 
+# busybox
 RUN \
 	echo "Downloading busybox..." >&2 && \
         curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
                 /download/busybox-1.23.2.tar.bz2 && \
 	cd /build && \
 	echo "Unpacking busybox..." >&2 && \
-	tar xvf /download/busybox-1.23.2.tar.bz2 && \
+	tar xf /download/busybox-1.23.2.tar.bz2 && \
 	cd busybox-1.23.2 && \
 	echo "Configuring busybox..." >&2 && \
 	confs=' \
 		CONFIG_AR \
 		CONFIG_FEATURE_AR_LONG_FILENAMES \
-		CONFIG_FEATURE_AR_CREATE' && \
+		CONFIG_FEATURE_AR_CREATE \
+		CONFIG_DPKG \
+		CONFIG_DPKG_DEB' && \
 	set -xe && \
 	make defconfig && \
 	for conf in $confs; do \
@@ -143,6 +149,22 @@ RUN \
 	cd /build && \
 	rm -rf /build/busybox-1.23.2
 
+# openssl
+RUN \
+	echo "Downloading openssl..." >&2 && \
+	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
+		/download/openssl-1.0.2d.tar.gz && \
+	cd /build && \
+	echo "Unpacking openssl..." >&2 && \
+	tar xf /download/openssl-1.0.2d.tar.gz && \
+	cd openssl-1.0.2d && \
+	echo "Configuring openssl..." >&2 && \
+	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
+	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
+	echo "Building openssl..." >&2 && \
+	make
+	
+# filesystem mods
 RUN \
 	install -d -m 1777 /build/root/tmp && \
 	mkdir -p /build/root/var && \
@@ -206,7 +228,10 @@ RUN \
 	echo 'mail:*::' >> /build/root/etc/gshadow && \
 	echo 'nogroup:*::' >> /etc/gshaow && \
 	echo 'users:*::' >> /build/root/etc/gshadow && \
-	chmod 640 /build/root/etc/gshadow
+	chmod 640 /build/root/etc/gshadow && \
+	echo '#!/bin/sh' > /build/root/bin/bash && \
+	echo 'exec /bin/sh "$@"' >> /build/root/bin/bash && \
+	chmod 755 /build/root/bin/bash
 
 CMD ["/bin/bash"]	
 	
