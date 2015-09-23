@@ -162,7 +162,20 @@ RUN \
 	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
 	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
 	echo "Building openssl..." >&2 && \
-	make
+	make && \
+	echo "Installing openssl..." >&2 && \
+	mkdir -p /build/openssl-root && \
+	make INSTALL_PREFIX=/build/openssl-root install && \
+	rm -rf /build/openssl-root/etc/ssl/man && \
+	rm -rf /build/openssl-root/usr/include && \
+	rm -rf /build/openssl-root/usr/lib/pkgconfig && \
+	(strip \
+		/build/openssl-root/usr/bin/* \
+		/build/openssl-root/usr/lib/* \
+		/build/openssl-root/usr/inb/*.* || /bin/true) && \
+	cp -an /build/openssl-root/* /build/root/ && \
+        cd /build && \
+        rm -rf /build/openssl-1.0.2d /build/openssl-root
 	
 # filesystem mods
 RUN \
