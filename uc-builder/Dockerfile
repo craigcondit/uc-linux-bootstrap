@@ -180,5 +180,46 @@ RUN \
 	mkdir -p /var/lib/dpkg/info && \
 	touch /var/lib/dpkg/status
 
+# next steps build packages to make the system self-hosting
+
+RUN \
+	set -xe && \
+        curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 > \
+                /download/binutils-2.25.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	mkdir binutils-build && \
+	cd binutils-build && \
+	../binutils-2.25.1/configure \
+		--prefix=/usr --disable-nls --disable-werror \
+		--with-lib-path=/usr/lib --with-sysroot && \
+	MAKE="make -j4" make
+
+ADD binutils-bootstrap /build/binutils-bootstrap-assets
+	
+RUN \
+	set -xe && \
+	mkdir -p /build/deb && \
+	cd /build/binutils-build && \
+	mkdir -p /build/binutils-root && \
+	make DESTDIR=/build/binutils-root install && \
+	strip /build/binutils-root/usr/bin/* && \
+	strip /build/binutils-root/usr/x86_64-unknown-linux-gnu/bin/* && \
+	rm -rf /build/binutils-root/usr/share && \
+	mkdir -p /build/binutils-deb/control && \
+	cd /build/binutils-root && \
+	find -type f | xargs md5sum | sed 's/  \.\//  /' > /build/binutils-deb/control/md5sums && \
+	cp /build/binutils-bootstrap-assets/control /build/binutils-deb/control/control && \
+	cd /build/binutils-deb/control && \
+	tar zcf ../control.tar.gz . && \
+	cd /build/binutils-root && \
+	tar zcf /build/binutils-deb/data.tar.gz . && \
+	cd /build/binutils-deb && \
+	echo "2.0" > debian-binary && \
+	ar rc /build/deb/binutils-bootstrap_2.25.1-0+uc0_amd64.deb \
+		debian-binary control.tar.gz data.tar.gz && \
+	rm -rf /build/binutils-bootstrap-assets /build/binutils-2.25.1 /build/binutils-root \
+		/build/binutils-deb
+
 CMD ["/bin/bash"]	
 	

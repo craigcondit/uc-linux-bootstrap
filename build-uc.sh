@@ -6,6 +6,7 @@ cd "$(pwd -P)"/uc-builder
 
 docker build -t insideo/uc-builder --pull .
 docker run --rm=true insideo/uc-builder tar cC /build/root . | xz -z9 > ../uc/uc.tar.xz
+docker run --rm=true insideo/uc-builder tar cC /build/deb . | xz -z9 > ../packages/bootstrap.tar.xz
 cd ../uc
 docker build -t insideo/uc .
 docker run --rm=true insideo/uc sh -xec 'true'
