@@ -1,8 +1,8 @@
 # uc-docker
 
 Micro-container for [Docker][docker] which is designed to be small (~ 18 MB),
-extensible (.deb packages supported), and functional. Further, images should
-be have reproducible builds.
+extensible (support for Debian .deb packages), and functional. Further,
+images should be able to have reproducible builds.
 
 ### Base Packages ###
     - glibc 2.22
