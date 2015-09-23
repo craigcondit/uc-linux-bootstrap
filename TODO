@@ -1,0 +1,3 @@
+For packaging up JDK, we still may need to build:
+	libgcc_s.so.1 (needed by pack200, unpack200)
+
