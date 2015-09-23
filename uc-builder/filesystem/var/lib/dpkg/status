@@ -1,0 +1,9 @@
+Package: base-system
+Source: base-system
+Version: 0.0.1-0+uc0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Description: Base system (virtual package)
+Section: base
+Status: hold ok installed
+

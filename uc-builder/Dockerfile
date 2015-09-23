@@ -177,11 +177,17 @@ RUN \
 	chmod 640 /build/root/etc/shadow && \
 	chmod 644 /build/root/etc/group && \
 	chmod 640 /build/root/etc/gshadow && \
-	mkdir -p /var/lib/dpkg/info && \
-	touch /var/lib/dpkg/status
+	mkdir -p /build/root/var/lib/dpkg/info && \
+	touch /build/root/var/lib/dpkg/status && \
+	echo "/lib64" > /build/root/etc/ld.so.conf && \
+	echo "/lib" >> /build/root/etc/ld.so.conf && \
+	echo "/usr/lib64" >> /build/root/etc/ld.so.conf && \
+	echo "/usr/lib" >> /build/root/etc/ld.so.conf && \
+	chroot /build/root /sbin/ldconfig
 
 # next steps build packages to make the system self-hosting
 
+ADD binutils-bootstrap-assets /build/binutils-bootstrap-assets
 RUN \
 	set -xe && \
         curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 > \
@@ -193,12 +199,7 @@ RUN \
 	../binutils-2.25.1/configure \
 		--prefix=/usr --disable-nls --disable-werror \
 		--with-lib-path=/usr/lib --with-sysroot && \
-	MAKE="make -j4" make
-
-ADD binutils-bootstrap /build/binutils-bootstrap-assets
-	
-RUN \
-	set -xe && \
+	MAKE="make -j4" make && \
 	mkdir -p /build/deb && \
 	cd /build/binutils-build && \
 	mkdir -p /build/binutils-root && \
@@ -211,9 +212,9 @@ RUN \
 	find -type f | xargs md5sum | sed 's/  \.\//  /' > /build/binutils-deb/control/md5sums && \
 	cp /build/binutils-bootstrap-assets/control /build/binutils-deb/control/control && \
 	cd /build/binutils-deb/control && \
-	tar zcf ../control.tar.gz . && \
+	tar --hard-dereference --portability -zcf ../control.tar.gz . && \
 	cd /build/binutils-root && \
-	tar zcf /build/binutils-deb/data.tar.gz . && \
+	tar --hard-dereference --portability -zcf /build/binutils-deb/data.tar.gz . && \
 	cd /build/binutils-deb && \
 	echo "2.0" > debian-binary && \
 	ar rc /build/deb/binutils-bootstrap_2.25.1-0+uc0_amd64.deb \
