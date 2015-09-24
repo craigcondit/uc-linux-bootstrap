@@ -1,31 +1,3 @@
-# openssl
-RUN \
-	set -xe && \
-	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
-		/download/openssl-1.0.2d.tar.gz && \
-	cd /build && \
-	tar xf /download/openssl-1.0.2d.tar.gz && \
-	cd openssl-1.0.2d && \
-	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
-	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
-	make && \
-	mkdir -p /build/openssl-root && \
-	make INSTALL_PREFIX=/build/openssl-root install && \
-	cd /build/openssl-root && \
-	ls -lR > /build/files-openssl.orig && \
-	rm -rf /build/openssl-root/etc/ssl/man && \
-	rm -rf /build/openssl-root/usr/include && \
-	rm -rf /build/openssl-root/usr/lib/pkgconfig && \
-	(strip \
-		/build/openssl-root/usr/bin/* \
-		/build/openssl-root/usr/lib/* \
-		/build/openssl-root/usr/inb/*.* || /bin/true) && \
-	cd /build/openssl-root && \
-	ls -lR > /build/files-openssl && \
-	cp -an /build/openssl-root/* /build/root/ && \
-        cd /build && \
-        rm -rf /build/openssl-1.0.2d /build/openssl-root
-	
 ADD binutils-bootstrap-assets /build/binutils-bootstrap-assets
 RUN \
 	set -xe && \

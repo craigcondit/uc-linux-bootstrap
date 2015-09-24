@@ -294,4 +294,55 @@ RUN \
 	rm -rf control/libz-bootstrap control/libz-devel-bootstrap zlib-1.2.8 \
 		zlib-root libz-bootstrap-root libz-devel-bootstrap-root
 
+# openssl-bootstrap libssl-bootstrap libssl-devel-bootstrap
+ADD control/libssl-bootstrap /build/control/libssl-bootstrap
+ADD control/libssl-devel-bootstrap /build/control/libssl-devel-bootstrap
+ADD control/openssl-bootstrap /build/control/openssl-bootstrap
+RUN \
+	set -xe && \
+	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
+		/download/openssl-1.0.2d.tar.gz && \
+	cd /build && \
+	tar xf /download/openssl-1.0.2d.tar.gz && \
+	cd openssl-1.0.2d && \
+	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
+	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
+	make && \
+	mkdir -p /build/openssl-root && \
+	make INSTALL_PREFIX=/build/openssl-root install && \
+	cd /build/openssl-root && \
+	find -type d | sort > /build/files-openssl && \
+        echo "" >> /build/files-openssl && \
+        find -not -type d | sort >> /build/files-openssl && \
+
+	cp -a /build/openssl-root /build/libssl-bootstrap-root && \
+
+	find -type d | sort > /build/files-libssl-bootstrap && \
+        echo "" >> /build/files-libssl-bootstrap && \
+        find -not -type d | sort >> /build/files-libssl-bootstrap && \
+
+	cp -a /build/openssl-root /build/libssl-devel-bootstrap-root && \
+
+	find -type d | sort > /build/files-libssl-devel-bootstrap && \
+        echo "" >> /build/files-libssl-devel-bootstrap && \
+        find -not -type d | sort >> /build/files-libssl-devel-bootstrap && \
+
+	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
+
+	find -type d | sort > /build/files-openssl-bootstrap && \
+        echo "" >> /build/files-openssl-bootstrap && \
+        find -not -type d | sort >> /build/files-openssl-bootstrap
+
+#	rm -rf /build/openssl-root/etc/ssl/man && \
+#	rm -rf /build/openssl-root/usr/include && \
+#	rm -rf /build/openssl-root/usr/lib/pkgconfig && \
+#	(strip \
+#		/build/openssl-root/usr/bin/* \
+#		/build/openssl-root/usr/lib/* \
+#		/build/openssl-root/usr/inb/*.* || /bin/true) && \
+#	cd /build/openssl-root && \
+#	cp -an /build/openssl-root/* /build/root/ && \
+#       cd /build && \
+#	rm -rf /build/openssl-1.0.2d /build/openssl-root
+	
 CMD ["/bin/bash"]
