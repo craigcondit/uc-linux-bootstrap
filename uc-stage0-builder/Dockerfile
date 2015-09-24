@@ -50,8 +50,8 @@ RUN \
 		/build/base-files-deb \
 		/build/base-files-root \
 		/build/control/base-files \
-		/build/deb/base-files_0.0.1-0+uc0_all.deb && \
-	dpkg-deb -x /build/deb/base-files_0.0.1-0+uc0_all.deb /build/root && \
+		/build/deb/base-files_0.0.1-0_all.deb && \
+	dpkg-deb -x /build/deb/base-files_0.0.1-0_all.deb /build/root && \
 	rm -rf /build/base-files-root /build/control/base-files
 
 # glibc-bootstrap
@@ -148,7 +148,7 @@ RUN \
 		/build/libc-bootstrap-deb \
 		/build/libc-bootstrap-root \
 		/build/control/libc-bootstrap \
-		/build/deb/libc-bootstrap_2.22-0+uc0_amd64.deb && \
+		/build/deb/libc-bootstrap_2.22-0_amd64.deb && \
 
 	cd /build/glibc-bin-bootstrap-root && \
 	cd usr/bin && \
@@ -169,7 +169,7 @@ RUN \
 		/build/glibc-bin-bootstrap-deb \
 		/build/glibc-bin-bootstrap-root \
 		/build/control/glibc-bin-bootstrap \
-		/build/deb/glibc-bin-bootstrap_2.22-0+uc0_amd64.deb && \
+		/build/deb/glibc-bin-bootstrap_2.22-0_amd64.deb && \
 	
 	cd /build/libc-devel-bootstrap-root && \
 	rm -rf etc lib64 sbin usr/bin usr/lib64/audit usr/share usr/sbin usr/lib && \
@@ -182,7 +182,7 @@ RUN \
 		/build/libc-devel-bootstrap-deb \
 		/build/libc-devel-bootstrap-root \
 		/build/control/libc-devel-bootstrap \
-		/build/deb/libc-devel-bootstrap_2.22-0+uc0_amd64.deb && \
+		/build/deb/libc-devel-bootstrap_2.22-0_amd64.deb && \
 	cd /build && \
 	rm -rf glibc-2.22 glibc-build glibc-root linux-include && \
 	rm -rf control/libc-bootstrap control/glibc-bin-bootstrap control/libc-devel-bootstrap && \
@@ -224,7 +224,7 @@ RUN \
 		/build/busybox-bootstrap-deb \
 		/build/busybox-bootstrap-root \
 		/build/control/busybox-bootstrap \
-		/build/deb/busybox-bootstrap_1.23.2-0+uc0_amd64.deb && \
+		/build/deb/busybox-bootstrap_1.23.2-0_amd64.deb && \
 	cd /build/busybox-1.23.2 && \
 	make clean && \
 	sed -i '/CONFIG_STATIC/d' .config && \
