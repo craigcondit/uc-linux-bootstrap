@@ -11,7 +11,7 @@ RUN \
         echo "deb http://ftp.us.debian.org/debian/ jessie-updates main" \
 		>> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install --no-install-recommends -y -q build-essential curl gawk zlib1g-dev && \
+	apt-get install --no-install-recommends -y -q build-essential curl gawk zlib1g-dev file && \
 	rm -rf /var/cache/apt && \
 	mkdir -p /download /build /build/root /build/deb /build/control
 
@@ -358,5 +358,60 @@ RUN \
 	rm -rf control/libssl-bootstrap control/libssl-devel-bootstrap control/openssl-bootstrap \
 		openssl-1.0.2d openssl-root libssl-bootstrap-root libssl-devel-bootstrap-root \
 		openssl-bootstrap-root
+	
+# gcc bootstrap
+ADD gcc-bootstrap-assets /build/gcc-bootstrap-assets
+ADD control/gcc-bootstrap /build/control/gcc-bootstrap
+RUN \
+	set -xe && \
+	export LC_ALL=POSIX && \
+	curl -ksSL http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 > \
+		/download/gcc-5.2.0.tar.bz2 && \
+	curl -ksSL http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz > \
+		/download/mpfr-3.1.3.tar.xz && \
+	curl -ksSL http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz > \
+		/download/gmp-6.0.0a.tar.xz && \
+	curl -ksSL http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz > \
+		/download/mpc-1.0.3.tar.gz && \
+	curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 > \
+                /download/binutils-2.25.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/gcc-5.2.0.tar.bz2 && \
+	cd gcc-5.2.0 && \
+	tar xf /download/mpfr-3.1.3.tar.xz && \
+	mv -f mpfr-3.1.3 mpfr && \
+	tar xf /download/gmp-6.0.0a.tar.xz && \
+	mv -f gmp-6.0.0 gmp && \
+	tar xf /download/mpc-1.0.3.tar.gz && \
+	mv -f mpc-1.0.3 mpc && \
+	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	mv -f binutils-2.25.1 binutils && \
+	bash /build/gcc-bootstrap-assets/fix-paths.sh && \
+	mkdir -p /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/base-files_*.deb /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/libc-bootstrap_*.deb /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/libc-devel-bootstrap_*.deb /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/glibc-bin-bootstrap_*.deb /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/libz-bootstrap_*.deb /build/gcc-sysroot && \
+	dpkg-deb -x /build/deb/libz-devel-bootstrap_*.deb /build/gcc-sysroot && \
+
+	mkdir -p ../gcc-build && \
+	cd ../gcc-build && \
+	../gcc-5.2.0/configure \
+		--target=x86_64-uc-linux-gnu --prefix=/usr --with-glibc-version=2.22 \
+		--with-sysroot=/build/gcc-sysroot --with-newlib --without-headers \
+		 --with-native-system-header-dir=/usr/include --disable-nls \
+		--disable-multilib --disable-decimal-float --disable-threads \
+		--disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp \
+		--disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx \
+		--enable-languages=c,c++ && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/gcc-root && \
+	make DESTDIR=/build/gcc-root-bootstrap make install && \
+	cd /build/gcc-root-bootstrap && \
+
+	find -type d | sort > /build/files-gcc-bootstrap && \
+	echo "" >> /build/files-gcc-bootstrap && \
+	find -not -type d | sort >> /build/files-gcc-bootstrap
 	
 CMD ["/bin/bash"]

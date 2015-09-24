@@ -14,7 +14,7 @@ This small base gives us wide compatibility with a large range of existing
 software as well as the ability to build and deploy simple .deb packages.
 
 Glibc was chosen due to its widespread support. Busybox was chosen to give
-a functional userland with minimal overhead (< 1 MB). OpenSSL is present to
+a functional userland with minimal overhead (stage0 is < 5 MB). OpenSSL is present to
 allow busybox's wget implementation to download from https sites.
 
 UC Docker supports simple package management using dpkg. 
