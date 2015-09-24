@@ -1,0 +1,12 @@
+Package: libc-devel-bootstrap
+Source: glibc
+Version: 2.22-0+uc0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libc-devel
+Conflicts: libc-devel
+Requires: base-files, libc (>= 2.22-0+uc0)
+Description: GNU C Library: Shared libraries (headers / static libs)
+Section: devel
+Priority: optional
+Build-Essential: true

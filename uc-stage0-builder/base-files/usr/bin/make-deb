@@ -1,0 +1,38 @@
+#!/bin/sh
+set -e
+
+usage() {
+  echo "Usage: $0 <deb-dir> <root-dir> <control-dir> <deb-file>" >&2
+  exit 1
+}
+
+PREV_DIR="$(pwd)"
+
+DEB_DIR=$1
+[ ! -z "$DEB_DIR" ] ||  usage
+
+ROOT_DIR=$2
+[ ! -z "$ROOT_DIR" ] || usage
+
+CONTROL_DIR=$3
+[ ! -z "$CONTROL_DIR" ] || usage
+
+DEB_FILE=$4
+[ ! -z "$DEB_FILE" ] || usage
+
+mkdir -p "${DEB_DIR}/control"
+cd "${ROOT_DIR}"
+find -type f | xargs md5sum | sed 's/  \.\//  /' > "${DEB_DIR}/control/md5sums"
+cp -a "${CONTROL_DIR}/." "${DEB_DIR}/control/."
+cd "${DEB_DIR}/control"
+for script in postinst preinst postrm prerm ; do
+  [ -e $script ] && chmod 755 $script
+done
+tar --hard-dereference --portability -zcf ../control.tar.gz .
+cd "${ROOT_DIR}"
+tar --hard-dereference --portability -zcf "${DEB_DIR}/data.tar.gz" .
+cd "${DEB_DIR}"
+echo "2.0" > debian-binary
+ar rc "${DEB_FILE}" debian-binary control.tar.gz data.tar.gz
+cd "${PREV_DIR}"
+rm -rf "${DEB_DIR}"

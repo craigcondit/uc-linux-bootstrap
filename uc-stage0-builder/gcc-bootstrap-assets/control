@@ -1,0 +1,10 @@
+Package: gcc-bootstrap
+Source: gcc
+Version: 2.25.1-0+uc0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: gcc
+Conflicts: gcc
+Requires: binutils-bootstrap
+Description: This is the GNU C compiler, a fairly portable optimizing compiler for C.
+Section: devel

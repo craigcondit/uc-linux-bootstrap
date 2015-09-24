@@ -1,0 +1,10 @@
+Package: base-files
+Source: base-files
+Version: 0.0.1-0+uc0
+Essential: yes
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: all
+Provides: base
+Description: UC Docker Linux base system miscellaneous files
+Section: admin
+Priority: required

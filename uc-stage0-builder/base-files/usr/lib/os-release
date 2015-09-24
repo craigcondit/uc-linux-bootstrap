@@ -1,0 +1,9 @@
+PRETTY_NAME="UC Docker Linux 0 (buggy)"
+NAME="UC Docker Linux"
+VERSION_ID="0 (buggy)"
+VERSION="0"
+ID=ucdocker
+HOME_URL="https://github.com/insideo/uc-docker"
+SUPPORT_URL="https://github.com/insideo/uc-docker/wiki"
+BUG_REPORT_URL="https://github.com/insideo/uc-docker/issues"
+

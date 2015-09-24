@@ -1,6 +1,6 @@
 # uc-docker
 
-Micro-container for [Docker][docker] which is designed to be small (~ 18 MB),
+Micro-container for Docker which is designed to be small (~ 18 MB),
 extensible (support for Debian .deb packages), and functional. Further,
 images should be able to have reproducible builds.
 
@@ -17,6 +17,7 @@ Glibc was chosen due to its widespread support. Busybox was chosen to give
 a functional userland with minimal overhead (< 1 MB). OpenSSL is present to
 allow busybox's wget implementation to download from https sites.
 
+UC Docker supports simple package management using dpkg. 
 ### Future Plans ###
 
 Implement (simple package) support so that images built from this can do
