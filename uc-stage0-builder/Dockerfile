@@ -385,8 +385,8 @@ RUN \
 	mv -f gmp-6.0.0 gmp && \
 	tar xf /download/mpc-1.0.3.tar.gz && \
 	mv -f mpc-1.0.3 mpc && \
-	tar xf /download/binutils-2.25.1.tar.bz2 && \
-	mv -f binutils-2.25.1 binutils && \
+#	tar xf /download/binutils-2.25.1.tar.bz2 && \
+#	mv -f binutils-2.25.1 binutils && \
 	bash /build/gcc-bootstrap-assets/fix-paths.sh && \
 	mkdir -p /build/gcc-sysroot && \
 	dpkg-deb -x /build/deb/base-files_*.deb /build/gcc-sysroot && \
@@ -400,7 +400,7 @@ RUN \
 	cd ../gcc-build && \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --with-glibc-version=2.22 \
-		--with-sysroot=/build/gcc-sysroot --with-newlib --without-headers \
+		--with-sysroot=/build/gcc-sysroot --with-newlib \
 		--with-native-system-header-dir=/usr/include --disable-nls \
 		--disable-multilib --disable-decimal-float --disable-threads \
 		--disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp \
