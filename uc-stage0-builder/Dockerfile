@@ -319,7 +319,7 @@ RUN \
 
 	cp -a /build/openssl-root /build/libssl-bootstrap-root && \
 	cd /build/libssl-bootstrap-root && \
-	rm -rf etc usr/include usr/lib/pkgconfig && \
+	rm -rf etc usr/bin usr/include usr/lib/pkgconfig && \
 	find -type d | sort > /build/files-libssl-bootstrap && \
         echo "" >> /build/files-libssl-bootstrap && \
         find -not -type d | sort >> /build/files-libssl-bootstrap && \
@@ -344,7 +344,7 @@ RUN \
 
 	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
 	cd /build/openssl-bootstrap-root && \
-	rm -rf usr/include usr/liba && \
+	rm -rf usr/include usr/lib && \
 	find -type d | sort > /build/files-openssl-bootstrap && \
         echo "" >> /build/files-openssl-bootstrap && \
         find -not -type d | sort >> /build/files-openssl-bootstrap && \
