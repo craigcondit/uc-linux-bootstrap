@@ -20,9 +20,4 @@ allow busybox's wget implementation to download from https sites.
 UC Docker supports simple package management using dpkg. 
 ### Future Plans ###
 
-Implement (simple package) support so that images built from this can do
-things like:
-
-```
-RUN uc-install postgresql-7.5.0-1uc jdk-8u60-1uc
-```
+Make self-hosting. Currently we are missing gcc, but that's about it.
