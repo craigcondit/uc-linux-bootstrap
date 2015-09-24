@@ -1,33 +1,3 @@
-# zlib
-RUN \
-	set -xe && \
-	curl -ksSL http://www.zlib.net/zlib-1.2.8.tar.xz > \
-		/download/zlib-1.2.8.tar.xz && \
-	cd /build && \
-	tar xf /download/zlib-1.2.8.tar.xz && \
-	cd /build/zlib-1.2.8 && \
-	echo "Configuring zlib..." >&2 && \
-	./configure --prefix=/usr --shared --libdir=/lib && \
-	make && \
-	mkdir -p /build/zlib-root && \
-	make DESTDIR=/build/zlib-root install && \
-	cd /build/zlib-root && \
-	ls -lR > /build/files-zlib.orig && \
-	rm -rf \
-		/build/zlib-root/usr/share \
-		/build/zlib-root/usr/include \
-		/build/zlib-root/lib/pkgconfig && \
-	rm -f /build/zlib-root/lib/*.a && \
-	strip /build/zlib-root/lib/* && \
-	rm -f /build/zlib-root/lib/libz.so && \
-	mkdir -p /build/zlib-root/usr/lib && \
-	ln -sfv ../../lib/libz.so.1.2.3 /build/zlib-root/usr/lib/libz.so && \
-	cd /build/zlib-root && \
-	ls -lR > /build/files-zlib && \
-	cp -a /build/zlib-root/* /build/root/ && \
-	cd /build && \
-	rm -rf /build/zlib-1.2.8 /build/zlib-root
-
 # openssl
 RUN \
 	set -xe && \
