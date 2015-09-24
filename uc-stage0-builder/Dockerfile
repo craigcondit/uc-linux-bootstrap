@@ -11,7 +11,8 @@ RUN \
         echo "deb http://ftp.us.debian.org/debian/ jessie-updates main" \
 		>> /etc/apt/sources.list && \
 	apt-get update && \
-	apt-get install --no-install-recommends -y -q build-essential curl gawk zlib1g-dev file && \
+	apt-get install --no-install-recommends -y -q build-essential \
+		curl gawk zlib1g-dev file flex bison m4 texinfo xz-utils && \
 	rm -rf /var/cache/apt && \
 	mkdir -p /download /build /build/root /build/deb /build/control
 
@@ -398,20 +399,27 @@ RUN \
 	mkdir -p ../gcc-build && \
 	cd ../gcc-build && \
 	../gcc-5.2.0/configure \
-		--target=x86_64-uc-linux-gnu --prefix=/usr --with-glibc-version=2.22 \
+		--prefix=/usr --with-glibc-version=2.22 \
 		--with-sysroot=/build/gcc-sysroot --with-newlib --without-headers \
-		 --with-native-system-header-dir=/usr/include --disable-nls \
+		--with-native-system-header-dir=/usr/include --disable-nls \
 		--disable-multilib --disable-decimal-float --disable-threads \
 		--disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp \
 		--disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx \
-		--enable-languages=c,c++ && \
-	MAKE="make -j4" make && \
-	mkdir -p /build/gcc-root && \
-	make DESTDIR=/build/gcc-root-bootstrap make install && \
-	cd /build/gcc-root-bootstrap && \
+		--enable-languages=c,c++
 
-	find -type d | sort > /build/files-gcc-bootstrap && \
-	echo "" >> /build/files-gcc-bootstrap && \
-	find -not -type d | sort >> /build/files-gcc-bootstrap
+# do compile in a separate instance for now so we can debug more easily
+RUN \
+	set -xe && \
+	export LC_ALL=POSIX && \
+	cd /build/gcc-build && \
+	MAKE="make -j4" make && \
+
+#	mkdir -p /build/gcc-root && \
+#	make DESTDIR=/build/gcc-root-bootstrap make install && \
+#	cd /build/gcc-root-bootstrap && \
+#
+#	find -type d | sort > /build/files-gcc-bootstrap && \
+#	echo "" >> /build/files-gcc-bootstrap && \
+#	find -not -type d | sort >> /build/files-gcc-bootstrap
 	
 CMD ["/bin/bash"]
