@@ -239,4 +239,59 @@ RUN \
 	cd /build && \
 	rm -rf control/busybox-bootstrap busybox-1.23.2 busybox-bootstrap-root
 
+# libz-bootstrap
+ADD control/libz-bootstrap /build/control/libz-bootstrap
+ADD control/libz-devel-bootstrap /build/control/libz-devel-bootstrap
+RUN \
+	set -xe && \
+	umask 022 && \
+	curl -ksSL http://www.zlib.net/zlib-1.2.8.tar.xz > \
+		/download/zlib-1.2.8.tar.xz && \
+	cd /build && \
+	tar xf /download/zlib-1.2.8.tar.xz && \
+	cd /build/zlib-1.2.8 && \
+	./configure --prefix=/usr --shared --libdir=/lib && \
+	make && \
+	mkdir -p /build/zlib-root && \
+	make DESTDIR=/build/zlib-root install && \
+	cd /build/zlib-root && \
+	find -type d | sort > /build/files-zlib && \
+	echo "" >> /build/files-zlib && \
+	find -not -type d | sort >> /build/files-zlib && \
+
+	cp -a /build/zlib-root /build/libz-bootstrap-root && \
+	cd /build/libz-bootstrap-root && \
+	rm -rf usr/share usr/include lib/pkgconfig && \
+	rm -f lib/*.a && \
+	strip lib/* && \
+	rm -f lib/libz.so && \
+	mkdir -p usr/lib && \
+	ln -sfv ../../lib/libz.so.1.2.8 usr/lib/libz.so && \
+	find -type d | sort > /build/files-libz-bootstrap && \
+	echo "" >> /build/files-libz-bootstrap && \
+	find -not -type d | sort >> /build/files-libz-bootstrap && \
+	/build/root/usr/bin/make-deb \
+		/build/libz-bootstrap-deb \
+		/build/libz-bootstrap-root \
+		/build/control/libz-bootstrap \
+		/build/deb/libz-bootstrap_1.2.8-0_amd64.deb && \
+
+	cp -a /build/zlib-root /build/libz-devel-bootstrap-root && \
+	cd /build/libz-devel-bootstrap-root && \
+	rm -rf usr/share && \
+	cd lib && \
+	find -not -name '*.a' -delete && \
+	cd .. && \
+	find -type d | sort > /build/files-libz-devel-bootstrap && \
+	echo "" >> /build/files-libz-devel-bootstrap && \
+	find -not -type d | sort >> /build/files-libz-devel-bootstrap && \
+	/build/root/usr/bin/make-deb \
+		/build/libz-devel-bootstrap-deb \
+		/build/libz-devel-bootstrap-root \
+		/build/control/libz-devel-bootstrap \
+		/build/deb/libz-devel-bootstrap_1.2.8-0_amd64.deb && \
+	cd /build && \
+	rm -rf control/libz-bootstrap control/libz-devel-bootstrap zlib-1.2.8 \
+		zlib-root libz-bootstrap-root libz-devel-bootstrap-root
+
 CMD ["/bin/bash"]
