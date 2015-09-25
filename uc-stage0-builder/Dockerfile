@@ -30,10 +30,14 @@ RUN \
 	chmod 755 usr usr/lib usr/bin && \
 	chmod 644 usr/lib/os-release && \
 	chmod 755 usr/bin/make-deb && \
-	install -d -m 755 etc var home && \
+	install -d -m 755 etc var home proc sys dev run && \
+	install -d -m 755 var/log var/cache var/spool var/lock && \
+	ln -sf /run var/run && \
 	install -d -m 755 var/lib/dpkg/info && \
 	install -d -m 700 root && \
 	install -d -m 1777 tmp && \
+        ln -sf usr/bin bin && \
+        ln -sf usr/sbin sbin && \
 	chmod 644 etc/passwd && \
 	chmod 640 etc/shadow && \
 	chmod 644 etc/group && \
@@ -369,13 +373,4 @@ RUN \
 	/usr/bin/strip --strip-unneeded /tools/bin/* /tools/sbin/*) || /bin/true) && \
 	rm -rf /tools/info /tools/man /tools/doc /tools/share/info /tools/share/man /tools/share/doc
 		
-#diagnostics
-RUN \
-	cp -a /chroot/. /build/root/. && \
-	cd /build/root/ && \
-	ln -sf usr/bin bin && \
-	ln -sf usr/sbin sbin && \
-	mkdir -p proc dev dev/pts dev/shm tmp sys && \
-	chmod 1777 tmp
-
 CMD ["/bin/bash"]
