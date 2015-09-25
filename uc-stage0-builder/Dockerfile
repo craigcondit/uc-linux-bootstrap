@@ -267,4 +267,40 @@ RUN \
 	cd /build && \
 	rm -rf gcc-5.2.0 gcc-build /build/gcc-fix-paths.sh /build/gcc-pass2-make-limits-h.sh
 
+# busybox
+RUN \
+	set -xe && \
+        curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
+                /download/busybox-1.23.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/busybox-1.23.2.tar.bz2 && \
+	cd busybox-1.23.2 && \
+	confs=' \
+		CONFIG_AR \
+		CONFIG_FEATURE_AR_LONG_FILENAMES \
+		CONFIG_FEATURE_AR_CREATE \
+		CONFIG_STATIC \
+		CONFIG_DPKG \
+		CONFIG_DPKG_DEB' && \
+	make defconfig && \
+	for conf in $confs; do \
+		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
+		grep -q "^$conf=y" .config || echo "$conf=y" >> .config; \
+	done && \
+	make oldconfig && \
+	for conf in $confs; do grep -q "^$conf=y" .config; done && \
+	MAKE="make -j4" make && \
+	make install && \
+	applets/install.sh ./_install --cleanup && \
+	applets/install.sh ./_install --hardlinks && \
+	rm -f _install/linuxrc && \
+	find _install/sbin -type f -exec mv "{}" _install/bin/ \; && \
+	find _install/usr/bin -type f -exec mv "{}" _install/bin/ \; && \
+	find _install/usr/sbin -type f -exec mv "{}" _install/bin/ \; && \
+	rmdir _install/sbin _install/usr/bin _install/usr/sbin && \
+	cp -an _install/* /tools/ && \
+	chmod 4755 /tools/bin/busybox && \
+	cd /build && \
+	rm -rf busybox-1.23.2
+
 CMD ["/bin/bash"]
