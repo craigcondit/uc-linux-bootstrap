@@ -17,7 +17,8 @@ Glibc was chosen due to its widespread support. Busybox was chosen to give
 a functional userland with minimal overhead (stage0 is < 5 MB). OpenSSL is present to
 allow busybox's wget implementation to download from https sites.
 
-UC Docker supports simple package management using dpkg. 
+UC Docker supports simple package management using dpkg.
+
 ### Future Plans ###
 
 Make self-hosting. Currently we are missing gcc, but that's about it.
