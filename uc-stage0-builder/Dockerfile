@@ -18,11 +18,15 @@ RUN \
 
 # base-files
 ADD base-files /build/base-files-root
-ADD control/base-files   /build/control/base-files
+ADD control/base-files /build/control/base-files
 RUN \
 	set -xe && \
 	umask 022 && \
 	cd /build/base-files-root && \
+	install -d -m 755 usr/lib && \
+	ln -sf usr/lib lib && \
+	ln -sf lib usr/lib64 && \
+	ln -sf usr/lib lib64 && \
 	chmod 755 usr usr/lib usr/bin && \
 	chmod 644 usr/lib/os-release && \
 	chmod 755 usr/bin/make-deb && \
@@ -55,371 +59,32 @@ RUN \
 	dpkg-deb -x /build/deb/base-files_0.0.1-0_all.deb /build/root && \
 	rm -rf /build/base-files-root /build/control/base-files
 
-# glibc-bootstrap
-ADD control/libc-bootstrap /build/control/libc-bootstrap
-ADD control/glibc-bin-bootstrap /build/control/glibc-bin-bootstrap
-ADD control/libc-devel-bootstrap /build/control/libc-devel-bootstrap
+# cross toolchain
+
+# binutils (stage 1)
 RUN \
 	set -xe && \
 	umask 022 && \
-	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz >  \
-		/download/linux-4.2.1.tar.xz && \
-	cd /build && \
-	tar Pxf /download/linux-4.2.1.tar.xz && \
-	cd /build/linux-4.2.1 && \
-	make mrproper && \
-	make INSTALL_HDR_PATH=dest headers_install && \
-	mkdir -p /build/linux-include && \
-	cp -r dest/include/* /build/linux-include && \
-	cd /build && \
-	rm -rf /build/linux-4.2.1 && \
-	curl -ksSL http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz > \
-		/download/glibc-2.22.tar.xz && \
-	echo "Downloading glibc patches..." >&2 && \
-	curl -ksSL http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-fhs-1.patch > \
-		/download/glibc-2.22-fhs-1.patch && \
-	curl -ksSL http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-upstream_i386_fix-1.patch > \
-		/download/glibc-2.22-upstream_i386_fix-1.patch && \
-	cd /build && \
-	tar xf /download/glibc-2.22.tar.xz && \
-	cd /build/glibc-2.22 && \
-	patch -Np1 -i /download/glibc-2.22-fhs-1.patch && \
-	patch -Np1 -i /download/glibc-2.22-upstream_i386_fix-1.patch && \
-	mkdir -p /build/glibc-build && \
-	cd /build/glibc-build && \
-	/build/glibc-2.22/configure \
-		--prefix=/usr --disable-profile --enable-kernel=2.6.32 \
-		--with-headers=/build/linux-include && \
-	MAKE="make -j4" make && \
-	mkdir -p /build/glibc-root/etc && \
-	touch /build/glibc-root/etc/ld.so.conf && \
-	mkdir -p /build/glibc-root/usr/include && \
-	cp -a /build/linux-include/. /build/glibc-root/usr/include/. && \
-	make install_root=/build/glibc-root install && \
-	rm -f /build/glibc-root/etc/ld.so.conf && \
-	mkdir -p /build/glibc-root/usr/lib/locale && \
-	I18NPATH=/build/glibc-2.22/localedata \
-		locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/ISO-8859-1 \
-		--prefix=/build/glibc-root en_US && \
-	I18NPATH=/build/glibc-2.22/localedata \
-		locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
-		--prefix=/build/glibc-root en_US && \
-	(strip \
-		/build/glibc-root/sbin/* \
-		/build/glibc-root/lib64/* \
-		/build/glibc-root/usr/bin/* \
-		/build/glibc-root/usr/sbin/* \
-		/build/glibc-root/usr/lib64/* \
-		/build/glibc-root/usr/lib64/*/* || /bin/true) && \
-	cd /build/glibc-root && \
-	rm -f etc/ld.so.cache && \
-	rm -rf usr/share/locale && \
-	rm -rf usr/lib64/gconv && \
-	rm -rf usr/libexec/getconf && \
-	rm -rf usr/libexec && \
-	rm -rf usr/lib/locale && \
-	rm -rf usr/share/i18n && \
-	rm -f etc/rpc sbin/sln && \
-	rm -rf var && \
-	find -type d | sort > /build/files-glibc && \
-	echo "" >> /build/files-glibc && \
-	find -not -type d | sort >> /build/files-glibc && \
-	cp -a /build/glibc-root /build/libc-bootstrap-root && \
-	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
-	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
-	cd /build/libc-bootstrap-root && \
-	cd usr/bin && \
-	find -not -name ldd -delete && \
-	cd ../.. && \
-	rm -rf etc && \
-	rm -rf usr/sbin && \
-	rm -rf usr/lib && \
-	rm -rf usr/share && \
-	rm -rf usr/include && \
-	find . -name "*.a" -delete && \
-	find . -name "*.o" -delete && \
-	find -type d | sort > /build/files-libc-bootstrap && \
-	echo "" >> /build/files-libc-bootstrap && \
-	find -not -type d | sort >> /build/files-libc-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/libc-bootstrap-deb \
-		/build/libc-bootstrap-root \
-		/build/control/libc-bootstrap \
-		/build/deb/libc-bootstrap_2.22-0_amd64.deb && \
-
-	cd /build/glibc-bin-bootstrap-root && \
-	cd usr/bin && \
-	find -name ldd -delete && \
-	cd ../.. && \
-	rm -rf etc && \
-	rm -rf usr/lib && \
-	rm -rf usr/lib64 && \
-	rm -rf usr/share && \
-	rm -rf usr/include && \
-	rm -rf lib64 sbin usr/lib64/audit && \
-	find . -name "*.a" -delete && \
-	find . -name "*.o" -delete && \
-	find -type d | sort > /build/files-glibc-bin-bootstrap && \
-	echo "" >> /build/files-glibc-bin-bootstrap && \
-	find -not -type d | sort >> /build/files-glibc-bin-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/glibc-bin-bootstrap-deb \
-		/build/glibc-bin-bootstrap-root \
-		/build/control/glibc-bin-bootstrap \
-		/build/deb/glibc-bin-bootstrap_2.22-0_amd64.deb && \
-	
-	cd /build/libc-devel-bootstrap-root && \
-	rm -rf etc lib64 sbin usr/bin usr/lib64/audit usr/share usr/sbin usr/lib && \
-	find . -name "*.so" -delete && \
-	find . -name "*.o" -delete && \
-	find -type d | sort > /build/files-libc-devel-bootstrap && \
-	echo "" >> /build/files-libc-devel-bootstrap && \
-	find -not -type d | sort >> /build/files-libc-devel-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/libc-devel-bootstrap-deb \
-		/build/libc-devel-bootstrap-root \
-		/build/control/libc-devel-bootstrap \
-		/build/deb/libc-devel-bootstrap_2.22-0_amd64.deb && \
-	cd /build && \
-	rm -rf glibc-2.22 glibc-build glibc-root linux-include && \
-	rm -rf control/libc-bootstrap control/glibc-bin-bootstrap control/libc-devel-bootstrap && \
-	rm -rf libc-bootstrap-root glibc-bin-bootstrap-root libc-devel-bootstrap-root
-
-# busybox
-ADD control/busybox-bootstrap /build/control/busybox-bootstrap
-RUN \
-	set -xe && \
-        curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
-                /download/busybox-1.23.2.tar.bz2 && \
-	cd /build && \
-	tar xf /download/busybox-1.23.2.tar.bz2 && \
-	cd busybox-1.23.2 && \
-	confs=' \
-		CONFIG_AR \
-		CONFIG_FEATURE_AR_LONG_FILENAMES \
-		CONFIG_FEATURE_AR_CREATE \
-		CONFIG_DPKG \
-		CONFIG_DPKG_DEB' && \
-	make defconfig && \
-	for conf in $confs; do \
-		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
-		grep -q "^$conf=y" .config || echo "$conf=y" >> .config; \
-	done && \
-	make oldconfig && \
-	for conf in $confs; do grep -q "^$conf=y" .config; done && \
-	MAKE="make -j4" make && \
-	make install && \
-	rm -f _install/linuxrc && \
-	mkdir -p /build/busybox-bootstrap-root && \
-	cp -an _install/* /build/busybox-bootstrap-root/ && \
-	chmod 4755 /build/busybox-bootstrap-root/bin/busybox && \
-	cd /build/busybox-bootstrap-root && \
-	find -type d | sort > /build/files-busybox-bootstrap && \
-	echo "" >> /build/files-busybox-bootstrap && \
-	find -not -type d | sort >> /build/files-busybox-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/busybox-bootstrap-deb \
-		/build/busybox-bootstrap-root \
-		/build/control/busybox-bootstrap \
-		/build/deb/busybox-bootstrap_1.23.2-0_amd64.deb && \
-	cd /build/busybox-1.23.2 && \
-	make clean && \
-	sed -i '/CONFIG_STATIC/d' .config && \
-	echo "CONFIG_STATIC=y" >> .config && \
-	make oldconfig && \
-	MAKE="make -j4" make && \
-	make install && \
-	install -d -m 0755 /build/root/bin && \
-	cp _install/bin/busybox /build/root/bin/ash && \
-	ln -sf ash /build/root/bin/sh && \
-	cp _install/bin/busybox /build/root/usr/bin/dpkg && \
-	cd /build && \
-	rm -rf control/busybox-bootstrap busybox-1.23.2 busybox-bootstrap-root
-
-# libz-bootstrap
-ADD control/libz-bootstrap /build/control/libz-bootstrap
-ADD control/libz-devel-bootstrap /build/control/libz-devel-bootstrap
-RUN \
-	set -xe && \
-	umask 022 && \
-	curl -ksSL http://www.zlib.net/zlib-1.2.8.tar.xz > \
-		/download/zlib-1.2.8.tar.xz && \
-	cd /build && \
-	tar xf /download/zlib-1.2.8.tar.xz && \
-	cd /build/zlib-1.2.8 && \
-	./configure --prefix=/usr --shared --libdir=/lib && \
-	make && \
-	mkdir -p /build/zlib-root && \
-	make DESTDIR=/build/zlib-root install && \
-	cd /build/zlib-root && \
-	find -type d | sort > /build/files-zlib && \
-	echo "" >> /build/files-zlib && \
-	find -not -type d | sort >> /build/files-zlib && \
-
-	cp -a /build/zlib-root /build/libz-bootstrap-root && \
-	cd /build/libz-bootstrap-root && \
-	rm -rf usr/share usr/include lib/pkgconfig && \
-	rm -f lib/*.a && \
-	strip lib/* && \
-	rm -f lib/libz.so && \
-	mkdir -p usr/lib && \
-	ln -sfv ../../lib/libz.so.1.2.8 usr/lib/libz.so && \
-	find -type d | sort > /build/files-libz-bootstrap && \
-	echo "" >> /build/files-libz-bootstrap && \
-	find -not -type d | sort >> /build/files-libz-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/libz-bootstrap-deb \
-		/build/libz-bootstrap-root \
-		/build/control/libz-bootstrap \
-		/build/deb/libz-bootstrap_1.2.8-0_amd64.deb && \
-
-	cp -a /build/zlib-root /build/libz-devel-bootstrap-root && \
-	cd /build/libz-devel-bootstrap-root && \
-	rm -rf usr/share && \
-	cd lib && \
-	find -not -name '*.a' -delete && \
-	cd .. && \
-	find -type d | sort > /build/files-libz-devel-bootstrap && \
-	echo "" >> /build/files-libz-devel-bootstrap && \
-	find -not -type d | sort >> /build/files-libz-devel-bootstrap && \
-	/build/root/usr/bin/make-deb \
-		/build/libz-devel-bootstrap-deb \
-		/build/libz-devel-bootstrap-root \
-		/build/control/libz-devel-bootstrap \
-		/build/deb/libz-devel-bootstrap_1.2.8-0_amd64.deb && \
-	cd /build && \
-	rm -rf control/libz-bootstrap control/libz-devel-bootstrap zlib-1.2.8 \
-		zlib-root libz-bootstrap-root libz-devel-bootstrap-root
-
-# openssl-bootstrap libssl-bootstrap libssl-devel-bootstrap
-ADD control/libssl-bootstrap /build/control/libssl-bootstrap
-ADD control/libssl-devel-bootstrap /build/control/libssl-devel-bootstrap
-ADD control/openssl-bootstrap /build/control/openssl-bootstrap
-RUN \
-	set -xe && \
-	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
-		/download/openssl-1.0.2d.tar.gz && \
-	cd /build && \
-	tar xf /download/openssl-1.0.2d.tar.gz && \
-	cd openssl-1.0.2d && \
-	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
-	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
-	make && \
-	mkdir -p /build/openssl-root && \
-	make INSTALL_PREFIX=/build/openssl-root install && \
-	cd /build/openssl-root && \
-	rm -rf etc/ssl/man && \
-	(strip usr/bin/* usr/lib/* usr/lib/*/* || /bin/true) && \
-	find -type d | sort > /build/files-openssl && \
-        echo "" >> /build/files-openssl && \
-        find -not -type d | sort >> /build/files-openssl && \
-
-	cp -a /build/openssl-root /build/libssl-bootstrap-root && \
-	cd /build/libssl-bootstrap-root && \
-	rm -rf etc usr/bin usr/include usr/lib/pkgconfig && \
-	find -type d | sort > /build/files-libssl-bootstrap && \
-        echo "" >> /build/files-libssl-bootstrap && \
-        find -not -type d | sort >> /build/files-libssl-bootstrap && \
-	/build/root/usr/bin/make-deb \
-                /build/libssl-bootstrap-deb \
-                /build/libssl-bootstrap-root \
-                /build/control/libssl-bootstrap \
-                /build/deb/libssl-bootstrap_1.0.2d-0_amd64.deb && \
-
-	cp -a /build/openssl-root /build/libssl-devel-bootstrap-root && \
-	cd /build/libssl-devel-bootstrap-root && \
-	rm -rf etc usr/bin usr/lib/engines && \
-	rm -f usr/lib/lib*  && \
-	find -type d | sort > /build/files-libssl-devel-bootstrap && \
-        echo "" >> /build/files-libssl-devel-bootstrap && \
-        find -not -type d | sort >> /build/files-libssl-devel-bootstrap && \
-	/build/root/usr/bin/make-deb \
-                /build/libssl-devel-bootstrap-deb \
-                /build/libssl-devel-bootstrap-root \
-                /build/control/libssl-devel-bootstrap \
-                /build/deb/libssl-devel-bootstrap_1.0.2d-0_amd64.deb && \
-
-	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
-	cd /build/openssl-bootstrap-root && \
-	rm -rf usr/include usr/lib && \
-	find -type d | sort > /build/files-openssl-bootstrap && \
-        echo "" >> /build/files-openssl-bootstrap && \
-        find -not -type d | sort >> /build/files-openssl-bootstrap && \
-	/build/root/usr/bin/make-deb \
-                /build/openssl-bootstrap-deb \
-                /build/openssl-bootstrap-root \
-                /build/control/openssl-bootstrap \
-                /build/deb/openssl-bootstrap_1.0.2d-0_amd64.deb && \
-
-	cd /build && \
-	rm -rf control/libssl-bootstrap control/libssl-devel-bootstrap control/openssl-bootstrap \
-		openssl-1.0.2d openssl-root libssl-bootstrap-root libssl-devel-bootstrap-root \
-		openssl-bootstrap-root
-	
-# gcc bootstrap
-ADD gcc-bootstrap-assets /build/gcc-bootstrap-assets
-ADD control/gcc-bootstrap /build/control/gcc-bootstrap
-RUN \
-	set -xe && \
-	export LC_ALL=POSIX && \
-	curl -ksSL http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 > \
-		/download/gcc-5.2.0.tar.bz2 && \
-	curl -ksSL http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz > \
-		/download/mpfr-3.1.3.tar.xz && \
-	curl -ksSL http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz > \
-		/download/gmp-6.0.0a.tar.xz && \
-	curl -ksSL http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz > \
-		/download/mpc-1.0.3.tar.gz && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	PATH=/tools/bin:/bin:/usr/bin && \
 	curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 > \
-                /download/binutils-2.25.1.tar.bz2 && \
+		/download/binutils-2.25.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
-	cd gcc-5.2.0 && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	mv -f mpfr-3.1.3 mpfr && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	mv -f gmp-6.0.0 gmp && \
-	tar xf /download/mpc-1.0.3.tar.gz && \
-	mv -f mpc-1.0.3 mpc && \
-#	tar xf /download/binutils-2.25.1.tar.bz2 && \
-#	mv -f binutils-2.25.1 binutils && \
-	bash /build/gcc-bootstrap-assets/fix-paths.sh && \
-	mkdir -p /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/base-files_*.deb /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/libc-bootstrap_*.deb /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/libc-devel-bootstrap_*.deb /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/glibc-bin-bootstrap_*.deb /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/libz-bootstrap_*.deb /build/gcc-sysroot && \
-	dpkg-deb -x /build/deb/libz-devel-bootstrap_*.deb /build/gcc-sysroot && \
-
-	mkdir -p ../gcc-build && \
-	cd ../gcc-build && \
-	../gcc-5.2.0/configure \
-		--prefix=/usr --with-glibc-version=2.22 \
-		--with-sysroot=/build/gcc-sysroot --with-newlib \
-		--with-native-system-header-dir=/usr/include --disable-nls \
-		--disable-multilib --disable-decimal-float --disable-threads \
-		--disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp \
-		--disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx \
-		--enable-languages=c,c++
-
-# do compile in a separate instance for now so we can debug more easily
-RUN \
-	set -xe && \
-	export LC_ALL=POSIX && \
-	cd /build/gcc-build && \
+	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	mkdir binutils-build && \
+	cd binutils-build && \
+	../binutils-2.25.1/configure \
+		--prefix=/tools --with-sysroot=/tools --with-lib-path=/tools/lib \
+		--target="$TARGET_PLATFORM" --disable-nls --disable-werror && \
 	MAKE="make -j4" make && \
+	mkdir -p /tools/lib && \
+	ln -sv lib /tools/lib64 && \
+	make install && \
+	cd /build && \
+	rm -rf binutils-2.25.1 binutils-build
 
-#	mkdir -p /build/gcc-root && \
-#	make DESTDIR=/build/gcc-root-bootstrap make install && \
-#	cd /build/gcc-root-bootstrap && \
-#
-#	find -type d | sort > /build/files-gcc-bootstrap && \
-#	echo "" >> /build/files-gcc-bootstrap && \
-#	find -not -type d | sort >> /build/files-gcc-bootstrap
-	
+
+# gcc (stage 1)
+
+
 CMD ["/bin/bash"]
