@@ -270,6 +270,9 @@ RUN \
 # busybox
 RUN \
 	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
         curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
                 /download/busybox-1.23.2.tar.bz2 && \
 	cd /build && \
@@ -279,7 +282,6 @@ RUN \
 		CONFIG_AR \
 		CONFIG_FEATURE_AR_LONG_FILENAMES \
 		CONFIG_FEATURE_AR_CREATE \
-		CONFIG_STATIC \
 		CONFIG_DPKG \
 		CONFIG_DPKG_DEB' && \
 	make defconfig && \
@@ -302,5 +304,78 @@ RUN \
 	chmod 4755 /tools/bin/busybox && \
 	cd /build && \
 	rm -rf busybox-1.23.2
+
+# make
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	curl -ksSL http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 > \
+		/download/make-4.1.tar.bz2 && \
+        cd /build && \
+	tar xf /download/make-4.1.tar.bz2 && \
+	cd make-4.1 && \
+	./configure --prefix=/tools --without-guile && \
+	MAKE="make -j4" make && \
+	make install && \
+	cd /build && \
+	rm -rf make-4.1
+
+# bash
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	curl -ksSL http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz > \
+		/download/bash-4.3.30.tar.gz && \
+	curl ksSL http://www.linuxfromscratch.org/patches/lfs/systemd/bash-4.3.30-upstream_fixes-2.patch > \
+		/download/bash-4.3.30-upstream_fixes-2.patch && \
+	cd /build && \
+	tar xf /download/bash-4.3.30.tar.gz && \
+	cd bash-4.3.30 && \
+	./configure --prefix=/tools --without-bash-malloc && \
+	MAKE="make -j4" && \
+	make install && \
+	ln -sfv bash /tools/bin/sh && \
+	cd /build && \
+	rm -rf bash-4.3.30
+
+# gawk
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	curl -ksSL http://ftp.gnu.org/gnu/gawk/gawk-4.1.3.tar.xz > \
+		/download/gawk-4.1.3.tar.xz && \
+	cd /build && \
+	tar xf /download/gawk-4.1.3.tar.xz && \
+	cd gawk-4.1.3 && \
+	./configure --prefix=/tools && \
+	MAKE="make -j4" make && \
+	make install && \
+	cd /build &&  \
+	rm -rf gawk-4.1.3
+
+# cleanup
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	((strip --strip-debug /tools/lib/* && \
+	/usr/bin/strip --strip-unneeded /tools/bin/* /tools/sbin/*) || /bin/true) && \
+	rm -rf /tools/info /tools/man /tools/doc /tools/share/info /tools/share/man /tools/share/doc
+		
+#diagnostics
+RUN \
+	cp -a /chroot/. /build/root/. && \
+	cd /build/root/ && \
+	ln -sf usr/bin bin && \
+	ln -sf usr/sbin sbin && \
+	mkdir -p proc dev dev/pts dev/shm tmp sys && \
+	chmod 1777 tmp
 
 CMD ["/bin/bash"]
