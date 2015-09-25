@@ -230,7 +230,6 @@ RUN \
 
 # gcc (stage 2)
 ADD tools-resources/gcc-fix-paths.sh /build/gcc-fix-paths.sh
-ADD tools-resources/gcc-pass2-make-limits-h.sh /build/gcc-pass2-make-limits-h.sh
 RUN \
 	set -xe && \
 	umask 022 && \
@@ -239,7 +238,8 @@ RUN \
 	cd /build && \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	cd gcc-5.2.0 && \
-	bash /build/gcc-pass2-make-limits-h.sh && \
+	cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+		$(dirname $($TARGET_PLATFORM-gcc -print-libgcc-file-name))/include-fixed/limits.h && \
 	bash /build/gcc-fix-paths.sh && \
 	tar xf /download/mpfr-3.1.3.tar.xz && \
 	mv -f mpfr-3.1.3 mpfr && \
@@ -247,7 +247,6 @@ RUN \
 	mv -f gmp-6.0.0 gmp && \
 	tar xf /download/mpc-1.0.3.tar.gz && \
 	mv -f mpc-1.0.3 mpc && \
-	bash /build/gcc-fix-paths.sh && \
 	mkdir -p /build/gcc-build && \
 	cd ../gcc-build && \
 	CC=$TARGET_PLATFORM-gcc \
@@ -259,7 +258,7 @@ RUN \
 		--with-native-system-header-dir=/tools/include \
 		--enable-languages=c,c++ --disable-libstdcxx-pch \
 		--disable-multilib --disable-bootstrap --disable-libgomp && \
-	MAKE="make -j4" && \
+	MAKE="make -j4" make && \
 	make install && \
 	ln -sv gcc /tools/bin/cc && \
 	echo 'main(){}' > dummy.c && \
