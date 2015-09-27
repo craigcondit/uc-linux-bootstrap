@@ -12,7 +12,7 @@ time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 	bash -c "tar cC /build/root . > /output/stage1.tar"
 time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 	bash -c "tar cC /chroot/tools . > /output/stage1-tools.tar"
-time docker run --rm=true -v "$(pwd)/../packages":/output:rw insideo/uc-stage0 \
+time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 	bash -c "tar cC /build/deb . > /output/stage1-packages.tar"
 
 cd ..
