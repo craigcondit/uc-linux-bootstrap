@@ -373,4 +373,120 @@ RUN \
 	/usr/bin/strip --strip-unneeded /tools/bin/* /tools/sbin/*) || /bin/true) && \
 	rm -rf /tools/info /tools/man /tools/doc /tools/share/info /tools/share/man /tools/share/doc
 		
+# openssl-bootstrap libssl-bootstrap libssl-devel-bootstrap
+ADD control/libssl-bootstrap /build/control/libssl-bootstrap
+ADD control/libssl-devel-bootstrap /build/control/libssl-devel-bootstrap
+ADD control/openssl-bootstrap /build/control/openssl-bootstrap
+RUN \
+	set -xe && \
+	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
+		/download/openssl-1.0.2d.tar.gz && \
+	cd /build && \
+	tar xf /download/openssl-1.0.2d.tar.gz && \
+	cd openssl-1.0.2d && \
+	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
+	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
+	make && \
+	mkdir -p /build/openssl-root && \
+	make INSTALL_PREFIX=/build/openssl-root install && \
+	cd /build/openssl-root && \
+	rm -rf etc/ssl/man && \
+	(strip usr/bin/* usr/lib/* usr/lib/*/* || /bin/true) && \
+	find -type d | sort > /build/files-openssl && \
+        echo "" >> /build/files-openssl && \
+        find -not -type d | sort >> /build/files-openssl && \
+
+	cp -a /build/openssl-root /build/libssl-bootstrap-root && \
+	cd /build/libssl-bootstrap-root && \
+	rm -rf etc usr/bin usr/include usr/lib/pkgconfig && \
+	find -type d | sort > /build/files-libssl-bootstrap && \
+        echo "" >> /build/files-libssl-bootstrap && \
+        find -not -type d | sort >> /build/files-libssl-bootstrap && \
+	/build/root/usr/bin/make-deb \
+                /build/libssl-bootstrap-deb \
+                /build/libssl-bootstrap-root \
+                /build/control/libssl-bootstrap \
+                /build/deb/libssl-bootstrap_1.0.2d-0_amd64.deb && \
+
+	cp -a /build/openssl-root /build/libssl-devel-bootstrap-root && \
+	cd /build/libssl-devel-bootstrap-root && \
+	rm -rf etc usr/bin usr/lib/engines && \
+	rm -f usr/lib/lib*  && \
+	find -type d | sort > /build/files-libssl-devel-bootstrap && \
+        echo "" >> /build/files-libssl-devel-bootstrap && \
+        find -not -type d | sort >> /build/files-libssl-devel-bootstrap && \
+	/build/root/usr/bin/make-deb \
+                /build/libssl-devel-bootstrap-deb \
+                /build/libssl-devel-bootstrap-root \
+                /build/control/libssl-devel-bootstrap \
+                /build/deb/libssl-devel-bootstrap_1.0.2d-0_amd64.deb && \
+
+	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
+	cd /build/openssl-bootstrap-root && \
+	rm -rf usr/include usr/lib && \
+	find -type d | sort > /build/files-openssl-bootstrap && \
+        echo "" >> /build/files-openssl-bootstrap && \
+        find -not -type d | sort >> /build/files-openssl-bootstrap && \
+	/build/root/usr/bin/make-deb \
+                /build/openssl-bootstrap-deb \
+                /build/openssl-bootstrap-root \
+                /build/control/openssl-bootstrap \
+                /build/deb/openssl-bootstrap_1.0.2d-0_amd64.deb && \
+
+	cd /build && \
+	rm -rf control/libssl-bootstrap control/libssl-devel-bootstrap control/openssl-bootstrap \
+		openssl-1.0.2d openssl-root libssl-bootstrap-root libssl-devel-bootstrap-root \
+		openssl-bootstrap-root
+	
+# busybox
+ADD control/busybox-bootstrap /build/control/busybox-bootstrap
+RUN \
+	set -xe && \
+        curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
+                /download/busybox-1.23.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/busybox-1.23.2.tar.bz2 && \
+	cd busybox-1.23.2 && \
+	confs=' \
+		CONFIG_AR \
+		CONFIG_FEATURE_AR_LONG_FILENAMES \
+		CONFIG_FEATURE_AR_CREATE \
+		CONFIG_DPKG \
+		CONFIG_DPKG_DEB' && \
+	make defconfig && \
+	for conf in $confs; do \
+		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
+		grep -q "^$conf=y" .config || echo "$conf=y" >> .config; \
+	done && \
+	make oldconfig && \
+	for conf in $confs; do grep -q "^$conf=y" .config; done && \
+	MAKE="make -j4" make && \
+	make install && \
+	rm -f _install/linuxrc && \
+	mkdir -p /build/busybox-bootstrap-root && \
+	cp -an _install/* /build/busybox-bootstrap-root/ && \
+	chmod 4755 /build/busybox-bootstrap-root/bin/busybox && \
+	cd /build/busybox-bootstrap-root && \
+	find -type d | sort > /build/files-busybox-bootstrap && \
+	echo "" >> /build/files-busybox-bootstrap && \
+	find -not -type d | sort >> /build/files-busybox-bootstrap && \
+	/build/root/usr/bin/make-deb \
+		/build/busybox-bootstrap-deb \
+		/build/busybox-bootstrap-root \
+		/build/control/busybox-bootstrap \
+		/build/deb/busybox-bootstrap_1.23.2-0_amd64.deb && \
+	cd /build/busybox-1.23.2 && \
+	make clean && \
+	sed -i '/CONFIG_STATIC/d' .config && \
+	echo "CONFIG_STATIC=y" >> .config && \
+	make oldconfig && \
+	MAKE="make -j4" make && \
+	make install && \
+	install -d -m 0755 /build/root/bin && \
+	cp _install/bin/busybox /build/root/bin/ash && \
+	ln -sf ash /build/root/bin/sh && \
+	cp _install/bin/busybox /build/root/usr/bin/dpkg && \
+	cd /build && \
+	rm -rf control/busybox-bootstrap busybox-1.23.2 busybox-bootstrap-root
+
 CMD ["/bin/bash"]
