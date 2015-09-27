@@ -1,0 +1,10 @@
+Package: linux-devel
+Source: linux
+Version: 4.2.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files
+Description: Linux kernel development headers
+Section: devel
+Priority: optional
+Build-Essential: true
