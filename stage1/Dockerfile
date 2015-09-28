@@ -55,7 +55,8 @@ RUN \
 		/control/linux-devel \
 		/packages/linux-devel_4.2.1-0_amd64.deb && \
 	cd / && \
-	rm -rf /build/* /download/* /control/*
+	rm -rf /build/* /download/* /control/* && \
+	dpkg -i /packages/linux-devel_*.deb && \
 
 # glibc-bootstrap
 ADD control/libc-bootstrap /control/libc-bootstrap
@@ -66,7 +67,6 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	dpkg -i /packages/linux-devel_*.deb && \
 	wget -O /download/glibc-2.22.tar.xz \
 		http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz && \
 	wget -O /download/glibc-2.22-fhs-1.patch \
@@ -164,22 +164,20 @@ RUN \
 		/build/libc-devel-bootstrap-root \
 		/control/libc-devel-bootstrap \
 		/packages/libc-devel-bootstrap_2.22-0_amd64.deb && \
-	cd /build && \
-	rm -rf glibc-2.22 glibc-build glibc-root linux-include && \
-	rm -rf control/libc-bootstrap control/glibc-bin-bootstrap control/libc-devel-bootstrap && \
-	rm -rf libc-bootstrap-root glibc-bin-bootstrap-root libc-devel-bootstrap-root
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/linux-devel_*.deb && \
+	dpkg -i /packages/libc-bootstrap_*.deb && \
+	dpkg -i /packages/glibc-bin-bootstrap_*.deb && \
+	dpkg -i /packages/libc-devel-bootstrap_*.deb && \
 
-# install bootstrap packages and fix toolchain
+# fixup toolchain
 RUN \
 	set -xe && \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	dpkg --force-depends -i /packages/linux-devel_*.deb && \
-	dpkg -i /packages/libc-bootstrap_*.deb && \
-	dpkg -i /packages/glibc-bin-bootstrap_*.deb && \
-	dpkg -i /packages/libc-devel-bootstrap_*.deb && \
 	mv -v /tools/bin/{ld,ld-old} && \
 	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
 	mv -v /tools/bin/{ld-new,ld} && \
