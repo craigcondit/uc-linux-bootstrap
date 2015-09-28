@@ -55,6 +55,125 @@ RUN \
 		/control/linux-devel \
 		/packages/linux-devel_4.2.1-0_amd64.deb && \
 	cd / && \
-	rm -rf /build/* /download/* /control/*	
+	rm -rf /build/* /download/* /control/*
 
+# glibc-bootstrap
+ADD control/libc-bootstrap /control/libc-bootstrap
+ADD control/glibc-bin-bootstrap /control/glibc-bin-bootstrap
+ADD control/libc-devel-bootstrap /control/libc-devel-bootstrap
+RUN \
+	set -xe && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	dpkg -i /packages/linux-devel_*.deb && \
+	wget -O /download/glibc-2.22.tar.xz \
+		http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz && \
+	wget -O /download/glibc-2.22-fhs-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-fhs-1.patch && \
+	wget -O /download/glibc-2.22-upstream_i386_fix-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-upstream_i386_fix-1.patch && \
+	cd /build && \
+	tar xf /download/glibc-2.22.tar.xz && \
+	cd glibc-2.22 && \
+	patch -Np1 -i /download/glibc-2.22-fhs-1.patch && \
+	patch -Np1 -i /download/glibc-2.22-upstream_i386_fix-1.patch && \
+	mkdir -p ../glibc-build && \
+	cd ../glibc-build && \
+	../glibc-2.22/configure \
+		--prefix=/usr --disable-profile --enable-kernel=2.6.32\
+		--enable-obsolete-rpc && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/glibc-root/etc && \
+	touch /build/glibc-root/etc/ld.so.conf && \
+	make install_root=/build/glibc-root install && \
+	rm -f /build/glibc-root/etc/ld.so.conf && \
+	mkdir -p /build/glibc-root/usr/lib/locale && \
+	I18NPATH=/build/glibc-2.22/localedata \
+	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
+		-i ../glibc-2.22/localedata/locales/en_US -c \
+		-f ../glibc-2.22/localedata/charmaps/ISO-8859-1 \
+		--prefix=/build/glibc-root en_US && \
+	I18NPATH=/build/glibc-2.22/localedata \
+	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
+		-i ../glibc-2.22/localedata/locales/en_US -c \
+		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
+		--prefix=/build/glibc-root en_US && \
+	(strip \
+	/build/glibc-root/sbin/* \
+	/build/glibc-root/lib64/* \
+	/build/glibc-root/usr/bin/* \
+	/build/glibc-root/usr/sbin/* \
+	/build/glibc-root/usr/lib64/* \
+	/build/glibc-root/usr/lib64/*/* || /bin/true) && \
+	cd /build/glibc-root && \
+	rm -f etc/ld.so.cache && \
+	rm -rf usr/share/locale && \
+	rm -rf usr/lib64/gconv && \
+	rm -rf usr/libexec/getconf && \
+	rm -rf usr/libexec && \
+	rm -rf usr/lib/locale && \
+	rm -rf usr/share/i18n && \
+	rm -f etc/rpc sbin/sln && \
+	rm -rf var && \
+	cp -a /build/glibc-root /build/libc-bootstrap-root && \
+	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
+	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
+
+	cd /build/libc-bootstrap-root && \
+	cd usr/bin && \
+	find -not -name ldd -delete && \
+	cd ../.. && \
+	rm -rf etc && \
+	rm -rf usr/sbin && \
+	rm -rf usr/lib && \
+	rm -rf usr/share && \
+	rm -rf usr/include && \
+	find . -name "*.a" -delete && \
+	find . -name "*.o" -delete && \
+	make-deb \
+		/build/libc-bootstrap-deb \
+		/build/libc-bootstrap-root \
+		/control/libc-bootstrap \
+		/packages/libc-bootstrap_2.22-0_amd64.deb && \
+
+	cd /build/glibc-bin-bootstrap-root && \
+	cd usr/bin && \
+	find -name ldd -delete && \
+	cd ../.. && \
+	rm -rf etc && \
+	rm -rf usr/lib && \
+	rm -rf usr/lib64 && \
+	rm -rf usr/share && \
+	rm -rf usr/include && \
+	rm -rf lib64 sbin usr/lib64/audit && \
+	find . -name "*.a" -delete && \
+	find . -name "*.o" -delete && \
+	make-deb \
+		/build/glibc-bin-bootstrap-deb \
+		/build/glibc-bin-bootstrap-root \
+		/control/glibc-bin-bootstrap \
+		/packages/glibc-bin-bootstrap_2.22-0_amd64.deb && \
+
+	cd /build/libc-devel-bootstrap-root && \
+	rm -rf etc lib64 sbin usr/bin usr/lib64/audit usr/share usr/sbin usr/lib && \
+	find . -name "*.so" -delete && \
+	find . -name "*.o" -delete && \
+	make-deb \
+		/build/libc-devel-bootstrap-deb \
+		/build/libc-devel-bootstrap-root \
+		/control/libc-devel-bootstrap \
+		/packages/libc-devel-bootstrap_2.22-0_amd64.deb && \
+	cd /build && \
+	rm -rf glibc-2.22 glibc-build glibc-root linux-include && \
+	rm -rf control/libc-bootstrap control/glibc-bin-bootstrap control/libc-devel-bootstrap && \
+	rm -rf libc-bootstrap-root glibc-bin-bootstrap-root libc-devel-bootstrap-root
+
+
+
+
+
+
+
+	
 CMD ["/bin/sh"]
