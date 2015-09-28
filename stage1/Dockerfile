@@ -165,14 +165,15 @@ RUN \
 		/control/libc-devel-bootstrap \
 		/packages/libc-devel-bootstrap_2.22-0_amd64.deb && \
 	cd / && \
-	rm -rf /build/* /download/* /control/* && \
+	rm -rf /build/* /download/* /control/*
+
+# install new packages and fixup toolchain
+RUN \
 	dpkg --force-depends -i /packages/linux-devel_*.deb && \
 	dpkg -i /packages/libc-bootstrap_*.deb && \
 	dpkg -i /packages/glibc-bin-bootstrap_*.deb && \
 	dpkg -i /packages/libc-devel-bootstrap_*.deb && \
 
-# fixup toolchain
-RUN \
 	set -xe && \
 	set +h && \
 	umask 022 && \
