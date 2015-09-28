@@ -56,7 +56,7 @@ RUN \
 		/packages/linux-devel_4.2.1-0_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
-	dpkg -i /packages/linux-devel_*.deb && \
+	dpkg -i /packages/linux-devel_*.deb
 
 # glibc-bootstrap
 ADD control/libc-bootstrap /control/libc-bootstrap
