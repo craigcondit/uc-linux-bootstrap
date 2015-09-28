@@ -9,9 +9,9 @@ setfacl -m "default:group::rw" ../stage1 ../packages || /bin/true
 
 time docker build -t insideo/uc-stage0 --pull .
 time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
-	bash -c "tar cC /build/root . > /output/stage1.tar"
+	bash -c "tar cC /build/root . | xz -1 > /output/stage1.tar.xz"
 time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
-	bash -c "tar cC /chroot/tools . > /output/stage1-tools.tar"
+	bash -c "tar cC /chroot/tools . | xz -1 > /output/stage1-tools.tar.xz"
 time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 	bash -c "tar cC /build/deb . > /output/stage1-packages.tar"
 
