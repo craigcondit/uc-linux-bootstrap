@@ -105,7 +105,7 @@ RUN \
 	/build/glibc-root/usr/bin/* \
 	/build/glibc-root/usr/sbin/* \
 	/build/glibc-root/usr/lib64/* \
-	/build/glibc-root/usr/lib64/*/* || /bin/true) && \
+	/build/glibc-root/usr/lib64/*/* || true) && \
 	cd /build/glibc-root && \
 	rm -f etc/ld.so.cache && \
 	rm -rf usr/share/locale && \
@@ -169,11 +169,12 @@ RUN \
 	rm -rf control/libc-bootstrap control/glibc-bin-bootstrap control/libc-devel-bootstrap && \
 	rm -rf libc-bootstrap-root glibc-bin-bootstrap-root libc-devel-bootstrap-root
 
+# install linux-headers glibc to root
+RUN \
+	set -xe && \
+	dpkg --force-depends -i /packages/linux-devel_*.deb && \
+	dpkg -i /packages/libc-bootstrap_*.deb && \
+	dpkg -i /packages/glibc-bin-bootstrap_*.deb && \
+	dpkg -i /packages/libc-devel-bootstrap_*.deb
 
-
-
-
-
-
-	
 CMD ["/bin/sh"]

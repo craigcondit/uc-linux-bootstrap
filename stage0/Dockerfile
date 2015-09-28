@@ -23,7 +23,7 @@ RUN \
 	set -xe && \
 	umask 022 && \
 	cd /build/base-files-root && \
-	install -d -m 755 usr/lib && \
+	install -d -m 755 usr/lib usr/sbin && \
 	ln -sf usr/lib lib && \
 	ln -sf lib usr/lib64 && \
 	ln -sf usr/lib lib64 && \
