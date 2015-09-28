@@ -360,19 +360,26 @@ RUN \
 	./configure --prefix=/tools && \
 	MAKE="make -j4" make && \
 	make install && \
-	cd /build &&  \
+	cd /build && \
 	rm -rf gawk-4.1.3
 
-# cleanup
+# sed
 RUN \
 	set -xe && \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-	((strip --strip-debug /tools/lib/* && \
-	/usr/bin/strip --strip-unneeded /tools/bin/* /tools/sbin/*) || /bin/true) && \
-	rm -rf /tools/info /tools/man /tools/doc /tools/share/info /tools/share/man /tools/share/doc
-		
+	curl -ksSL http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.bz2 > \
+		/download/sed-4.2.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/sed-4.2.2.tar.bz2 && \
+	cd sed-4.2.2 && \
+	./configure --prefix=/tools && \
+	MAKE="make -j4" make && \
+	make install && \
+	cd /build && \
+	rm -rf sed-4.2.2
+
 # openssl
 RUN \
 	set -xe && \
@@ -392,4 +399,14 @@ RUN \
 	cd /build && \
 	rm -rf openssl-1.0.2d
 
+# cleanup
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	((strip --strip-debug /tools/lib/* && \
+	/usr/bin/strip --strip-unneeded /tools/bin/* /tools/sbin/*) || /bin/true) && \
+	rm -rf /tools/info /tools/man /tools/doc /tools/share/info /tools/share/man /tools/share/doc
+		
 CMD ["/bin/bash"]

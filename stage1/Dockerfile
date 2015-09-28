@@ -169,27 +169,27 @@ RUN \
 
 # install new packages and fixup toolchain
 RUN \
-	dpkg --force-depends -i /packages/linux-devel_*.deb && \
-	dpkg -i /packages/libc-bootstrap_*.deb && \
-	dpkg -i /packages/glibc-bin-bootstrap_*.deb && \
-	dpkg -i /packages/libc-devel-bootstrap_*.deb && \
-
-	set -xe && \
+	set -x && \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	dpkg --force-depends -i /packages/linux-devel_*.deb && \
+	dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/glibc-bin-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb && \
 	mv -v /tools/bin/{ld,ld-old} && \
 	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
 	mv -v /tools/bin/{ld-new,ld} && \
 	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld && \
-	gcc -dumpspecs | sed -e 's@/tools@@g' \
-		-e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \
-		-e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
+	gcc -dumpspecs | \
+		sed 's@/tools@@g' | \
+		sed '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' | \
+		sed '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
 		`dirname $(gcc --print-libgcc-file-name)`/specs && \
 	cd /build && \
 	echo 'main(){}' > dummy.c && \
-	cc dummy.c -v -Wl,--erbose &> dummy.log && \
+	cc dummy.c -v -Wl,--verbose &> dummy.log && \
 	readelf -l a.out | grep ': /lib' && \
 	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
 	grep -B1 '^ /usr/include' dummy.log && \
