@@ -501,4 +501,51 @@ RUN \
 	dpkg --force-depends -i /packages/libmpfr-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/libmpfr-devel-bootstrap_*.deb
 
+# libmpc-bootstrap, libmpc-devel-bootstrap
+# http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz
+ADD control/libmpc-bootstrap /control/libmpc-bootstrap
+ADD control/libmpc-devel-bootstrap /control/libmpc-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/mpc-1.0.3.tar.gz \
+		http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz && \
+	cd /build && \
+	tar xf /download/mpc-1.0.3.tar.gz && \
+	cd mpc-1.0.3 && \
+	./configure --prefix=/usr --disable-static && \
+	MAKE="make -j4" make && \
+	pre-root /build/mpc-root && \
+	make DESTDIR=/build/mpc-root install && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	post-root /build/mpc-root && \
+
+	cp -a /build/mpc-root /build/libmpc-bootstrap-root && \
+	cd /build/libmpc-bootstrap-root && \
+	rm -rf usr/include && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libmpc-bootstrap-deb \
+		/build/libmpc-bootstrap-root \
+		/control/libmpc-bootstrap \
+		/packages/libmpc-bootstrap_1.0.3-0_amd64.deb && \
+
+	cp -a /build/mpc-root /build/libmpc-devel-bootstrap-root && \
+	cd /build/libmpc-devel-bootstrap-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libmpc-devel-bootstrap-deb \
+		/build/libmpc-devel-bootstrap-root \
+		/control/libmpc-devel-bootstrap \
+		/packages/libmpc-devel-bootstrap_1.0.3-0_amd64.deb && \
+
+	cd / && \
+        rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/libmpc-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libmpc-devel-bootstrap_*.deb
+
 CMD ["/bin/sh"]
