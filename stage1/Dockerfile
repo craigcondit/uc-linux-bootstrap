@@ -39,7 +39,6 @@ RUN \
 	set -xe && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/linux-4.2.1.tar.xz -c \
 		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz && \
 	cd /build && \
@@ -68,7 +67,6 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/glibc-2.22.tar.xz \
 		http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz && \
 	wget -O /download/glibc-2.22-fhs-1.patch \
@@ -169,7 +167,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	dpkg --force-depends -i /packages/linux-devel_*.deb && \
 	dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/glibc-bin-bootstrap_*.deb && \
@@ -304,7 +301,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/binutils-2.25.1.tar.bz2 \
 		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
 	cd /build && \
@@ -312,7 +308,6 @@ RUN \
 	mkdir binutils-build && \
 	cd binutils-build && \
 	../binutils-2.25.1/configure \
-		--target="${TARGET_PLATFORM}" \
 		--prefix=/usr --enable-shared --disable-werror && \
 	MAKE="make -j4" make tooldir=/usr && \
 	pre-root /build/binutils-root && \
@@ -353,7 +348,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/m4-1.4.17.tar.xz \
 		http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz && \
 	cd /build && \
@@ -384,7 +378,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/gmp-6.0.0a.tar.xz \
 		http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz && \
 	cd /build && \
@@ -430,7 +423,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/patch-2.7.5.tar.xz \
 		http://ftp.gnu.org/gnu/patch/patch-2.7.5.tar.xz && \
 	cd /build && \
@@ -461,7 +453,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/mpfr-3.1.3.tar.xz \
 		http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz && \
 	wget -O /download/mpfr-3.1.3-upstream_fixes-1.patch \
@@ -511,7 +502,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/mpc-1.0.3.tar.gz \
 		http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz && \
 	cd /build && \
@@ -556,7 +546,6 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/gcc-5.2.0.tar.bz2 \
 		http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 && \
 	cd /build && \
@@ -565,7 +554,6 @@ RUN \
 	cd gcc-build && \
 	SED=sed ../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
-		--target="${TARGET_PLATFORM}" \
 		--disable-bootstrap --with-system-zlib && \
 	MAKE="make -j4" make
 
