@@ -1,0 +1,11 @@
+Package: libmpc-bootstrap
+Source: mpc
+Version: 1.0.3-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libmpc
+Conflicts: libmpc
+Requires: base-files, libc
+Description: multiple precision complex floating-point library
+Section: libs
+Priority: extra
