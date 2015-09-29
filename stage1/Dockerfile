@@ -202,14 +202,13 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/zlib-1.2.8.tar.xz \	
 		http://www.zlib.net/zlib-1.2.8.tar.xz && \
 	cd /build && \
 	tar xf /download/zlib-1.2.8.tar.xz && \
 	cd /build/zlib-1.2.8 && \
-	./configure --prefix=/usr && \
-	make && \
+	CFLAGS='-mstackrealign -fPIC -O3' ./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
 	pre-root /build/zlib-root && \
 	make DESTDIR=/build/zlib-root install && \
 	cd /build/zlib-root && \
@@ -250,12 +249,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/file-5.24.tar.gz \
-		ftp://ftp.astron.com/pub/file/file-5.24.tar.gz && \
+	wget -O /download/file-5.25.tar.gz \
+		ftp://ftp.astron.com/pub/file/file-5.25.tar.gz && \
 	cd /build && \
-	tar xf /download/file-5.24.tar.gz && \
-	cd file-5.24 && \
+	tar xf /download/file-5.25.tar.gz && \
+	cd file-5.25 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
 	pre-root /build/file-root && \
@@ -273,7 +271,7 @@ RUN \
 		/build/file-bootstrap-deb \
 		/build/file-bootstrap-root \
 		/control/file-bootstrap \
-		/packages/file-bootstrap_5.24-0_amd64.deb && \
+		/packages/file-bootstrap_5.25-0_amd64.deb && \
 
 	cp -a /build/file-root /build/libmagic-bootstrap-root && \
 	cd /build/libmagic-bootstrap-root && \
@@ -283,7 +281,7 @@ RUN \
 		/build/libmagic-bootstrap-deb \
 		/build/libmagic-bootstrap-root \
 		/control/libmagic-bootstrap \
-		/packages/libmagic-bootstrap_5.24-0_amd64.deb && \
+		/packages/libmagic-bootstrap_5.25-0_amd64.deb && \
 
 	cp -a /build/file-root /build/libmagic-devel-bootstrap-root && \
 	cd /build/libmagic-devel-bootstrap-root && \
@@ -292,7 +290,7 @@ RUN \
 		/build/libmagic-devel-bootstrap-deb \
 		/build/libmagic-devel-bootstrap-root \
 		/control/libmagic-devel-bootstrap \
-		/packages/libmagic-devel-bootstrap_5.24-0_amd64.deb && \
+		/packages/libmagic-devel-bootstrap_5.25-0_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \

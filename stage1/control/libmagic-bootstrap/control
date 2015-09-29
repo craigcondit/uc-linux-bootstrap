@@ -1,6 +1,6 @@
 Package: libmagic-bootstrap
 Source: file
-Version: 5.24-0
+Version: 5.25-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libmagic
