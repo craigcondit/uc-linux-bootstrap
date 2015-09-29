@@ -43,12 +43,14 @@ RUN \
 	wget -O /download/linux-4.2.1.tar.xz -c \
 		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz && \
 	cd /build && \
+	pre-root destroot && \
 	mkdir -p destroot/usr/include && \
 	tar xf /download/linux-4.2.1.tar.xz && \
 	cd linux-4.2.1 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
 	cp -rv dest/include/* /build/destroot/usr/include && \
+	post-root /build/destroot && \
 	make-deb \
 		/build/linux-devel-deb \
 		/build/destroot \
@@ -84,6 +86,7 @@ RUN \
 		--prefix=/usr --disable-profile --enable-kernel=2.6.32\
 		--enable-obsolete-rpc && \
 	MAKE="make -j4" make && \
+	pre-root /build/glibc-root && \
 	mkdir -p /build/glibc-root/etc && \
 	touch /build/glibc-root/etc/ld.so.conf && \
 	make install_root=/build/glibc-root install && \
@@ -104,17 +107,16 @@ RUN \
 	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true) && \
 	rm -f etc/ld.so.cache && \
 	rm -rf usr/share/locale && \
-	rm -rf usr/lib64/gconv && \
+	rm -rf usr/lib/gconv && \
 	rm -rf usr/libexec/getconf && \
 	rm -rf usr/libexec && \
 	rm -rf usr/lib/locale && \
 	rm -rf usr/share/i18n && \
-	rm -f etc/rpc sbin/sln && \
+	rm -f etc/rpc usr/sbin/sln && \
 	rm -rf var && \
-	cp -a /build/glibc-root /build/libc-bootstrap-root && \
-	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
-	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
+	post-root /build/glibc-root && \
 
+	cp -a /build/glibc-root /build/libc-bootstrap-root && \
 	cd /build/libc-bootstrap-root && \
 	cd usr/bin && \
 	find -not -name ldd -delete && \
@@ -132,16 +134,16 @@ RUN \
 		/control/libc-bootstrap \
 		/packages/libc-bootstrap_2.22-0_amd64.deb && \
 
+	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
 	cd /build/glibc-bin-bootstrap-root && \
 	cd usr/bin && \
 	find -name ldd -delete && \
 	cd ../.. && \
 	rm -rf etc && \
 	rm -rf usr/lib && \
-	rm -rf usr/lib64 && \
 	rm -rf usr/share && \
 	rm -rf usr/include && \
-	rm -rf lib64 sbin usr/lib64/audit && \
+	rm -rf usr/lib/audit && \
 	find . -name "*.a" -delete && \
 	find . -name "*.o" -delete && \
 	make-deb \
@@ -150,8 +152,9 @@ RUN \
 		/control/glibc-bin-bootstrap \
 		/packages/glibc-bin-bootstrap_2.22-0_amd64.deb && \
 
+	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
 	cd /build/libc-devel-bootstrap-root && \
-	rm -rf etc lib64 sbin usr/bin usr/lib64/audit usr/share usr/sbin usr/lib && \
+	rm -rf etc usr/bin usr/share usr/sbin usr/lib && \
 	find . -name "*.so" -delete && \
 	make-deb \
 		/build/libc-devel-bootstrap-deb \
@@ -208,17 +211,18 @@ RUN \
 	cd /build/zlib-1.2.8 && \
 	./configure --prefix=/usr && \
 	make && \
-	mkdir -p /build/zlib-root && \
+	pre-root /build/zlib-root && \
 	make DESTDIR=/build/zlib-root install && \
 	cd /build/zlib-root && \
 	rm -rf usr/share && \
+	rm -f lib/libz.so && \
+	post-root /build/zlib-root && \
+
 	cp -a /build/zlib-root /build/libz-bootstrap-root && \
 	cd /build/libz-bootstrap-root && \
 	rm -rf usr/include usr/lib/pkgconfig && \
 	rm -f usr/lib/*.a && \
 	(strip --strip-debug usr/lib/*.so* || true) && \
-	rm -f lib/libz.so && \
-	mkdir -p usr/lib && \
 	make-deb \
 		/build/libz-bootstrap-deb \
 		/build/libz-bootstrap-root \
@@ -253,12 +257,13 @@ RUN \
 	cd file-5.24 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
-	mkdir -p /build/file-root && \
+	pre-root /build/file-root && \
 	make DESTDIR=/build/file-root install && \
 	cd /build/file-root && \
 	rm -rf usr/share/man && \
 	(strip --strip-unneeded usr/bin/* || true) && \
 	(strip --strip-debug usr/lib/*.so* || true) && \
+	post-root /build/file-root && \
 
 	cp -a /build/file-root /build/file-bootstrap-root && \
 	cd /build/file-bootstrap-root && \
@@ -308,12 +313,13 @@ RUN \
 	cd binutils-build && \
 	../binutils-2.25.1/configure --prefix=/usr --enable-shared --disable-werror && \
 	MAKE="make -j4" make tooldir=/usr && \
-	mkdir -p /build/binutils-root && \
+	pre-root /build/binutils-root && \
 	make DESTDIR=/build/binutils-root tooldir=/usr install && \
 	cd /build/binutils-root && \
 	rm -rf usr/share && \
 	(strip --strip-debug usr/lib/* || true) && \
 	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/binutils-root && \
 
 	cp -a /build/binutils-root /build/binutils-bootstrap-root && \
 	cd /build/binutils-bootstrap-root && \
@@ -354,11 +360,12 @@ RUN \
 	cd m4-1.4.17 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
-	mkdir -p /build/m4-bootstrap-root && \
+	pre-root /build/m4-bootstrap-root && \
 	make DESTDIR=/build/m4-bootstrap-root install && \
 	cd /build/m4-bootstrap-root && \
 	rm -rf usr/share && \
 	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/m4-bootstrap-root && \
 	make-deb \
 		/build/m4-bootstrap-deb \
 		/build/m4-bootstrap-root \
@@ -384,12 +391,13 @@ RUN \
 	cd gmp-6.0.0 && \
 	./configure --prefix=/usr --enable-cxx --disable-static && \
 	MAKE="make -j4" make && \
-	mkdir -p /build/gmp-root && \
+	pre-root /build/gmp-root && \
 	make DESTDIR=/build/gmp-root install && \
 	cd /build/gmp-root && \
 	rm -rf usr/share && \
 	(strip --strip-debug usr/lib/* || true) && \
-	
+	post-root /build/gmp-root && \
+
 	cp -a /build/gmp-root /build/libgmp-bootstrap-root && \
 	cd /build/libgmp-bootstrap-root && \
 	rm -rf usr/include && \
@@ -429,11 +437,12 @@ RUN \
 	cd patch-2.7.5 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
-	mkdir -p /build/patch-bootstrap-root && \
+	pre-root /build/patch-bootstrap-root && \
 	make DESTDIR=/build/patch-bootstrap-root install && \
 	cd /build/patch-bootstrap-root && \
 	rm -rf usr/share && \
 	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/patch-bootstrap-root && \
 	make-deb \
 		/build/patch-bootstrap-deb \
 		/build/patch-bootstrap-root \
@@ -462,11 +471,12 @@ RUN \
 	patch -Np1 -i /download/mpfr-3.1.3-upstream_fixes-1.patch && \
 	./configure --prefix=/usr --disable-static --enable-thread-safe && \
 	MAKE="make -j4" make && \
-	mkdir -p /build/mpfr-root && \
+	pre-root /build/mpfr-root && \
 	make DESTDIR=/build/mpfr-root install && \
 	cd /build/mpfr-root && \
 	rm -rf usr/share && \
 	(strip --strip-debug usr/lib/* || true) && \
+	post-root /build/mpfr-root && \
 
 	cp -a /build/mpfr-root /build/libmpfr-bootstrap-root && \
 	cd /build/libmpfr-bootstrap-root && \
