@@ -192,4 +192,48 @@ RUN \
 	grep found dummy.log && \
 	rm -v dummy.c a.out dummy.log
 
+# libz-bootstrap
+ADD control/libz-bootstrap /control/libz-bootstrap
+ADD control/libz-devel-bootstrap /control/libz-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/zlib-1.2.8.tar.xz \	
+		http://www.zlib.net/zlib-1.2.8.tar.xz && \
+	cd /build && \
+	tar xf /download/zlib-1.2.8.tar.xz && \
+	cd /build/zlib-1.2.8 && \
+	./configure --prefix=/usr && \
+	make && \
+	mkdir -p /build/zlib-root && \
+	make DESTDIR=/build/zlib-root install && \
+	cd /build/zlib-root && \
+	rm -rf usr/share && \
+	cp -a /build/zlib-root /build/libz-bootstrap-root && \
+	cd /build/libz-bootstrap-root && \
+	rm -rf usr/include usr/lib/pkgconfig && \
+	rm -f usr/lib/*.a && \
+	(strip --strip-debug usr/lib/*.so* || true) && \
+	rm -f lib/libz.so && \
+	mkdir -p usr/lib && \
+	make-deb \
+		/build/libz-bootstrap-deb \
+		/build/libz-bootstrap-root \
+		/control/libz-bootstrap \
+		/packages/libz-bootstrap_1.2.8-0_amd64.deb && \
+
+	cp -a /build/zlib-root /build/libz-devel-bootstrap-root && \
+	cd /build/libz-devel-bootstrap-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libz-devel-bootstrap-deb \
+		/build/libz-devel-bootstrap-root \
+		/control/libz-devel-bootstrap \
+		/packages/libz-devel-bootstrap_1.2.8-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/*
+
 CMD ["/bin/sh"]
