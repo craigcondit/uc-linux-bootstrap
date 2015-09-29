@@ -171,27 +171,25 @@ RUN \
 	dpkg --force-depends -i /packages/linux-devel_*.deb && \
 	dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/glibc-bin-bootstrap_*.deb && \
-	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb
+	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb && \
+	mv -v /tools/bin/{ld,ld-old} && \
+	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
+	mv -v /tools/bin/{ld-new,ld} && \
+	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld && \
+	gcc -dumpspecs | \
+		sed 's@/tools@@g' | \
+		sed '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' | \
+		sed '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
+		`dirname $(gcc --print-libgcc-file-name)`/specs && \
+	cd /build && \
+	echo 'main(){}' > dummy.c && \
+	cc dummy.c -v -Wl,--verbose &> dummy.log && \
+	readelf -l a.out | grep ': /lib' && \
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
+	grep -B1 '^ /usr/include' dummy.log && \
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' && \
+	grep "/lib.*/libc.so.6 " dummy.log && \
+	grep found dummy.log && \
+	rm -v dummy.c a.out dummy.log
 
-#RUN \
-#	mv -v /tools/bin/{ld,ld-old} && \
-#	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
-#	mv -v /tools/bin/{ld-new,ld} && \
-#	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld && \
-#	gcc -dumpspecs | \
-#		sed 's@/tools@@g' | \
-#		sed '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' | \
-#		sed '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
-#		`dirname $(gcc --print-libgcc-file-name)`/specs && \
-#	cd /build && \
-#	echo 'main(){}' > dummy.c && \
-#	cc dummy.c -v -Wl,--verbose &> dummy.log && \
-#	readelf -l a.out | grep ': /lib' && \
-#	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
-#	grep -B1 '^ /usr/include' dummy.log && \
-#	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' && \
-#	grep "/lib.*/libc.so.6 " dummy.log && \
-#	grep found dummy.log && \
-#	rm -v dummy.c a.out dummy.log
-
- vCMD ["/bin/sh"]
+CMD ["/bin/sh"]
