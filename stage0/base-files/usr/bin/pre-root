@@ -16,7 +16,7 @@ cd "${ROOT_DIR}"
 mkdir -p \
 	dev etc home proc root run sys tmp usr var \
 	usr/bin usr/lib usr/sbin \
-	var/cache var/lib var/lib/dpkg var/lock var/log var/run var/spool
+	var/cache var/lib var/lib/dpkg var/lock var/log var/spool
 
 ln -sf usr/bin bin
 ln -sf usr/lib lib64
