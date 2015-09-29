@@ -1,0 +1,12 @@
+Package: libgmp-bootstrap
+Source: gmp
+Version: 6.0.0a-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libgmp
+Conflicts: libgmp
+Requires: base-files, libc, libz
+Description: Multiprecision arithmetic library
+Section: libs
+Priority: optional
+Build-Essential: true

@@ -334,6 +334,82 @@ RUN \
 		/packages/binutils-devel-bootstrap_2.25.1-0_amd64.deb && \
 
 	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/binutils-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libmagic-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/file-bootstrap_*.deb
+
+# m4-bootstrap
+ADD control/m4-bootstrap /control/m4-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/m4-1.4.17.tar.xz \
+		http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz && \
+	cd /build && \
+	tar xf /download/m4-1.4.17.tar.xz && \
+	cd m4-1.4.17 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/m4-bootstrap-root && \
+	make DESTDIR=/build/m4-bootstrap-root install && \
+	cd /build/m4-bootstrap-root && \
+	rm -rf usr/share && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	make-deb \
+		/build/m4-bootstrap-deb \
+		/build/m4-bootstrap-root \
+		/control/m4-bootstrap \
+		/packages/m4-bootstrap_1.4.17-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/m4-bootstrap_*.deb
+
+# libgmp-bootstrap, libgmp-devel-bootstrap
+ADD control/libgmp-bootstrap /control/libgmp-bootstrap
+ADD control/libgmp-devel-bootstrap /control/libgmp-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/gmp-6.0.0a.tar.xz \
+		http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz && \
+	cd /build && \
+	tar xf /download/gmp-6.0.0a.tar.xz && \
+	cd gmp-6.0.0 && \
+	./configure --prefix=/usr --enable-cxx --disable-static && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/gmp-root && \
+	make DESTDIR=/build/gmp-root install && \
+	cd /build/gmp-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	
+	cp -a /build/gmp-root /build/libgmp-bootstrap-root && \
+	cd /build/libgmp-bootstrap-root && \
+	rm -rf usr/include && \
+	rm -rf usr/lib/*.la && \
+	make-deb \
+		/build/libgmp-bootstrap-deb \
+		/build/libgmp-bootstrap-root \
+		/control/libgmp-bootstrap \
+		/packages/libgmp-bootstrap_6.0.0a-0_amd64.deb && \
+
+	cp -a /build/gmp-root /build/libgmp-devel-bootstrap-root && \
+	cd /build/libgmp-devel-bootstrap-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libgmp-devel-bootstrap-deb \
+		/build/libgmp-devel-bootstrap-root \
+		/control/libgmp-devel-bootstrap \
+		/packages/libgmp-devel-bootstrap_6.0.0a-0_amd64.deb && \
+
+	cd / && \
 	rm -rf /build/* /download/* /control/*
 
 CMD ["/bin/sh"]

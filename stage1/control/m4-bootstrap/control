@@ -1,0 +1,11 @@
+Package: m4-bootstrap
+Source: m4
+Version: 1.4.17-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: m4
+Conflicts: m4
+Requires: base-files, libc
+Description: macro processing language
+Section: interpreters
+Priority: standard
