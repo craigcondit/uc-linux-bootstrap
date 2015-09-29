@@ -263,8 +263,7 @@ RUN \
 
 	cp -a /build/file-root /build/file-bootstrap-root && \
 	cd /build/file-bootstrap-root && \
-	rm -f usr/lib usr/include && \
-	find && \
+	rm -rf usr/lib usr/include && \
 	make-deb \
 		/build/file-bootstrap-deb \
 		/build/file-bootstrap-root \
@@ -275,7 +274,6 @@ RUN \
 	cd /build/libmagic-bootstrap-root && \
 	rm -rf usr/include usr/share usr/bin && \
 	rm -f usr/lib/*.la && \
-	find && \
 	make-deb \
 		/build/libmagic-bootstrap-deb \
 		/build/libmagic-bootstrap-root \
@@ -285,7 +283,6 @@ RUN \
 	cp -a /build/file-root /build/libmagic-devel-bootstrap-root && \
 	cd /build/libmagic-devel-bootstrap-root && \
 	rm -rf usr/share usr/bin usr/lib/*.so* && \
-	find && \
 	make-deb \
 		/build/libmagic-devel-bootstrap-deb \
 		/build/libmagic-devel-bootstrap-root \
