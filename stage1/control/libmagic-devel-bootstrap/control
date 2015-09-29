@@ -1,0 +1,11 @@
+Package: libmagic-devel-bootstrap
+Source: file
+Version: 5.24-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libmagic-devel
+Conflicts: libmagic-devel
+Requires: base-files, libc, libz, libmagic
+Description: Determines file type using "magic" numbers  (headers and static libraries)
+Section: devel
+Priority: standard

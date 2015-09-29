@@ -236,4 +236,63 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/*
 
+# file-bootstrap
+ADD control/file-bootstrap /control/file-bootstrap
+ADD control/libmagic-bootstrap /control/libmagic-bootstrap
+ADD control/libmagic-devel-bootstrap /control/libmagic-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/file-5.24.tar.gz \
+		ftp://ftp.astron.com/pub/file/file-5.24.tar.gz && \
+	cd /build && \
+	tar xf /download/file-5.24.tar.gz && \
+	cd file-5.24 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/file-root && \
+	make DESTDIR=/build/file-root install && \
+	cd /build/file-root && \
+	find && \
+	rm -rf usr/share/man && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	(strip --strip-debug usr/lib/*.so* || true) && \
+
+	cp -a /build/file-root /build/file-bootstrap-root && \
+	cd /build/file-bootstrap-root && \
+	rm -f usr/lib usr/include && \
+	find && \
+	make-deb \
+		/build/file-bootstrap-deb \
+		/build/file-bootstrap-root \
+		/control/file-bootstrap \
+		/packages/file-bootstrap_5.24-0_amd64.deb && \
+
+	cp -a /build/file-root /build/libmagic-bootstrap-root && \
+	cd /build/libmagic-bootstrap-root && \
+	rm -rf usr/include usr/share usr/bin && \
+	rm -f usr/lib/*.la && \
+	find && \
+	make-deb \
+		/build/libmagic-bootstrap-deb \
+		/build/libmagic-bootstrap-root \
+		/control/libmagic-bootstrap \
+		/packages/libmagic-bootstrap_5.24-0_amd64.deb && \
+
+	cp -a /build/file-root /build/libmagic-devel-bootstrap-root && \
+	cd /build/libmagic-devel-bootstrap-root && \
+	rm -rf usr/share usr/bin usr/lib/*.so* && \
+	find && \
+	make-deb \
+		/build/libmagic-devel-bootstrap-deb \
+		/build/libmagic-devel-bootstrap-root \
+		/control/libmagic-devel-bootstrap \
+		/packages/libmagic-devel-bootstrap_5.24-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/*
+
 CMD ["/bin/sh"]

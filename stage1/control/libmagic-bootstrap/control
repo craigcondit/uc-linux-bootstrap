@@ -1,0 +1,11 @@
+Package: libmagic-bootstrap
+Source: file
+Version: 5.24-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libmagic
+Conflicts: libmagic
+Requires: base-files, libc, libz
+Description: Determines file type using "magic" numbers  (libmagic shared libs)
+Section: libs
+Priority: standard
