@@ -104,7 +104,7 @@ RUN \
 		--prefix=/build/glibc-root en_US && \
 	cd /build/glibc-root && \
 	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
-	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true)
+	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true) && \
 	rm -f etc/ld.so.cache && \
 	rm -rf usr/share/locale && \
 	rm -rf usr/lib/gconv && \
