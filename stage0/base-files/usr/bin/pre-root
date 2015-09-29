@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+
+usage() {
+  echo "Usage: $0  <root-dir>" >&2
+  exit 1
+}
+
+PREV_DIR="$(pwd)"
+
+ROOT_DIR=$1
+[ ! -z "$ROOT_DIR" ] || usage
+
+mkdir -p "${ROOT_DIR}"
+cd "${ROOT_DIR}"
+mkdir -p \
+	dev etc home proc root run sys tmp usr var \
+	usr/bin usr/lib usr/sbin \
+	var/cache var/lib var/lib/dpkg var/lock var/log var/run var/spool
+
+ln -sf usr/bin bin
+ln -sf usr/lib lib64
+ln -sf usr/lib lib
+ln -sf usr/sbin sbin
+ln -sf usr/lib64 lib
+ln -sf var/run ../run
+ln -sf var/tmp ../tmp

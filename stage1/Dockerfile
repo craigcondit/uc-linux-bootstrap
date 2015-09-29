@@ -410,6 +410,86 @@ RUN \
 		/packages/libgmp-devel-bootstrap_6.0.0a-0_amd64.deb && \
 
 	cd / && \
-	rm -rf /build/* /download/* /control/*
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/libgmp-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libgmp-devel-bootstrap_*.deb
+
+# patch-bootstrap
+ADD control/patch-bootstrap /control/patch-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/patch-2.7.5.tar.xz \
+		http://ftp.gnu.org/gnu/patch/patch-2.7.5.tar.xz && \
+	cd /build && \
+	tar xf /download/patch-2.7.5.tar.xz && \
+	cd patch-2.7.5 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/patch-bootstrap-root && \
+	make DESTDIR=/build/patch-bootstrap-root install && \
+	cd /build/patch-bootstrap-root && \
+	rm -rf usr/share && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	make-deb \
+		/build/patch-bootstrap-deb \
+		/build/patch-bootstrap-root \
+		/control/patch-bootstrap \
+		/packages/patch-bootstrap_2.7.5-0_amd64.deb && \
+	cd / && \
+        rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/patch-bootstrap_*.deb
+
+# libmpfr-bootstrap, libmpfr-devel-bootstrap
+ADD control/libmpfr-bootstrap /control/libmpfr-bootstrap
+ADD control/libmpfr-devel-bootstrap /control/libmpfr-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/mpfr-3.1.3.tar.xz \
+		http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz && \
+	wget -O /download/mpfr-3.1.3-upstream_fixes-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/systemd/mpfr-3.1.3-upstream_fixes-1.patch && \
+	cd /build && \
+	tar xf /download/mpfr-3.1.3.tar.xz && \
+	cd mpfr-3.1.3 && \
+	patch -Np1 -i /download/mpfr-3.1.3-upstream_fixes-1.patch && \
+	./configure --prefix=/usr --disable-static --enable-thread-safe && \
+	MAKE="make -j4" make && \
+	mkdir -p /build/mpfr-root && \
+	make DESTDIR=/build/mpfr-root install && \
+	cd /build/mpfr-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+
+	cp -a /build/mpfr-root /build/libmpfr-bootstrap-root && \
+	cd /build/libmpfr-bootstrap-root && \
+	rm -rf usr/include && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libmpfr-bootstrap-deb \
+		/build/libmpfr-bootstrap-root \
+		/control/libmpfr-bootstrap \
+		/packages/libmpfr-bootstrap_3.1.3-0_amd64.deb && \
+
+	cp -a /build/mpfr-root /build/libmpfr-devel-bootstrap-root && \
+	cd /build/libmpfr-devel-bootstrap-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libmpfr-devel-bootstrap-deb \
+		/build/libmpfr-devel-bootstrap-root \
+		/control/libmpfr-devel-bootstrap \
+		/packages/libmpfr-devel-bootstrap_3.1.3-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/libmpfr-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libmpfr-devel-bootstrap_*.deb
 
 CMD ["/bin/sh"]

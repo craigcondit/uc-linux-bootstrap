@@ -1,0 +1,12 @@
+Package: patch-bootstrap
+Source: patch
+Version: 2.7.5-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: patch
+Conflicts: patch
+Requires: base-files, libc
+Description: Apply a diff file to an original
+Section: vcs
+Priority: standard
+Build-Essential: true

@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+usage() {
+  echo "Usage: $0  <root-dir>" >&2
+  exit 1
+}
+
+PREV_DIR="$(pwd)"
+
+ROOT_DIR=$1
+[ ! -z "$ROOT_DIR" ] || usage
+
+cd "${ROOT_DIR}"
+
+# remove symlinks that are part of base-files
+rm -f bin lib64 lib sbin usr/lib64 var/run var/tmp
+
+# remove empty directories
+rmdir var/spool var/run var/log var/lock var/lib/dpkg 2>/dev/null || true
+rmdir var/lib var/cache 2>/dev/null || true
+rmdir usr/sbin usr/lib usr/bin 2>/dev/null || true
+rmdir var usr tmp sys run root proc home etc dev 2>/dev/null || true
