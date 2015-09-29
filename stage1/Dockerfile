@@ -256,7 +256,6 @@ RUN \
 	mkdir -p /build/file-root && \
 	make DESTDIR=/build/file-root install && \
 	cd /build/file-root && \
-	find && \
 	rm -rf usr/share/man && \
 	(strip --strip-unneeded usr/bin/* || true) && \
 	(strip --strip-debug usr/lib/*.so* || true) && \
@@ -288,6 +287,51 @@ RUN \
 		/build/libmagic-devel-bootstrap-root \
 		/control/libmagic-devel-bootstrap \
 		/packages/libmagic-devel-bootstrap_5.24-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/*
+
+# binutils-bootstrap
+ADD control/binutils-bootstrap /control/binutils-bootstrap
+ADD control/binutils-devel-bootstrap /control/binutils-devel-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/binutils-2.25.1.tar.bz2 \
+		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	mkdir binutils-build && \
+	cd binutils-build && \
+	../binutils-2.25.1/configure --prefix=/usr --enable-shared --disable-werror && \
+	MAKE="make -j4" make tooldir=/usr && \
+	mkdir -p /build/binutils-root && \
+	make DESTDIR=/build/binutils-root tooldir=/usr install && \
+	cd /build/binutils-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+
+	cp -a /build/binutils-root /build/binutils-bootstrap-root && \
+	cd /build/binutils-bootstrap-root && \
+	rm -rf usr/include usr/lib/*.a usr/lib/*.la && \
+	make-deb \
+		/build/binutils-bootstrap-deb \
+		/build/binutils-bootstrap-root \
+		/control/binutils-bootstrap \
+		/packages/binutils-bootstrap_2.25.1-0_amd64.deb && \
+
+	cp -a /build/binutils-root /build/binutils-devel-bootstrap-root && \
+	cd /build/binutils-devel-bootstrap-root && \
+	rm -rf usr/bin usr/lib/ldscripts usr/lib/*.so* && \
+	make-deb \
+		/build/binutils-devel-bootstrap-deb \
+		/build/binutils-devel-bootstrap-root \
+		/control/binutils-devel-bootstrap \
+		/packages/binutils-devel-bootstrap_2.25.1-0_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/*
