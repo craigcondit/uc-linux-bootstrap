@@ -22,6 +22,6 @@ ln -sf usr/bin bin
 ln -sf usr/lib lib64
 ln -sf usr/lib lib
 ln -sf usr/sbin sbin
-ln -sf usr/lib64 lib
-ln -sf var/run ../run
-ln -sf var/tmp ../tmp
+ln -sf lib usr/lib64
+ln -sf ../run var/run
+ln -sf ../tmp var/tmp

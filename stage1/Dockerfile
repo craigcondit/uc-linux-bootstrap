@@ -65,7 +65,7 @@ ADD control/libc-bootstrap /control/libc-bootstrap
 ADD control/glibc-bin-bootstrap /control/glibc-bin-bootstrap
 ADD control/libc-devel-bootstrap /control/libc-devel-bootstrap
 RUN \
-	set -xe && \
+	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
@@ -103,8 +103,11 @@ RUN \
 		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
 		--prefix=/build/glibc-root en_US && \
 	cd /build/glibc-root && \
-	(strip --strip-debug lib64/* usr/lib64/* usr/lib64/*/* || true) && \
-	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true) && \
+	mkdir -p usr/lib && \
+	cp -a usr/lib64/. usr/lib/ && \
+	rm -rf usr/lib64 && \
+	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
+	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true)
 	rm -f etc/ld.so.cache && \
 	rm -rf usr/share/locale && \
 	rm -rf usr/lib/gconv && \
@@ -119,11 +122,12 @@ RUN \
 	cp -a /build/glibc-root /build/libc-bootstrap-root && \
 	cd /build/libc-bootstrap-root && \
 	cd usr/bin && \
-	find -not -name ldd -delete && \
+	find -type f -not -name ldd -delete && \
 	cd ../.. && \
 	rm -rf etc && \
-	rm -rf usr/sbin && \
-	rm -rf usr/lib && \
+	cd usr/sbin && \
+	find -type f -not -name ldconfig -delete && \
+	cd ../.. && \
 	rm -rf usr/share && \
 	rm -rf usr/include && \
 	find . -name "*.a" -delete && \
@@ -136,14 +140,12 @@ RUN \
 
 	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
 	cd /build/glibc-bin-bootstrap-root && \
-	cd usr/bin && \
-	find -name ldd -delete && \
-	cd ../.. && \
+	rm -f usr/bin/ldd && \
+	rm -f usr/sbin/ldconfig && \
 	rm -rf etc && \
 	rm -rf usr/lib && \
 	rm -rf usr/share && \
 	rm -rf usr/include && \
-	rm -rf usr/lib/audit && \
 	find . -name "*.a" -delete && \
 	find . -name "*.o" -delete && \
 	make-deb \
@@ -154,8 +156,9 @@ RUN \
 
 	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
 	cd /build/libc-devel-bootstrap-root && \
+	rm -rf etc usr/bin usr/share usr/sbin && \
 	rm -rf etc usr/bin usr/share usr/sbin usr/lib && \
-	find . -name "*.so" -delete && \
+	find usr/lib -name "*.so*" -delete && \
 	make-deb \
 		/build/libc-devel-bootstrap-deb \
 		/build/libc-devel-bootstrap-root \
