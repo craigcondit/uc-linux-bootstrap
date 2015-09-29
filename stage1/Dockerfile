@@ -237,7 +237,9 @@ RUN \
 		/control/libz-devel-bootstrap \
 		/packages/libz-devel-bootstrap_1.2.8-0_amd64.deb && \
 	cd / && \
-	rm -rf /build/* /download/* /control/*
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/libz-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/libz-devel-bootstrap_*.deb
 
 # file-bootstrap
 ADD control/file-bootstrap /control/file-bootstrap
@@ -293,7 +295,8 @@ RUN \
 		/packages/libmagic-devel-bootstrap_5.24-0_amd64.deb && \
 
 	cd / && \
-	rm -rf /build/* /download/* /control/*
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/file-bootstrap_*.deb
 
 # binutils-bootstrap
 ADD control/binutils-bootstrap /control/binutils-bootstrap
@@ -310,7 +313,9 @@ RUN \
 	tar xf /download/binutils-2.25.1.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
-	../binutils-2.25.1/configure --prefix=/usr --enable-shared --disable-werror && \
+	../binutils-2.25.1/configure \
+		--target="${TARGET_PLATFORM}" \
+		--prefix=/usr --enable-shared --disable-werror && \
 	MAKE="make -j4" make tooldir=/usr && \
 	pre-root /build/binutils-root && \
 	make DESTDIR=/build/binutils-root tooldir=/usr install && \
@@ -341,8 +346,7 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/binutils-bootstrap_*.deb && \
-	dpkg --force-depends -i /packages/libmagic-bootstrap_*.deb && \
-	dpkg --force-depends -i /packages/file-bootstrap_*.deb
+	dpkg --force-depends -i /packages/libmagic-bootstrap_*.deb
 
 # m4-bootstrap
 ADD control/m4-bootstrap /control/m4-bootstrap
@@ -502,7 +506,6 @@ RUN \
 	dpkg --force-depends -i /packages/libmpfr-devel-bootstrap_*.deb
 
 # libmpc-bootstrap, libmpc-devel-bootstrap
-# http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz
 ADD control/libmpc-bootstrap /control/libmpc-bootstrap
 ADD control/libmpc-devel-bootstrap /control/libmpc-devel-bootstrap
 RUN \
@@ -547,5 +550,26 @@ RUN \
         rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/libmpc-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/libmpc-devel-bootstrap_*.deb
+
+# gcc-bootstrap
+ADD control/gcc-bootstrap /control/gcc-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/gcc-5.2.0.tar.bz2 \
+		http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 && \
+	cd /build && \
+	tar xf /download/gcc-5.2.0.tar.bz2 && \
+	mkdir gcc-build && \
+	cd gcc-build && \
+	SED=sed ../gcc-5.2.0/configure \
+		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
+		--target="${TARGET_PLATFORM}" \
+		--disable-bootstrap --with-system-zlib && \
+	MAKE="make -j4" make
+
 
 CMD ["/bin/sh"]
