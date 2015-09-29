@@ -29,7 +29,7 @@ RUN \
 	ln -sf usr/lib lib64 && \
 	chmod 755 usr usr/lib usr/bin && \
 	chmod 644 usr/lib/os-release && \
-	chmod 755 usr/bin/make-deb && \
+	chmod 755 usr/bin/make-deb usr/bin/pre-root usr/bin/post-root && \
 	install -d -m 755 etc var home proc sys dev run && \
 	install -d -m 755 var/log var/cache var/spool var/lock && \
 	ln -sf /run var/run && \
