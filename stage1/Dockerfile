@@ -154,7 +154,6 @@ RUN \
 	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
 	cd /build/libc-devel-bootstrap-root && \
 	rm -rf etc usr/bin usr/share usr/sbin && \
-	rm -rf etc usr/bin usr/share usr/sbin usr/lib && \
 	find usr/lib -name "*.so*" -delete && \
 	make-deb \
 		/build/libc-devel-bootstrap-deb \
