@@ -103,9 +103,6 @@ RUN \
 		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
 		--prefix=/build/glibc-root en_US && \
 	cd /build/glibc-root && \
-	mkdir -p usr/lib && \
-	cp -a usr/lib64/. usr/lib/ && \
-	rm -rf usr/lib64 && \
 	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
 	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true)
 	rm -f etc/ld.so.cache && \
