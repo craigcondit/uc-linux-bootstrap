@@ -99,14 +99,9 @@ RUN \
 		-i ../glibc-2.22/localedata/locales/en_US -c \
 		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
 		--prefix=/build/glibc-root en_US && \
-	(strip \
-	/build/glibc-root/sbin/* \
-	/build/glibc-root/lib64/* \
-	/build/glibc-root/usr/bin/* \
-	/build/glibc-root/usr/sbin/* \
-	/build/glibc-root/usr/lib64/* \
-	/build/glibc-root/usr/lib64/*/* || true) && \
 	cd /build/glibc-root && \
+	(strip --strip-debug lib64/* usr/lib64/* usr/lib64/*/* || true) && \
+	(strip --strip-unneeded sbin/* usr/bin/* usr/sbin/* || true) && \
 	rm -f etc/ld.so.cache && \
 	rm -rf usr/share/locale && \
 	rm -rf usr/lib64/gconv && \
@@ -158,7 +153,6 @@ RUN \
 	cd /build/libc-devel-bootstrap-root && \
 	rm -rf etc lib64 sbin usr/bin usr/lib64/audit usr/share usr/sbin usr/lib && \
 	find . -name "*.so" -delete && \
-	find . -name "*.o" -delete && \
 	make-deb \
 		/build/libc-devel-bootstrap-deb \
 		/build/libc-devel-bootstrap-root \
@@ -177,25 +171,27 @@ RUN \
 	dpkg --force-depends -i /packages/linux-devel_*.deb && \
 	dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/glibc-bin-bootstrap_*.deb && \
-	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb && \
-	mv -v /tools/bin/{ld,ld-old} && \
-	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
-	mv -v /tools/bin/{ld-new,ld} && \
-	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld && \
-	gcc -dumpspecs | \
-		sed 's@/tools@@g' | \
-		sed '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' | \
-		sed '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
-		`dirname $(gcc --print-libgcc-file-name)`/specs && \
-	cd /build && \
-	echo 'main(){}' > dummy.c && \
-	cc dummy.c -v -Wl,--verbose &> dummy.log && \
-	readelf -l a.out | grep ': /lib' && \
-	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
-	grep -B1 '^ /usr/include' dummy.log && \
-	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' && \
-	grep "/lib.*/libc.so.6 " dummy.log && \
-	grep found dummy.log && \
-	rm -v dummy.c a.out dummy.log
+	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb
 
-CMD ["/bin/sh"]
+#RUN \
+#	mv -v /tools/bin/{ld,ld-old} && \
+#	mv -v /tools/$(gcc -dumpmachine)/bin/{ld,ld-old} && \
+#	mv -v /tools/bin/{ld-new,ld} && \
+#	ln -sv /tools/bin/ld /tools/$(gcc -dumpmachine)/bin/ld && \
+#	gcc -dumpspecs | \
+#		sed 's@/tools@@g' | \
+#		sed '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' | \
+#		sed '/\*cpp:/{n;s@$@ -isystem /usr/include@}' > \
+#		`dirname $(gcc --print-libgcc-file-name)`/specs && \
+#	cd /build && \
+#	echo 'main(){}' > dummy.c && \
+#	cc dummy.c -v -Wl,--verbose &> dummy.log && \
+#	readelf -l a.out | grep ': /lib' && \
+#	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
+#	grep -B1 '^ /usr/include' dummy.log && \
+#	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' && \
+#	grep "/lib.*/libc.so.6 " dummy.log && \
+#	grep found dummy.log && \
+#	rm -v dummy.c a.out dummy.log
+
+ vCMD ["/bin/sh"]
