@@ -123,6 +123,12 @@ be temporary until the system is fully self-hosting):
     - libtsan-bootstrap
     - libubsan-bootstrap
     - libvtv-bootstrap
+  - busybox 1.23.2
+    - busybox-bootstrap
+  - openssl 1.0.2d
+    - openssl-bootstrap
+    - libssl-bootstrap
+    - libssl-devel-bootstrap
 
 #### stage2 ####
 
