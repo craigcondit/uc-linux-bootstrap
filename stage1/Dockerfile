@@ -312,7 +312,7 @@ RUN \
 	../binutils-2.25.1/configure \
 		--prefix=/usr --enable-shared --disable-werror \
 		--target="${TARGET_PLATFORM}" --host="${TARGET_PLATFORM}" \
-		--disable-multilibi --with-build-sysroot=/ && \
+		--disable-multilib --with-build-sysroot=/ && \
 	MAKE="make -j4" make tooldir=/usr && \
 	pre-root /build/binutils-root && \
 	make DESTDIR=/build/binutils-root tooldir=/usr install && \
@@ -557,10 +557,12 @@ RUN \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
-	SED=sed \
+	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
-		--disable-bootstrap --with-system-zlib --target="${TARGET_PLATFORM}" && \
+		--disable-bootstrap --with-system-zlib \
+		--host="${TARGET_PLATFORM}" --target="${TARGET_PLATFORM}" \
+		--with-build-sysroot=/ && \
 	MAKE="make -j4" make
 
 
