@@ -135,3 +135,6 @@ be temporary until the system is fully self-hosting):
 
 TODO
 
+### Future Plans ###
+Upload all packages to bintray.
+
