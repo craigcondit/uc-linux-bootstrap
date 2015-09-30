@@ -301,14 +301,18 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/binutils-2.25.1.tar.bz2 \
 		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
 	cd /build && \
 	tar xf /download/binutils-2.25.1.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
+	CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
 	../binutils-2.25.1/configure \
-		--prefix=/usr --enable-shared --disable-werror && \
+		--prefix=/usr --enable-shared --disable-werror \
+		--target="${TARGET_PLATFORM}" --host="${TARGET_PLATFORM}" \
+		--disable-multilibi --with-build-sysroot=/ && \
 	MAKE="make -j4" make tooldir=/usr && \
 	pre-root /build/binutils-root && \
 	make DESTDIR=/build/binutils-root tooldir=/usr install && \
@@ -546,15 +550,17 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/gcc-5.2.0.tar.bz2 \
 		http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 && \
 	cd /build && \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
-	SED=sed ../gcc-5.2.0/configure \
+	SED=sed \
+	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
-		--disable-bootstrap --with-system-zlib && \
+		--disable-bootstrap --with-system-zlib --target="${TARGET_PLATFORM}" && \
 	MAKE="make -j4" make
 
 
