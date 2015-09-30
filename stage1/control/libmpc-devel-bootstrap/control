@@ -1,4 +1,4 @@
-Package: libmpc-deve-bootstrap
+Package: libmpc-devel-bootstrap
 Source: mpc
 Version: 1.0.3-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>

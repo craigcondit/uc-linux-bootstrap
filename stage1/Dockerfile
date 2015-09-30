@@ -4,7 +4,7 @@ ADD stage1.tar.xz /
 ADD stage1-tools.tar.xz /tools/
 ADD stage1-packages.tar /packages/
 
-ENV PATH /usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/tools/bin
+ENV PATH /usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/tools/bin
 
 # tools setup
 RUN [ "/tools/bin/ln", "-sfv", "/tools/bin/bash", "/bin/sh" ]
@@ -571,6 +571,12 @@ RUN \
 	rm -f usr/bin/${TARGET_PLATFORM}-* && \
 	for tool in c++ g++ gcc gcc-ar gcc-nm gcc-ranlib ; do ln -sf $tool usr/bin/${TARGET_PLATFORM}-$tool ; done && \
 	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-5.2.0 && \
+	ln -sv ../bin/cpp usr/lib/cpp && \
+	ln -sv gcc usr/bin/cc && \
+	mkdir -p usr/lib/bfd-plugins && \
+	ln -sfv ../../libexec/gcc/${TARGET_PLATFORM}/5.2.0/liblto_plugin.so usr/lib/bfd-plugins/ && \
+	mkdir -pv usr/share/gdb/auto-load/usr/lib && \
+	mv -v usr/lib/*gdb.py usr/share/gdb/auto-load/usr/lib && \
 	rm -f usr/lib/libsupc++* && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
@@ -595,6 +601,15 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
 		liblsan libquadmath libssp libstdc++ libtsan libubsan libvtv gcc ; do \
-		dpkg --force-depends -i /packages/${pkg}-bootstrap_*.deb ; done
+		dpkg --force-depends -i /packages/${pkg}-bootstrap_*.deb ; done && \
+	echo 'int main(){}' > dummy.c && \
+	cc dummy.c -v -Wl,--verbose &> dummy.log && \
+	readelf -l a.out | grep ': /lib' && \
+	grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log && \
+	grep -B4 '^ /usr/include' dummy.log && \
+	grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' && \
+	grep "/lib.*/libc.so.6 " dummy.log && \
+	grep found dummy.log && \
+	rm -v dummy.c a.out dummy.log
 
 CMD ["/bin/sh"]
