@@ -1,4 +1,4 @@
-bcFROM scratch
+FROM scratch
 MAINTAINER ccondit@randomcoder.com
 ADD stage1.tar.xz /
 ADD stage1-tools.tar.xz /tools/
@@ -730,6 +730,7 @@ RUN \
 		packages && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/base-files_*.deb && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
+	chroot /stage2 /sbin/ldconfig && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/libssl-bootstrap_*.deb && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/openssl-bootstrap_*.deb && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/busybox-bootstrap_*.deb
