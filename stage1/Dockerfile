@@ -603,4 +603,50 @@ RUN \
 	grep found dummy.log && \
 	rm -v dummy.c a.out dummy.log
 
+# busybox-bootstrap
+ADD control/busybox-bootstrap control/busybox-bootstrap
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+        wget -O /download/busybox-1.23.2.tar.bz2 \
+		http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/busybox-1.23.2.tar.bz2 && \
+	cd busybox-1.23.2 && \
+	confs=' \
+		CONFIG_INSTALL_NO_USR \
+		CONFIG_AR \
+		CONFIG_FEATURE_AR_LONG_FILENAMES \
+		CONFIG_FEATURE_AR_CREATE \
+		CONFIG_DPKG \
+		CONFIG_DPKG_DEB' && \
+	make defconfig && \
+	for conf in $confs; do \
+		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
+		grep -q "^$conf=y" .config || echo "$conf=y" >> .config; \
+	done && \
+	make oldconfig && \
+	for conf in $confs; do grep -q "^$conf=y" .config; done && \
+	MAKE="make -j4" make && \
+	make install && \
+	rm -f _install/linuxrc && \
+	mkdir -p /build/busybox-bootstrap-root/usr && \
+	cp -a _install/* /build/busybox-bootstrap-root/usr/ && \
+	cd /build/busybox-bootstrap-root && \
+	chmod 4755 /build/busybox-bootstrap-root/usr/bin/busybox && \
+	make-deb \
+		/build/busybox-bootstrap-deb \
+		/build/busybox-bootstrap-root \
+		/control/busybox-bootstrap \
+		/packages/busybox-bootstrap_1.23.2-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/busybox-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/patch-bootstrap_*.deb && \
+	dpkg --force-depends -i /packages/binutils-bootstrap_*.deb && \
+	ln -sf bash /bin/sh
+
 CMD ["/bin/sh"]
