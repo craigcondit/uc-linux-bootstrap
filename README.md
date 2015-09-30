@@ -14,16 +14,15 @@ This small base gives us wide compatibility with a large range of existing
 software as well as the ability to build and deploy simple .deb packages.
 
 Glibc was chosen due to its widespread support. Busybox was chosen to give
-a functional userland with minimal overhead (stage0 is < 5 MB). OpenSSL is
-present to allow busybox's wget implementation to download from https sites.
-
-UC Docker supports simple package management using dpkg from busybox.
+a functional userland with minimal overhead. OpenSSL is present to allow
+busybox's wget implementation to download from https sites. UC Docker
+supports simple package management using dpkg from busybox.
 
 ### Build Process ###
 
 The UC Linux build process is split into several stages:
 
-##### stage0 #####
+#### stage0 ####
 
 To build stage0, execute the following:
 
@@ -55,7 +54,7 @@ tarballs:
     - stage1-tools.tar.xz
     - stage1-packages.tar
 
-##### stage1 #####
+#### stage1 ####
 
 To build stage1, execute the following:
 
@@ -118,7 +117,7 @@ be temporary until the system is fully self-hosting):
     - libubsan-bootstrap
     - libvtv-bootstrap
 
-##### stage2 #####
+#### stage2 ####
 
 TODO
 
