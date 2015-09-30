@@ -650,7 +650,7 @@ RUN \
 	ln -sf bash /bin/sh
 
 # openssl-bootstrap
-ADD control/openssl-bootstrap-all /build/control
+ADD control/openssl-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
