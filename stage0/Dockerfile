@@ -48,9 +48,6 @@ RUN \
 	ln -sf /tmp var/tmp && \
 	install -d -m 777 var/lib var/lib/dpkg var/lib/dpkg/info && \
 	touch var/lib/dpkg/status && \
-	echo "/lib64" > etc/ld.so.conf && \
-	echo "/lib" >> etc/ld.so.conf && \
-	echo "/usr/lib64" >> etc/ld.so.conf && \
 	echo "/usr/lib" >> etc/ld.so.conf && \
 	find -type d | sort > /build/files-base-files && \
 	echo "" >> /build/files-base-files && \
