@@ -49,6 +49,7 @@ Stage 0 starts from a debian:jessie root image and builds several packages
     - bash
     - gawk
     - sed
+    - perl
     - openssl
 
 Busybox and openssl are built at this stage to give us a simple way to download

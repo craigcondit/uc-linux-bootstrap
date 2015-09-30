@@ -377,6 +377,25 @@ RUN \
 	cd /build && \
 	rm -rf sed-4.2.2
 
+# perl
+RUN \
+	set -xe && \
+        umask 022 && \
+        TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+        PATH=/tools/bin:/bin:/usr/bin && \
+	curl -ksSL http://www.cpan.org/src/5.0/perl-5.22.0.tar.bz2 > \
+		/download/perl-5.22.0.tar.bz2 && \
+	cd /build && \
+	tar xf /download/perl-5.22.0.tar.bz2 && \
+	cd perl-5.22.0 && \
+	sh Configure -des -Dprefix=/tools -Dlibs=-lm && \
+	MAKE="make -j4" make && \
+	cp -v perl cpan/podlators/pod2man /tools/bin && \
+	mkdir -pv /tools/lib/perl5/5.22.0 && \
+	cp -Rv lib/* /tools/lib/perl5/5.22.0 && \	
+	cd /build && \
+	rm -rf perl-5.22.0
+
 # openssl
 RUN \
 	set -xe && \

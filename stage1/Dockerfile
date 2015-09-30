@@ -649,4 +649,71 @@ RUN \
 	dpkg --force-depends -i /packages/binutils-bootstrap_*.deb && \
 	ln -sf bash /bin/sh
 
+# openssl-bootstrap
+ADD control/openssl-bootstrap-all /build/control
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/openssl-1.0.2d.tar.gz \
+		https://www.openssl.org/source/openssl-1.0.2d.tar.gz && \
+	cd /build && \
+	tar xf /download/openssl-1.0.2d.tar.gz && \
+	cd openssl-1.0.2d && \
+	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
+	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
+	make
+
+#RUN \
+#	pre-root /build/openssl-root && \
+#	make INSTALL_PREFIX=/build/openssl-root install && \
+#	cd /build/openssl-root && \
+#	rm -rf etc/ssl/man && \
+#	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
+#	(strip --strip-unneeded usr/bin/* || true) && \
+#	post-root /build/openssl-root && \
+#
+#	cp -a /build/openssl-root /build/libssl-bootstrap-root && \
+#	cd /build/libssl-bootstrap-root && \
+#	rm -rf etc usr/bin usr/include usr/lib/pkgconfig && \
+#	find -type d | sort > /build/files-libssl-bootstrap && \
+#        echo "" >> /build/files-libssl-bootstrap && \
+#        find -not -type d | sort >> /build/files-libssl-bootstrap && \
+#	/build/root/usr/bin/make-deb \
+#                /build/libssl-bootstrap-deb \
+#                /build/libssl-bootstrap-root \
+#                /build/control/libssl-bootstrap \
+#                /build/deb/libssl-bootstrap_1.0.2d-0_amd64.deb && \
+#
+#	cp -a /build/openssl-root /build/libssl-devel-bootstrap-root && \
+#	cd /build/libssl-devel-bootstrap-root && \
+#	rm -rf etc usr/bin usr/lib/engines && \
+#	rm -f usr/lib/lib*  && \
+#	find -type d | sort > /build/files-libssl-devel-bootstrap && \
+#        echo "" >> /build/files-libssl-devel-bootstrap && \
+#        find -not -type d | sort >> /build/files-libssl-devel-bootstrap && \
+#	/build/root/usr/bin/make-deb \
+#                /build/libssl-devel-bootstrap-deb \
+#                /build/libssl-devel-bootstrap-root \
+#                /build/control/libssl-devel-bootstrap \
+#                /build/deb/libssl-devel-bootstrap_1.0.2d-0_amd64.deb && \
+#
+#	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
+#	cd /build/openssl-bootstrap-root && \
+#	rm -rf usr/include usr/lib && \
+#	find -type d | sort > /build/files-openssl-bootstrap && \
+#        echo "" >> /build/files-openssl-bootstrap && \
+#        find -not -type d | sort >> /build/files-openssl-bootstrap && \
+#	/build/root/usr/bin/make-deb \
+#                /build/openssl-bootstrap-deb \
+#                /build/openssl-bootstrap-root \
+#                /build/control/openssl-bootstrap \
+#                /build/deb/openssl-bootstrap_1.0.2d-0_amd64.deb && \
+#
+#	cd /build && \
+#	rm -rf control/libssl-bootstrap control/libssl-devel-bootstrap control/openssl-bootstrap \
+#		openssl-1.0.2d openssl-root libssl-bootstrap-root libssl-devel-bootstrap-root \
+#		openssl-bootstrap-root
+
 CMD ["/bin/sh"]
