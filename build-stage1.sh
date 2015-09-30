@@ -15,11 +15,15 @@ if [ "$1" == "fast" ]; then
 fi
 
 time docker run --rm=true -v "$(pwd)/../stage2":/output:rw insideo/uc-stage1 \
-        bash -c "tar cC /stage2 . | xz -1 > /output/stage2.tar.xz"
+        bash -c "tar cC /stage2 . > /output/stage2.tar"
 time docker run --rm=true -v "$(pwd)/../stage2":/output:rw insideo/uc-stage1 \
         bash -c "tar cC /packages . > /output/stage2-packages.tar"
 
+cd ../stage2
+rm -f stage2.tar.xz || /bin/true
+xz -9 stage2.tar
+
 cd ../packages
-tar xf ../stage2/stage2-packages.jar
+tar xf ../stage2/stage2-packages.tar
 
 echo "stage1 build complete."
