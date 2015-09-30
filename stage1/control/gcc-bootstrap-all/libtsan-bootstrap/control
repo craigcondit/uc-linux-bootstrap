@@ -1,0 +1,11 @@
+Package: libtsan-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libtsan
+Conflicts: libtsan
+Requires: libc, libstdc++, libgcc
+Description: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
+Section: libs
+Priority: optional

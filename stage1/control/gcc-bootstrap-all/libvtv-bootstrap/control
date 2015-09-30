@@ -1,0 +1,11 @@
+Package: libvtv-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libvtv
+Conflicts: libvtv
+Requires: libc, libstdc++, libgcc
+Description: GCC Virtual Table Verification library (runtime)
+Section: libs
+Priority: optional

@@ -1,0 +1,11 @@
+Package: libssp-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libssp
+Conflicts: libssp
+Requires: libc
+Description: GNU stack protection library (runtime)
+Section: libs
+Priority: optional

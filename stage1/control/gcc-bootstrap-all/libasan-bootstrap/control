@@ -1,0 +1,11 @@
+Package: libasan-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libasan
+Conflicts: libasan
+Requires: libc, libstdc++, libgcc
+Description: AddressSanitizer -- a fast memory error detector
+Section: libs
+Priority: optional

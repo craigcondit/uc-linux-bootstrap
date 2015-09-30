@@ -1,0 +1,11 @@
+Package: libquadmath-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libquadmath
+Conflicts: libquadmath
+Requires: libc
+Description: GCC Quad-Precision Math Library
+Section: libs
+Priority: optional

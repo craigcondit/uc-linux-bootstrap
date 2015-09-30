@@ -5,6 +5,6 @@ Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: gcc
 Conflicts: gcc
-Requires: binutils, libc-devel, libz-devel, libgmp, libmpfr, libmpc
+Requires: binutils, libc-devel, libz-devel, libgmp, libmpfr, libmpc, libasan, libatomic, libcilkrts, libgomp, libitm, liblsan, libquadmath, libssp, libstdc++, libtsan, libubsan, libvtv
 Description: This is the GNU C compiler, a fairly portable optimizing compiler for C.
 Section: devel

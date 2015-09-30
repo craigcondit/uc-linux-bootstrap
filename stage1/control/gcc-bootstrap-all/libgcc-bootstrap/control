@@ -1,0 +1,11 @@
+Package: libgcc-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libgcc
+Conflicts: libgcc
+Requires: libc
+Description: GCC support library
+Section: libs
+Priority: required

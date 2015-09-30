@@ -544,7 +544,7 @@ RUN \
 	dpkg --force-depends -i /packages/libmpc-devel-bootstrap_*.deb
 
 # gcc-bootstrap
-ADD control/gcc-bootstrap /control/gcc-bootstrap
+ADD control/gcc-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -563,7 +563,38 @@ RUN \
 		--disable-bootstrap --with-system-zlib \
 		--host="${TARGET_PLATFORM}" --target="${TARGET_PLATFORM}" \
 		--with-build-sysroot=/ && \
-	MAKE="make -j4" make
+	MAKE="make -j4" make && \
+	pre-root /build/gcc-bootstrap-root && \
+	make DESTDIR=/build/gcc-bootstrap-root install-strip && \
+	post-root /build/gcc-bootstrap-root && \
+	cd /build/gcc-bootstrap-root && \
+	rm -f usr/bin/${TARGET_PLATFORM}-* && \
+	for tool in c++ g++ gcc gcc-ar gcc-nm gcc-ranlib ; do ln -sf $tool usr/bin/${TARGET_PLATFORM}-$tool ; done && \
+	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-5.2.0 && \
+	rm -f usr/lib/libsupc++* && \
+	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
+	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
+		liblsan libquadmath libssp libstdc++ libtsan libubsan libvtv ; do ( \
+		mkdir -p /build/${pkg}-bootstrap-root/usr/lib && \
+		cp -a usr/lib/${pkg}*.so* /build/${pkg}-bootstrap-root/usr/lib/ && \
+		rm -f usr/lib/${pkg}*.so* && \
+		make-deb \
+			/build/${pkg}-bootstrap-deb \
+			/build/${pkg}-bootstrap-root \
+			/control/${pkg}-bootstrap \
+			/packages/${pkg}-bootstrap_5.2.0-0_amd64.deb) ; done && \
+
+	make-deb \
+		/build/gcc-bootstrap-deb \
+		/build/gcc-bootstrap-root \
+		/control/gcc-bootstrap \
+		/packages/gcc-bootstrap_5.2.0-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
+		liblsan libquadmath libssp libstdc++ libtsan libubsan libvtv gcc ; do \
+		dpkg --force-depends -i /packages/${pkg}-bootstrap_*.deb ; done
 
 CMD ["/bin/sh"]

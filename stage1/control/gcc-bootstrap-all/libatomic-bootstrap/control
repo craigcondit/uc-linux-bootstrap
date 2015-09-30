@@ -1,0 +1,11 @@
+Package: libatomic-bootstrap
+Source: gcc
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Provides: libatomic
+Conflicts: libatomic
+Requires: libc
+Description: support library providing __atomic built-in functions
+Section: libs
+Priority: optional
