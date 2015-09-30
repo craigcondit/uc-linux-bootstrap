@@ -30,8 +30,7 @@ RUN \
 RUN \
 	set -xe && \
 	umask 022 && \
-	rm -rf /packages && \
-	mkdir -p /build /download /packages /control
+	mkdir -p /build /download /control
 
 # linux-devel
 ADD control/linux-devel /control/linux-devel
@@ -706,4 +705,18 @@ RUN \
 	dpkg --force-depends -i /packages/libssl-devel-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/openssl-bootstrap_*.deb
 
+# final prep for stage2
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	mkdir -p /stage2 && \
+	cd /stage2 && \
+	dpkg-deb -x /packages/base-files_*.deb . && \
+	dpkg-deb -x /packages/libc-bootstrap_*.deb . && \
+	dpkg-deb -x /packages/libssl-bootstrap_*.deb . && \
+	dpkg-deb -x /packages/openssl-bootstrap_*.deb . && \
+	dpkg-deb -x /packages/busybox-bootstrap_*.deb .
+	
 CMD ["/bin/sh"]
