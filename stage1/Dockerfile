@@ -1,4 +1,4 @@
-FROM scratch
+bcFROM scratch
 MAINTAINER ccondit@randomcoder.com
 ADD stage1.tar.xz /
 ADD stage1-tools.tar.xz /tools/
@@ -109,6 +109,7 @@ RUN \
 	rm -rf usr/share/i18n && \
 	rm -f etc/rpc usr/sbin/sln && \
 	rm -rf var && \
+	sed -i 's@/usr/bin/bash@/bin/sh@' usr/bin/ldd && \
 	post-root /build/glibc-root && \
 
 	cp -a /build/glibc-root /build/libc-bootstrap-root && \
@@ -166,6 +167,7 @@ RUN \
 	LC_ALL=POSIX && \
 	dpkg --force-depends -i /packages/linux-devel_*.deb && \
 	dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
+	/sbin/ldconfig && \
 	dpkg --force-depends -i /packages/glibc-bin-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/libc-devel-bootstrap_*.deb && \
 	mv -v /tools/bin/{ld,ld-old} && \
@@ -717,6 +719,19 @@ RUN \
 	dpkg-deb -x /packages/libc-bootstrap_*.deb . && \
 	dpkg-deb -x /packages/libssl-bootstrap_*.deb . && \
 	dpkg-deb -x /packages/openssl-bootstrap_*.deb . && \
-	dpkg-deb -x /packages/busybox-bootstrap_*.deb .
+	dpkg-deb -x /packages/busybox-bootstrap_*.deb . && \
+	mkdir packages && \
+	cp \
+		/packages/base-files_*.deb \
+		/packages/libc-bootstrap_*.deb \
+		/packages/libssl-bootstrap_*.deb \
+		/packages/openssl-bootstrap_*.deb \
+		/packages/busybox-bootstrap_*.deb \
+		packages && \
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/base-files_*.deb && \
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/libc-bootstrap_*.deb && \
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/libssl-bootstrap_*.deb && \
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/openssl-bootstrap_*.deb && \
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/busybox-bootstrap_*.deb
 	
 CMD ["/bin/sh"]
