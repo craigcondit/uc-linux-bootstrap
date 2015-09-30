@@ -60,9 +60,7 @@ RUN \
 	dpkg -i /packages/linux-devel_*.deb
 
 # glibc-bootstrap
-ADD control/libc-bootstrap /control/libc-bootstrap
-ADD control/glibc-bin-bootstrap /control/glibc-bin-bootstrap
-ADD control/libc-devel-bootstrap /control/libc-devel-bootstrap
+ADD control/glibc-bootstrap-all /control
 RUN \
 	set -x && \
 	umask 022 && \
@@ -192,8 +190,7 @@ RUN \
 	rm -v dummy.c a.out dummy.log
 
 # libz-bootstrap
-ADD control/libz-bootstrap /control/libz-bootstrap
-ADD control/libz-devel-bootstrap /control/libz-devel-bootstrap
+ADD control/libz-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -238,9 +235,7 @@ RUN \
 	dpkg --force-depends -i /packages/libz-devel-bootstrap_*.deb
 
 # file-bootstrap
-ADD control/file-bootstrap /control/file-bootstrap
-ADD control/libmagic-bootstrap /control/libmagic-bootstrap
-ADD control/libmagic-devel-bootstrap /control/libmagic-devel-bootstrap
+ADD control/file-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -294,8 +289,7 @@ RUN \
 	dpkg --force-depends -i /packages/file-bootstrap_*.deb
 
 # binutils-bootstrap
-ADD control/binutils-bootstrap /control/binutils-bootstrap
-ADD control/binutils-devel-bootstrap /control/binutils-devel-bootstrap
+ADD control/binutils-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -374,9 +368,8 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/m4-bootstrap_*.deb
 
-# libgmp-bootstrap, libgmp-devel-bootstrap
-ADD control/libgmp-bootstrap /control/libgmp-bootstrap
-ADD control/libgmp-devel-bootstrap /control/libgmp-devel-bootstrap
+# libgmp-bootstrap
+ADD control/libgmp-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -449,9 +442,8 @@ RUN \
         rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/patch-bootstrap_*.deb
 
-# libmpfr-bootstrap, libmpfr-devel-bootstrap
-ADD control/libmpfr-bootstrap /control/libmpfr-bootstrap
-ADD control/libmpfr-devel-bootstrap /control/libmpfr-devel-bootstrap
+# libmpfr-bootstrap
+ADD control/libmpfr-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
@@ -498,9 +490,8 @@ RUN \
 	dpkg --force-depends -i /packages/libmpfr-bootstrap_*.deb && \
 	dpkg --force-depends -i /packages/libmpfr-devel-bootstrap_*.deb
 
-# libmpc-bootstrap, libmpc-devel-bootstrap
-ADD control/libmpc-bootstrap /control/libmpc-bootstrap
-ADD control/libmpc-devel-bootstrap /control/libmpc-devel-bootstrap
+# libmpc-bootstrap
+ADD control/libmpc-bootstrap-all /control
 RUN \
 	set -x && \
 	set +h && \
