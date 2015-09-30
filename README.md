@@ -18,6 +18,13 @@ a functional userland with minimal overhead. OpenSSL is present to allow
 busybox's wget implementation to download from https sites. UC Docker
 supports simple package management using dpkg from busybox.
 
+### Credits ###
+
+Obviously the source packages...
+
+Many of the initial build scripts (and a few patches) were taken from
+[Linux From Scratch](http://linuxfromscratch.org/).
+
 ### Build Process ###
 
 The UC Linux build process is split into several stages:
