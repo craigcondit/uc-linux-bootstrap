@@ -218,7 +218,7 @@ repos:
       vcs_url: https://github.com/openssl/openssl
       licenses: [ BSD ]
 
-  uc-linux-base-buggy:
+  uc-linux-main-buggy:
 
     - name: base-files
       desc: UC Docker Linux base system miscellaneous files

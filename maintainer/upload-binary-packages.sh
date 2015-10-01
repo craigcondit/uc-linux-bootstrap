@@ -20,5 +20,5 @@ find packages -type f -name "*-bootstrap_*.deb" \
 echo "Uploading main packages..."
 find packages -type f -name "*.deb" -not -name "*-bootstrap_*.deb" \
 	-exec ./upload-package.py -u insideo -o insideo ${ARGS} \
-	-a ~/.bintray/apikey -r uc-linux-base-buggy -c main -d buggy "{}" \;
+	-a ~/.bintray/apikey -r uc-linux-main-buggy -c main -d buggy "{}" \;
 
