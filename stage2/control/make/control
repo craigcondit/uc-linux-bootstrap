@@ -1,0 +1,11 @@
+Package: make
+Source: make
+Version: 4.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc
+Description: utility for directing compilation
+Homepage: http://www.gnu.org/software/make/
+Build-Essential: yes
+Section: devel
+Priority: optional

@@ -9,9 +9,88 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	mkdir -p /download /packages /build && \
-	cd /download && \
+	mkdir -p /bootstrap /download /packages /build /control && \
+	cd /bootstrap && \
 	for pkg in $(cat /Manifest) ; do wget -O "$(echo $pkg | sed 's@.*/@@')" "${pkg}" ; done && \
 	for pkg in $(cat /Manifest) ; do dpkg --force-depends -i "$(echo $pkg | sed 's@.*/@@')" ; done
+
+# make
+ADD control/make /control/make
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/make-4.1.tar.bz2 \
+		http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/make-4.1.tar.bz2 && \
+	cd make-4.1 && \
+	./configure --prefix=/usr --without-guile && \
+	sh ./build.sh && \
+	./make && \
+	pre-root /build/make-root && \
+	./make DESTDIR=/build/make-root install-strip && \
+	post-root /build/make-root && \
+	cd /build/make-root && \
+	rm -rf usr/share usr/include && \
+
+	make-deb \
+		/build/make-deb \
+		/build/make-root \
+		/control/make \
+		/packages/make_4.1-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/make_*.deb
+
+# binutils
+ADD control/binutils-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/binutils-2.25.1.tar.bz2 \
+		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	mkdir binutils-build && \
+	cd binutils-build && \
+	CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
+	../binutils-2.25.1/configure \
+		--prefix=/usr --enable-shared --disable-werror \
+		--target="${TARGET_PLATFORM}" --host="${TARGET_PLATFORM}" \
+		--disable-multilib --with-build-sysroot=/ && \
+	MAKE="make -j4" make tooldir=/usr && \
+	pre-root /build/binutils-master-root && \
+	make DESTDIR=/build/binutils-master-root tooldir=/usr install && \
+	cd /build/binutils-master-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/binutils-master-root && \
+
+	cp -a /build/binutils-master-root /build/binutils-root && \
+	cd /build/binutils-root && \
+	rm -rf usr/include usr/lib/*.a usr/lib/*.la && \
+	make-deb \
+		/build/binutils-deb \
+		/build/binutils-root \
+		/control/binutils \
+		/packages/binutils_2.25.1-0_amd64.deb && \
+
+	cp -a /build/binutils-master-root /build/binutils-devel-root && \
+	cd /build/binutils-devel-root && \
+	rm -rf usr/bin usr/lib/ldscripts usr/lib/*.so* && \
+	make-deb \
+		/build/binutils-devel-deb \
+		/build/binutils-devel-root \
+		/control/binutils-devel \
+		/packages/binutils-devel_2.25.1-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P binutils-bootstrap binutils-devel-bootstrap && \
+	dpkg --force-depends -i /packages/binutils_*.deb
 
 CMD ["/bin/sh"]

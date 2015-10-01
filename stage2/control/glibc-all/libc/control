@@ -1,0 +1,10 @@
+Package: libc
+Source: glibc
+Version: 2.22-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files
+Description: GNU C Library: Shared libraries
+Section: libs
+Priority: optional
+Build-Essential: true

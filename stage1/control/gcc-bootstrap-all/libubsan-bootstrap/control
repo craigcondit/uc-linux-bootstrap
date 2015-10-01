@@ -1,6 +1,6 @@
 Package: libubsan-bootstrap
 Source: gcc
-Version: 2.25.1-0
+Version: 5.2.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libubsan

@@ -1,0 +1,10 @@
+Package: binutils
+Source: binutils
+Version: 2.25.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files, libc, libz
+Description: GNU assembler, linker and binary utilities
+Section: devel
+Priority: optional
+Build-Essential: true
