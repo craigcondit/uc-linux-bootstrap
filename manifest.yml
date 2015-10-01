@@ -17,119 +17,206 @@ repos:
     - name: glibc-bin-bootstrap
       desc: 'GNU C Library: Binaries'
       website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
 
     - name: libz-bootstrap
       desc: 'GNU C Library: Shared libraries'
+      website_url: http://www.zlib.net/
+      licenses: [ BSD 3-Clause ]
+      vcs_url: https://github.com/madler/zlib
 
     - name: libz-devel-bootstrap
       desc: 'GNU C Library: Shared libraries'
+      website_url: http://www.zlib.net/
+      licenses: [ BSD 3-Clause ]
+      vcs_url: https://github.com/madler/zlib
 
     - name: file-bootstrap
       desc: Determines file type using "magic" numbers
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
 
     - name: libmagic-bootstrap
       desc: Determines file type using "magic" numbers (libmagic shared libs)
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
 
     - name: libmagic-devel-bootstrap
       desc: Determines file type using "magic" numbers (headers and static libraries)
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
 
     - name: binutils-bootstrap
       desc: GNU assembler, linker and binary utilities
+      website_url: http://www.gnu.org/software/binutils/
+      vcs_url: git://sourceware.org/git/binutils-gdb.git
+      licenses: [ GPL-2.0 ]
 
     - name: binutils-devel-bootstrap
       desc: GNU assembler, linker and binary utilities (headers and static libraries)
+      website_url: http://www.gnu.org/software/binutils/
+      vcs_url: git://sourceware.org/git/binutils-gdb.git
+      licenses: [ GPL-2.0 ]
 
     - name: m4-bootstrap
       desc: macro processing language
+      website_url: http://www.gnu.org/software/m4/m4.html
+      vcs_url: http://git.savannah.gnu.org/r/m4.git
+      licenses: [ GPL-3.0 ]
 
     - name: libgmp-bootstrap
       desc: Multiprecision arithmetic library
+      website_url: https://gmplib.org/
+      licenses: [ 'GPL-2.0', 'LGPL-3.0' ]
+      vcs_url: https://gmplib.org/repo/gmp/
 
     - name: libgmp-devel-bootstrap
       desc: Multiprecision arithmetic library (headers and static libraries)
+      website_url: https://gmplib.org/
+      licenses: [ 'GPL-2.0', 'LGPL-3.0' ]
+      vcs_url: https://gmplib.org/repo/gmp/
 
     - name: patch-bootstrap
       desc: Apply a diff file to an original
+      website_url: http://savannah.gnu.org/projects/patch/
+      licenses: [ GPL-3.0 ]
+      vcs_url: git://git.savannah.gnu.org/patch.git
 
     - name: libmpfr-bootstrap
       desc: multiple precision floating-point computation
+      website_url: http://www.mpfr.org/
+      licenses: [ 'GPL-3.0', 'LGPL-3.0' ]
+      vcs_url: svn://scm.gforge.inria.fr/svn/mpfr
 
     - name: libmpfr-devel-bootstrap
       desc: multiple precision floating-point computation (headers and static libs)
+      website_url: http://www.mpfr.org/
+      licenses: [ 'GPL-3.0', 'LGPL-3.0' ]
+      vcs_url: svn://scm.gforge.inria.fr/svn/mpfr
 
     - name: libmpc-bootstrap
       desc: multiple precision complex floating-point library
+      website_url: http://www.multiprecision.org/index.php?prog=mpc
+      licenses: [ LGPL-3.0 ]
+      vcs_url: https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
 
     - name: libmpc-devel-bootstrap
       desc: multiple precision complex floating-point library (headers and static libs)
+      website_url: http://www.multiprecision.org/index.php?prog=mpc
+      licenses: [ LGPL-3.0 ]
+      vcs_url: https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
 
     - name: gcc-bootstrap
       desc: This is the GNU C compiler, a fairly portable optimizing compiler for C.
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libgcc-bootstrap
       desc: GCC support library
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libstdcxx-bootstrap
       desc: GNU Standard C++ Library v3
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libasan-bootstrap
       desc: AddressSanitizer -- a fast memory error detector
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libatomic-bootstrap
       desc: support library providing __atomic built-in functions
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libcilkrts-bootstrap
       desc: Intel Cilk Plus language extensions (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libgomp-bootstrap
       desc: GCC OpenMP (GOMP) support library
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libitm-bootstrap
       desc: GNU Transactional Memory Library
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: liblsan-bootstrap
       desc: LeakSanitizer -- a memory leak detector (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libquadmath-bootstrap
       desc: GCC Quad-Precision Math Library
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libssp-bootstrap
       desc: GNU stack protection library (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libtsan-bootstrap
       desc: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libubsan-bootstrap
       desc: UBSan -- undefined behaviour sanitizer (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: libvtv-bootstrap
       desc: GCC Virtual Table Verification library (runtime)
       website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
     - name: busybox-bootstrap
       desc: Tiny utilities for small and embedded systems
+      website_url: http://www.busybox.net/
+      licenses: [ GPL-2.0 ]
+      vcs_url: git://busybox.net/busybox.git
 
     - name: openssl-bootstrap
       desc: Secure Sockets Layer toolkit - binaries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
 
     - name: libssl-bootstrap
       desc: Secure Sockets Layer toolkit - shared libraries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
 
     - name: libssl-devel-bootstrap
       desc: Secure Sockets Layer toolkit - headers and static libraries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
 
   uc-linux-base-buggy:
 

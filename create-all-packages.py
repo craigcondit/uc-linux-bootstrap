@@ -13,6 +13,11 @@ BINTRAY_URL = "https://bintray.com/api/v1"
 
 # sys.tracebacklimit = 0
 
+def is_sequence(arg):
+    return (not hasattr(arg, "strip") and
+        hasattr(arg, "__getitem__") or
+        hasattr(arg, "__iter__"))
+
 def fetch(base_url, user, api_key, pkg_name):
     pkg_url = "{url}/{name}".format(url=base_url, name=pkg_name)
     response = requests.get(pkg_url, auth=(user, api_key))
@@ -40,8 +45,12 @@ def needs_sync(old_pkg_data, pkg_data):
 
     for attr in pkg_data:
         if pkg_data.get(attr) != old_pkg_data.get(attr):
-            print "  Attr: {0} Old: {1} New: {2}".format(attr, old_pkg_data.get(attr), new_pkg_data.get(attr))
-            return True
+            if is_sequence(pkg_data.get(attr)):
+               if sorted(pkg_data.get(attr)) != sorted(old_pkg_data.get(attr)):
+                   return True
+            else:
+                print "  Attr: {0} Old: {1} New: {2}".format(attr, old_pkg_data.get(attr), pkg_data.get(attr))
+                return True 
 
     return False 
 
@@ -112,7 +121,7 @@ def main():
                 else:
                     print "{0}/{1} created".format(repo_name, pkg_name)
 
-    0 if success else 1
+    sys.exit(0 if success else 1)
 
 if __name__ == "__main__":
     main()
