@@ -1,0 +1,147 @@
+repos: 
+
+  uc-linux-bootstrap-buggy:
+
+    - name: libc-bootstrap
+      desc: 'GNU C Library: Shared libraries'
+      website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
+
+    - name: libc-devel-bootstrap
+      desc: 'GNU C Library: Shared libraries (headers / static libs)'
+      website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
+
+    - name: glibc-bin-bootstrap
+      desc: 'GNU C Library: Binaries'
+      website_url: https://www.gnu.org/software/libc/
+
+    - name: libz-bootstrap
+      desc: 'GNU C Library: Shared libraries'
+
+    - name: libz-devel-bootstrap
+      desc: 'GNU C Library: Shared libraries'
+
+    - name: file-bootstrap
+      desc: Determines file type using "magic" numbers
+
+    - name: libmagic-bootstrap
+      desc: Determines file type using "magic" numbers (libmagic shared libs)
+
+    - name: libmagic-devel-bootstrap
+      desc: Determines file type using "magic" numbers (headers and static libraries)
+
+    - name: binutils-bootstrap
+      desc: GNU assembler, linker and binary utilities
+
+    - name: binutils-devel-bootstrap
+      desc: GNU assembler, linker and binary utilities (headers and static libraries)
+
+    - name: m4-bootstrap
+      desc: macro processing language
+
+    - name: libgmp-bootstrap
+      desc: Multiprecision arithmetic library
+
+    - name: libgmp-devel-bootstrap
+      desc: Multiprecision arithmetic library (headers and static libraries)
+
+    - name: patch-bootstrap
+      desc: Apply a diff file to an original
+
+    - name: libmpfr-bootstrap
+      desc: multiple precision floating-point computation
+
+    - name: libmpfr-devel-bootstrap
+      desc: multiple precision floating-point computation (headers and static libs)
+
+    - name: libmpc-bootstrap
+      desc: multiple precision complex floating-point library
+
+    - name: libmpc-devel-bootstrap
+      desc: multiple precision complex floating-point library (headers and static libs)
+
+    - name: gcc-bootstrap
+      desc: This is the GNU C compiler, a fairly portable optimizing compiler for C.
+      website_url: https://gcc.gnu.org/
+
+    - name: libgcc-bootstrap
+      desc: GCC support library
+      website_url: https://gcc.gnu.org/
+
+    - name: libstdcxx-bootstrap
+      desc: GNU Standard C++ Library v3
+      website_url: https://gcc.gnu.org/
+
+    - name: libasan-bootstrap
+      desc: AddressSanitizer -- a fast memory error detector
+      website_url: https://gcc.gnu.org/
+
+    - name: libatomic-bootstrap
+      desc: support library providing __atomic built-in functions
+      website_url: https://gcc.gnu.org/
+
+    - name: libcilkrts-bootstrap
+      desc: Intel Cilk Plus language extensions (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: libgomp-bootstrap
+      desc: GCC OpenMP (GOMP) support library
+      website_url: https://gcc.gnu.org/
+
+    - name: libitm-bootstrap
+      desc: GNU Transactional Memory Library
+      website_url: https://gcc.gnu.org/
+
+    - name: liblsan-bootstrap
+      desc: LeakSanitizer -- a memory leak detector (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: libquadmath-bootstrap
+      desc: GCC Quad-Precision Math Library
+      website_url: https://gcc.gnu.org/
+
+    - name: libssp-bootstrap
+      desc: GNU stack protection library (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: libtsan-bootstrap
+      desc: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: libubsan-bootstrap
+      desc: UBSan -- undefined behaviour sanitizer (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: libvtv-bootstrap
+      desc: GCC Virtual Table Verification library (runtime)
+      website_url: https://gcc.gnu.org/
+
+    - name: busybox-bootstrap
+      desc: Tiny utilities for small and embedded systems
+
+    - name: openssl-bootstrap
+      desc: Secure Sockets Layer toolkit - binaries
+
+    - name: libssl-bootstrap
+      desc: Secure Sockets Layer toolkit - shared libraries
+
+    - name: libssl-devel-bootstrap
+      desc: Secure Sockets Layer toolkit - headers and static libraries
+
+  uc-linux-base-buggy:
+
+    - name: base-files
+      desc: UC Docker Linux base system miscellaneous files
+      licenses: [ Public Domain ]
+      vcs_url: https://github.com/insideo/uc-docker
+      website_url: https://github.com/insideo/uc-docker
+
+    - name: linux-devel
+      desc: Linux kernel development headers
+      licenses: [ GPL-2.0 ]
+      vcs_url: https://git.kernel.org/
+      website_url: https://www.kernel.org/
+
