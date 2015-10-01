@@ -590,7 +590,7 @@ RUN \
 		/build/libstdcxx-bootstrap-deb \
 		/build/libstdcxx-bootstrap-root \
 		/control/libstdcxx-bootstrap \
-		/packages/libstdcxx-bootstrap_5.2.0-0_amd64.deb) ; done && \
+		/packages/libstdcxx-bootstrap_5.2.0-0_amd64.deb && \
 
 	make-deb \
 		/build/gcc-bootstrap-deb \
