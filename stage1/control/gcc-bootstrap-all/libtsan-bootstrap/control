@@ -5,7 +5,7 @@ Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libtsan
 Conflicts: libtsan
-Requires: libc, libstdc++, libgcc
+Requires: libc, libstdcxx, libgcc
 Description: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
 Section: libs
 Priority: optional

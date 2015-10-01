@@ -5,7 +5,7 @@ Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: liblsan
 Conflicts: liblsan
-Requires: libc, libstdc++, libgcc
+Requires: libc, libstdcxx, libgcc
 Description: LeakSanitizer -- a memory leak detector (runtime)
 Section: libs
 Priority: optional

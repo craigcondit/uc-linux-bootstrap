@@ -5,7 +5,7 @@ Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libvtv
 Conflicts: libvtv
-Requires: libc, libstdc++, libgcc
+Requires: libc, libstdcxx, libgcc
 Description: GCC Virtual Table Verification library (runtime)
 Section: libs
 Priority: optional

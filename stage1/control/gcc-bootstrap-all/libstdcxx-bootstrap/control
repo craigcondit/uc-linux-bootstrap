@@ -1,10 +1,10 @@
-Package: libstdc++-bootstrap
+Package: libstdcxx-bootstrap
 Source: gcc
 Version: 2.25.1-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Provides: libstdc++
-Conflicts: libstdc++
+Provides: libstdcxx
+Conflicts: libstdcxx
 Requires: libc
 Description: GNU Standard C++ Library v3
 Section: libs

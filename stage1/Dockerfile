@@ -573,10 +573,13 @@ RUN \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libstdc++ libtsan libubsan libvtv ; do ( \
+		liblsan libquadmath libssp libstd++ libtsan libubsan libvtv ; do ( \
 		mkdir -p /build/${pkg}-bootstrap-root/usr/lib && \
 		cp -a usr/lib/${pkg}*.so* /build/${pkg}-bootstrap-root/usr/lib/ && \
 		rm -f usr/lib/${pkg}*.so* && \
+		if [ "${pkg}" == "libstdc++" ]; then \
+			pkg=libstdcxx && \
+			mv /build/libstdc++-bootstrap-root /build/libstdcpp-bootstrap-root ; fi && \
 		make-deb \
 			/build/${pkg}-bootstrap-deb \
 			/build/${pkg}-bootstrap-root \
@@ -592,7 +595,7 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libstdc++ libtsan libubsan libvtv gcc ; do \
+		liblsan libquadmath libssp libstdcxx libtsan libubsan libvtv gcc ; do \
 		dpkg --force-depends -i /packages/${pkg}-bootstrap_*.deb ; done && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
