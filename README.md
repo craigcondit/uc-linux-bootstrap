@@ -42,7 +42,7 @@ Stage 0 starts from a debian:jessie root image and builds several packages
     - binutils
     - linux headers
     - glibc
-    - libstdc++
+    - libstdcxx
     - gcc
     - busybox
     - make
@@ -112,7 +112,7 @@ be temporary until the system is fully self-hosting):
   - gcc 5.2.0
     - gcc-bootstrap
     - libgcc-bootstrap
-    - libstdc++-bootstrap
+    - libstdcxx-bootstrap
     - libasan-bootstrap
     - libatomic-bootstrap
     - libcilkrts-bootstrap
