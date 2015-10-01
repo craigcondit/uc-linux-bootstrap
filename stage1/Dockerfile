@@ -507,6 +507,7 @@ RUN \
 	MAKE="make -j4" make && \
 	pre-root /build/mpc-root && \
 	make DESTDIR=/build/mpc-root install && \
+        cd /build/mpc-root && \
 	rm -rf usr/share && \
 	(strip --strip-debug usr/lib/* || true) && \
 	post-root /build/mpc-root && \

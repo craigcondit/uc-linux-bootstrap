@@ -1,6 +1,6 @@
 Package: libmpc-devel-bootstrap
 Source: mpc
-Version: 1.0.3-0
+Version: 1.0.3-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libmpc-devel

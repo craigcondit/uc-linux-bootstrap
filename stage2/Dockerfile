@@ -93,4 +93,33 @@ RUN \
 	dpkg --force-depends -P binutils-bootstrap binutils-devel-bootstrap && \
 	dpkg --force-depends -i /packages/binutils_*.deb
 
+# pkg-config
+ADD control/pkg-config /control/pkg-config
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/pkg-config-0.28.tar.gz \
+		http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz && \
+	cd /build && \
+	tar xf /download/pkg-config-0.28.tar.gz && \
+	cd pkg-config-0.28 && \
+	./configure --prefix=/usr --with-internal-glib --disable-host-tool && \
+	MAKE="make -j4" make && \
+	pre-root /build/pkg-config-root && \
+	make DESTDIR=/build/pkg-config-root install && \
+	post-root /build/pkg-config-root && \
+	cd /build/pkg-config-root && \
+	rm -rf usr/share/doc usr/share/man && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	make-deb \
+		/build/pkg-config-deb \
+		/build/pkg-config-root \
+		/control/pkg-config \
+		/packages/pkg-config_0.28-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/pkg-config_*.deb
+
 CMD ["/bin/sh"]

@@ -1,0 +1,9 @@
+Package: pkg-config
+Version: 0.28-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc
+Description: manage compile and link flags for libraries
+Homepage: http://pkg-config.freedesktop.org
+Section: devel
+Priority: optional
