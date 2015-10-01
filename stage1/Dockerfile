@@ -573,18 +573,24 @@ RUN \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libstd++ libtsan libubsan libvtv ; do ( \
+		liblsan libquadmath libssp libtsan libubsan libvtv ; do ( \
 		mkdir -p /build/${pkg}-bootstrap-root/usr/lib && \
 		cp -a usr/lib/${pkg}*.so* /build/${pkg}-bootstrap-root/usr/lib/ && \
 		rm -f usr/lib/${pkg}*.so* && \
-		if [ "${pkg}" == "libstdc++" ]; then \
-			pkg=libstdcxx && \
-			mv /build/libstdc++-bootstrap-root /build/libstdcpp-bootstrap-root ; fi && \
 		make-deb \
 			/build/${pkg}-bootstrap-deb \
 			/build/${pkg}-bootstrap-root \
 			/control/${pkg}-bootstrap \
 			/packages/${pkg}-bootstrap_5.2.0-0_amd64.deb) ; done && \
+
+	mkdir -p /build/libstdcxx-bootstrap-root/usr/lib && \
+	cp -a usr/lib/libstdc++*.so* /build/libstdcxx-bootstrap-root/usr/lib/ && \
+	rm -f usr/lib/libstdc++*.so* && \
+	make-deb \
+		/build/libstdcxx-bootstrap-deb \
+		/build/libstdcxx-bootstrap-root \
+		/control/libstdcxx-bootstrap \
+		/packages/libstdcxx-bootstrap_5.2.0-0_amd64.deb) ; done && \
 
 	make-deb \
 		/build/gcc-bootstrap-deb \
