@@ -742,6 +742,8 @@ RUN \
 	chroot /stage2 /sbin/ldconfig && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/libssl-bootstrap_*.deb && \
 	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/openssl-bootstrap_*.deb && \
-	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/busybox-bootstrap_*.deb
+	chroot /stage2 /usr/bin/dpkg --force-depends -i /packages/busybox-bootstrap_*.deb && \
+	cd / && \
+	rm -rf /stage2/packages
 	
 CMD ["/bin/sh"]

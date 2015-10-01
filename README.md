@@ -1,6 +1,6 @@
 # uc-docker
 
-Micro-container for Docker which is designed to be small (~ 15 MB),
+Micro-container for Docker which is designed to be small (~ 10.2 MB),
 extensible (support for Debian .deb packages), and functional. Further,
 images should be able to have reproducible builds.
 
