@@ -1,6 +1,6 @@
 # uc-docker
 
-Micro-container for Docker which is designed to be small (~ 18 MB),
+Micro-container for Docker which is designed to be small (~ 15 MB),
 extensible (support for Debian .deb packages), and functional. Further,
 images should be able to have reproducible builds.
 
@@ -133,8 +133,28 @@ be temporary until the system is fully self-hosting):
 
 #### stage2 ####
 
-TODO
+To build stage2, execute the following:
+
+    ./build-stage2.sh
+
+Currently, stage 2 consists of the following packages:
+
+  - base-files
+  - libc-bootstrap
+  - libssl-bootstrap
+  - openssl-bootstrap
+  - busybox-bootstrap
+
+This is enough to download any remaining packages and begin the process of
+building permanent images.
+	
 
 ### Future Plans ###
-Upload all packages to bintray.
+
+ - Automate deployment of packages to bintray. All packages through stage1
+   have been uploaded, but the process is very manual.
+ - Update stage2 Dockerfile to produce non-bootstrap versions of all packages.
+ - Use stage3 (non-bootstrap version of stage2) as the final OS image.
+ - Build additional packages using docker run... scripts.
+ - Upload all final packages to bintray.
 

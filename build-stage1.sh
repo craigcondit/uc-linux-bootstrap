@@ -16,7 +16,7 @@ fi
 
 time docker run --rm=true -v "$(pwd)/../stage2":/output:rw insideo/uc-stage1 \
         bash -c "tar cC /stage2 . > /output/stage2.tar"
-time docker run --rm=true -v "$(pwd)/../stage2":/output:rw insideo/uc-stage1 \
+time docker run --rm=true -v "$(pwd)/../packages":/output:rw insideo/uc-stage1 \
         bash -c "tar cC /packages . > /output/stage2-packages.tar"
 
 cd ../stage2
@@ -24,6 +24,7 @@ rm -f stage2.tar.xz || /bin/true
 xz -9 stage2.tar
 
 cd ../packages
-tar xf ../stage2/stage2-packages.tar
+tar xf stage2-packages.tar
+rm -f stage2-packages.tar
 
 echo "stage1 build complete."
