@@ -1227,4 +1227,32 @@ RUN \
 	dpkg --force-depends -i \
 		/packages/libopkg_*.deb /packages/libopkg-devel_*.deb /packages/opkg_*.deb
 
+# stage 3 final prep
+ADD base-feeds.conf /etc/opkg/base-feeds.conf
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	chmod 755 /etc/opkg && \
+	chmod 644 /etc/opkg/base-feeds.conf && \
+	opkg update && \
+	mkdir -p /stage3 && \
+	opkg --add-dest stage3:/stage3 -d stage3 install base-files && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libc_*.deb && \
+	chroot /stage3 /sbin/ldconfig && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/busybox_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libssl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libz_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/liblzma_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libbz2_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libarchive_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libcurl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libgpg-error_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libassuan_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libgpgme_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libopkg_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/opkg_*.deb && \
+	mkdir -p /stage3/etc/opkg && \
+	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg
+	
 CMD ["/bin/sh"]
