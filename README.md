@@ -151,9 +151,8 @@ building permanent images.
 
 ### Future Plans ###
 
- - Automate deployment of packages to bintray. All packages through stage1
-   have been uploaded, but the process is very manual.
- - Update stage2 Dockerfile to produce non-bootstrap versions of all packages.
+ - Update stage2 Dockerfile to produce non-bootstrap versions of all
+   packages (in progress).
  - Use stage3 (non-bootstrap version of stage2) as the final OS image.
  - Build additional packages using docker run... scripts.
  - Upload all final packages to bintray.
