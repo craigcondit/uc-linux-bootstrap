@@ -14,7 +14,7 @@ RUN \
 	for pkg in $(cat /Manifest) ; do wget -O "$(echo $pkg | sed 's@.*/@@')" "${pkg}" ; done && \
 	for pkg in $(cat /Manifest) ; do dpkg --force-depends -i "$(echo $pkg | sed 's@.*/@@')" ; done
 
-# make
+# make (will need to replace later after gcc is installed)
 ADD control/make /control/make
 RUN \
 	set -x && \
@@ -610,5 +610,36 @@ RUN \
 	grep "/lib.*/libc.so.6 " dummy.log && \
 	grep found dummy.log && \
 	rm -v dummy.c a.out dummy.log
+
+# make
+ADD control/make /control/make
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	dpkg --force-depends -P make && \
+	rm -f /packages/make_*.deb && \
+	wget -O /download/make-4.1.tar.bz2 \
+		http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 && \
+	cd /build && \
+	tar xf /download/make-4.1.tar.bz2 && \
+	cd make-4.1 && \
+	./configure --prefix=/usr --without-guile && \
+	sh ./build.sh && \
+	./make && \
+	pre-root /build/make-root && \
+	./make DESTDIR=/build/make-root install-strip && \
+	post-root /build/make-root && \
+	cd /build/make-root && \
+	rm -rf usr/share usr/include && \
+
+	make-deb \
+		/build/make-deb \
+		/build/make-root \
+		/control/make \
+		/packages/make_4.1-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/make_*.deb
 
 CMD ["/bin/sh"]
