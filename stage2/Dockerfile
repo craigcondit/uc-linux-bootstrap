@@ -697,5 +697,53 @@ RUN \
 	dpkg --force-depends -P patch-bootstrap && \
 	dpkg --force-depends -i /packages/patch_*.deb
 
-CMD ["/bin/sh"]
+# busybox
+ADD control/busybox control/busybox
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+        wget -O /download/busybox-1.23.2.tar.bz2 \
+		http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/busybox-1.23.2.tar.bz2 && \
+	cd busybox-1.23.2 && \
+	confs=' \
+		CONFIG_INSTALL_NO_USR \
+		CONFIG_AR \
+		CONFIG_FEATURE_AR_LONG_FILENAMES \
+		CONFIG_FEATURE_AR_CREATE \
+		CONFIG_DPKG \
+		CONFIG_DPKG_DEB' && \
+	make defconfig && \
+	for conf in $confs; do \
+		sed -i "s!^# $conf is not set\$!$conf=y!" .config; \
+		grep -q "^$conf=y" .config || echo "$conf=y" >> .config; \
+	done && \
+	make oldconfig && \
+	for conf in $confs; do grep -q "^$conf=y" .config; done && \
+	MAKE="make -j4" make && \
+	make install && \
+	rm -f _install/linuxrc && \
+	mkdir -p /build/busybox-root/usr && \
+	cp -a _install/* /build/busybox-root/usr/ && \
+	cd /build/busybox-root && \
+	chmod 4755 /build/busybox-root/usr/bin/busybox && \
+	make-deb \
+		/build/busybox-deb \
+		/build/busybox-root \
+		/control/busybox \
+		/packages/busybox_1.23.2-0_amd64.deb && \
 
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	cp -a /usr/bin/busybox /build/dpkg && \
+	dpkg --force-depends -P busybox-bootstrap && \
+	/build/dpkg --force-depends -i /packages/busybox_*.deb && \
+	rm -f /build/dpkg && \
+	dpkg --force-depends -i /packages/binutils_*.deb && \
+	dpkg --force-depends -i /packages/patch_*.deb && \
+	dpkg --force-depends -i /packages/sed_*.deb && \
+	dpkg --force-depends -i /packages/gawk_*.deb
+
+CMD ["/bin/sh"]

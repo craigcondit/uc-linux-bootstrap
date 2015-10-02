@@ -1,0 +1,9 @@
+Package: libssl-devel
+Source: openssl
+Version: 1.0.2d-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files, libc-devel, libz-devel, libssl (>= 1.0.2d-0)
+Description: Secure Sockets Layer toolkit - headers and static libraries
+Section: devel
+Priority: optional
