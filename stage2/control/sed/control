@@ -1,0 +1,11 @@
+Package: sed
+Source: sed
+Version: 4.2.2-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc
+Description: The GNU sed stream editor
+Homepage: http://www.gnu.org/software/sed/
+Build-Essential: yes
+Section: utils
+Priority: optional

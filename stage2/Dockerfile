@@ -99,7 +99,6 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/pkg-config-0.28.tar.gz \
 		http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz && \
 	cd /build && \
@@ -121,5 +120,60 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/pkg-config_*.deb
+
+# gawk
+ADD control/gawk /control/gawk
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/gawk-4.1.3.tar.xz \
+		http://ftp.gnu.org/gnu/gawk/gawk-4.1.3.tar.xz && \
+	cd /build && \
+	tar xf /download/gawk-4.1.3.tar.xz && \
+	cd gawk-4.1.3 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/gawk-root && \
+	make DESTDIR=/build/gawk-root install-strip && \
+	post-root /build/gawk-root && \
+	cd /build/gawk-root && \
+	rm -rf usr/share/info usr/share/locale usr/share/man && \
+	rm -f usr/bin/gawk-4.1.3 && \
+	make-deb \
+		/build/gawk-deb \
+		/build/gawk-root \
+		/control/gawk \
+		/packages/gawk_4.1.3-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/gawk_*.deb
+
+# sed
+ADD control/sed /control/sed
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/sed-4.2.2.tar.bz2 \
+		http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.bz2 && \
+	cd /build && \
+	tar xf /download/sed-4.2.2.tar.bz2 && \
+	cd sed-4.2.2 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/sed-root && \
+	make DESTDIR=/build/sed-root install-strip && \
+	post-root /build/sed-root && \
+	cd /build/sed-root && \
+	rm -rf usr/share && \
+	make-deb \
+		/build/sed-deb \
+		/build/sed-root \
+		/control/sed\
+		/packages/sed_4.2.2-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/sed_*.deb
 
 CMD ["/bin/sh"]

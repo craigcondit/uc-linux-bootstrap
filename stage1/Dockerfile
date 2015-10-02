@@ -520,7 +520,7 @@ RUN \
 		/build/libmpc-bootstrap-deb \
 		/build/libmpc-bootstrap-root \
 		/control/libmpc-bootstrap \
-		/packages/libmpc-bootstrap_1.0.3-0_amd64.deb && \
+		/packages/libmpc-bootstrap_1.0.3-1_amd64.deb && \
 
 	cp -a /build/mpc-root /build/libmpc-devel-bootstrap-root && \
 	cd /build/libmpc-devel-bootstrap-root && \
@@ -529,7 +529,7 @@ RUN \
 		/build/libmpc-devel-bootstrap-deb \
 		/build/libmpc-devel-bootstrap-root \
 		/control/libmpc-devel-bootstrap \
-		/packages/libmpc-devel-bootstrap_1.0.3-0_amd64.deb && \
+		/packages/libmpc-devel-bootstrap_1.0.3-1_amd64.deb && \
 
 	cd / && \
         rm -rf /build/* /download/* /control/* && \

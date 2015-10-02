@@ -1,0 +1,11 @@
+Package: gawk
+Source: gawk
+Version: 4.1.3-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc, libmpfr, libgmp
+Description: GNU awk, a pattern scanning and processing language
+Homepage: http://www.gnu.org/software/gawk/
+Build-Essential: yes
+Section: interpreters
+Priority: optional
