@@ -313,7 +313,7 @@ RUN \
 		/build/libz-deb \
 		/build/libz-root \
 		/control/libz\
-		/packages/libz_2.8-0_amd64.deb && \
+		/packages/libz_1.2.8-1_amd64.deb && \
 
 	cp -a /build/zlib-root /build/libz-devel-root && \
 	cd /build/libz-devel-root && \
@@ -322,7 +322,7 @@ RUN \
 		/build/libz-devel-deb \
 		/build/libz-devel-root \
 		/control/libz-devel \
-		/packages/libz-devel_2.8-0_amd64.deb && \
+		/packages/libz-devel_1.2.8-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -P libz-bootstrap libz-devel-bootstrap && \
@@ -523,7 +523,6 @@ RUN \
 ADD control/gcc-all /control
 RUN \
 	set -x && \
-	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
@@ -534,6 +533,8 @@ RUN \
 	mkdir gcc-build && \
 	cd gcc-build && \
 	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
+	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
+	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
 		--disable-bootstrap --with-system-zlib \
