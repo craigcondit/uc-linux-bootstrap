@@ -532,6 +532,8 @@ RUN \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
+	dpkg --force-depends -P \
+		libssl-devel-bootstrap openssl-bootstrap libssl-devel-bootstrap && \
 	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
 	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
 	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
@@ -595,6 +597,10 @@ RUN \
 		dpkg --force-depends -P ${pkg}-bootstrap && \
 		dpkg --force-depends -i /packages/${pkg}_*.deb ; done && \
 	dpkg --force-depends -i /packages/libcc1_*.deb && \
+	dpkg --force-depends -i \
+		/bootstrap/libssl-bootstrap_*.deb \
+		/bootstrap/openssl-bootstrap_*.deb \
+		/bootstrap/libssl-devel-bootstrap_*.deb && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
 	readelf -l a.out | grep ': /lib' && \
