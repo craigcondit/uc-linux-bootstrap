@@ -20,12 +20,13 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	wget -O /download/make-4.1.tar.bz2 \
 		http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 && \
 	cd /build && \
 	tar xf /download/make-4.1.tar.bz2 && \
 	cd make-4.1 && \
-	./configure --prefix=/usr --without-guile && \
+	./configure --prefix=/usr --without-guile --build="${TARGET_PLATFORM}" && \
 	sh ./build.sh && \
 	./make && \
 	pre-root /build/make-root && \
@@ -607,38 +608,6 @@ RUN \
 	grep "/lib.*/libc.so.6 " dummy.log && \
 	grep found dummy.log && \
 	rm -v dummy.c a.out dummy.log
-
-# make
-ADD control/make /control/make
-RUN \
-	set -x && \
-	umask 022 && \
-	LC_ALL=POSIX && \
-	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	dpkg --force-depends -P make && \
-	rm -f /packages/make_*.deb && \
-	wget -O /download/make-4.1.tar.bz2 \
-		http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 && \
-	cd /build && \
-	tar xf /download/make-4.1.tar.bz2 && \
-	cd make-4.1 && \
-	./configure --prefix=/usr --without-guile --build="${TARGET_PLATFORM}" && \
-	sh ./build.sh && \
-	./make && \
-	pre-root /build/make-root && \
-	./make DESTDIR=/build/make-root install-strip && \
-	post-root /build/make-root && \
-	cd /build/make-root && \
-	rm -rf usr/share usr/include && \
-
-	make-deb \
-		/build/make-deb \
-		/build/make-root \
-		/control/make \
-		/packages/make_4.1-0_amd64.deb && \
-	cd / && \
-	rm -rf /build/* /download/* /control/* && \
-	dpkg --force-depends -i /packages/make_*.deb
 
 # m4
 ADD control/m4 /control/m4
