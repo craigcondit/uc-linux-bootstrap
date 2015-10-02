@@ -4,8 +4,8 @@ set -ex
 cd "$(dirname $0)"
 cd "$(pwd -P)"/stage2
 
-#chmod g+rws ../stage3 ../packages || /bin/true
-#setfacl -m "default:group::rw" ../stage3 ../packages || /bin/true
+#chmod g+rws ../stage3 ../packages-stage2 || /bin/true
+#setfacl -m "default:group::rw" ../stage3 ../packages-stage2 || /bin/true
 
 time docker build -t insideo/uc-stage2 --pull .
 
@@ -23,7 +23,8 @@ fi
 #rm -f stage3.tar.xz || /bin/true
 #xz -9 stage3.tar
 #
-#cd ../packages
+#cd ../packages-stage2
+#find -type f -name "*.deb" -delete
 #tar xf ../stage3/stage3-packages.tar
 
 echo "stage2 build complete."
