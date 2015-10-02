@@ -232,24 +232,6 @@ repos:
       vcs_url: https://git.kernel.org/
       website_url: https://www.kernel.org/
 
-    - name: libc
-      desc: 'GNU C Library: Shared libraries'
-      website_url: https://www.gnu.org/software/libc/
-      licenses: [ LGPL-2.1 ]
-      vcs_url: git://sourceware.org/git/glibc.git
-
-    - name: libc-devel
-      desc: 'GNU C Library: Shared libraries (headers / static libs)'
-      website_url: https://www.gnu.org/software/libc/
-      licenses: [ LGPL-2.1 ]
-      vcs_url: git://sourceware.org/git/glibc.git
-
-    - name: glibc-bin
-      desc: 'GNU C Library: Binaries'
-      website_url: https://www.gnu.org/software/libc/
-      licenses: [ LGPL-2.1 ]
-      vcs_url: git://sourceware.org/git/glibc.git
-
     - name: make
       desc: utility for directing compilation
       website_url: http://www.gnu.org/software/make/
@@ -273,4 +255,160 @@ repos:
       website_url: http://www.gnu.org/software/sed/
       licenses: [ GPL-2.0 ]
       vcs_url: git://git.savannah.gnu.org/sed.git
+
+    - name: libc
+      desc: 'GNU C Library: Shared libraries'
+      website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
+
+    - name: libc-devel
+      desc: 'GNU C Library: Shared libraries (headers / static libs)'
+      website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
+
+    - name: glibc-bin
+      desc: 'GNU C Library: Binaries'
+      website_url: https://www.gnu.org/software/libc/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://sourceware.org/git/glibc.git
+
+    - name: file
+      desc: Determines file type using "magic" numbers
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
+
+    - name: libmagic
+      desc: Determines file type using "magic" numbers (libmagic shared libs)
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
+
+    - name: libmagic-devel
+      desc: Determines file type using "magic" numbers (headers and static libraries)
+      website_url: http://www.darwinsys.com/file/
+      vcs_url: https://github.com/file/file
+      licenses: [ BSD 2-Clause ]
+
+    - name: libgmp
+      desc: Multiprecision arithmetic library
+      website_url: https://gmplib.org/
+      licenses: [ 'GPL-2.0', 'LGPL-3.0' ]
+      vcs_url: https://gmplib.org/repo/gmp/
+
+    - name: libgmp-devel
+      desc: Multiprecision arithmetic library (headers and static libraries)
+      website_url: https://gmplib.org/
+      licenses: [ 'GPL-2.0', 'LGPL-3.0' ]
+      vcs_url: https://gmplib.org/repo/gmp/
+
+    - name: libmpfr
+      desc: multiple precision floating-point computation
+      website_url: http://www.mpfr.org/
+      licenses: [ 'GPL-3.0', 'LGPL-3.0' ]
+      vcs_url: svn://scm.gforge.inria.fr/svn/mpfr
+
+    - name: libmpfr-devel
+      desc: multiple precision floating-point computation (headers and static libs)
+      website_url: http://www.mpfr.org/
+      licenses: [ 'GPL-3.0', 'LGPL-3.0' ]
+      vcs_url: svn://scm.gforge.inria.fr/svn/mpfr
+
+    - name: libmpc
+      desc: multiple precision complex floating-point library
+      website_url: http://www.multiprecision.org/index.php?prog=mpc
+      licenses: [ LGPL-3.0 ]
+      vcs_url: https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
+
+    - name: libmpc-devel
+      desc: multiple precision complex floating-point library (headers and static libs)
+      website_url: http://www.multiprecision.org/index.php?prog=mpc
+      licenses: [ LGPL-3.0 ]
+      vcs_url: https://scm.gforge.inria.fr/anonscm/git/mpc/mpc.git 
+
+    - name: gcc
+      desc: This is the GNU C compiler, a fairly portable optimizing compiler for C.
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libgcc
+      desc: GCC support library
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libstdcxx
+      desc: GNU Standard C++ Library v3
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libasan
+      desc: AddressSanitizer -- a fast memory error detector
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libatomic
+      desc: support library providing __atomic built-in functions
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libcilkrts
+      desc: Intel Cilk Plus language extensions (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libgomp
+      desc: GCC OpenMP (GOMP) support library
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libitm
+      desc: GNU Transactional Memory Library
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: liblsan
+      desc: LeakSanitizer -- a memory leak detector (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libquadmath
+      desc: GCC Quad-Precision Math Library
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libssp
+      desc: GNU stack protection library (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libtsan
+      desc: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libubsan
+      desc: UBSan -- undefined behaviour sanitizer (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
+    - name: libvtv
+      desc: GCC Virtual Table Verification library (runtime)
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
