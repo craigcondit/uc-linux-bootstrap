@@ -1,0 +1,9 @@
+Package: libstdcxx
+Source: gcc
+Version: 5.2.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: libc
+Description: GNU Standard C++ Library v3
+Section: libs
+Priority: required

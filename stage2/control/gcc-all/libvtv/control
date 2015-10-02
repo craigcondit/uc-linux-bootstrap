@@ -1,0 +1,9 @@
+Package: libvtv
+Source: gcc
+Version: 5.2.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: libc, libstdcxx, libgcc
+Description: GCC Virtual Table Verification library (runtime)
+Section: libs
+Priority: optional

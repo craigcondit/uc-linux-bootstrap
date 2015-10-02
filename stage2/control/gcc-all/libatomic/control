@@ -1,0 +1,9 @@
+Package: libatomic
+Source: gcc
+Version: 5.2.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: libc
+Description: support library providing __atomic built-in functions
+Section: libs
+Priority: optional

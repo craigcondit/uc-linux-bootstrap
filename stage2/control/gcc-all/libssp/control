@@ -1,0 +1,9 @@
+Package: libssp
+Source: gcc
+Version: 5.2.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: libc
+Description: GNU stack protection library (runtime)
+Section: libs
+Priority: optional
