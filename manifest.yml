@@ -21,13 +21,13 @@ repos:
       vcs_url: git://sourceware.org/git/glibc.git
 
     - name: libz-bootstrap
-      desc: 'GNU C Library: Shared libraries'
+      desc: 'compression library - runtime'
       website_url: http://www.zlib.net/
       licenses: [ BSD 3-Clause ]
       vcs_url: https://github.com/madler/zlib
 
     - name: libz-devel-bootstrap
-      desc: 'GNU C Library: Shared libraries'
+      desc: 'compression library - shared libs'
       website_url: http://www.zlib.net/
       licenses: [ BSD 3-Clause ]
       vcs_url: https://github.com/madler/zlib

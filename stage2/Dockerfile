@@ -284,4 +284,49 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/*
 
+# libz
+ADD control/libz-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/zlib-1.2.8.tar.xz \	
+		http://www.zlib.net/zlib-1.2.8.tar.xz && \
+	cd /build && \
+	tar xf /download/zlib-1.2.8.tar.xz && \
+	cd /build/zlib-1.2.8 && \
+	CFLAGS='-mstackrealign -fPIC -O3' ./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/zlib-root && \
+	make DESTDIR=/build/zlib-root install && \
+	cd /build/zlib-root && \
+	rm -rf usr/share && \
+	rm -f lib/libz.so && \
+	post-root /build/zlib-root && \
+
+	cp -a /build/zlib-root /build/libz-root && \
+	cd /build/libz-root && \
+	rm -rf usr/include usr/lib/pkgconfig && \
+	rm -f usr/lib/*.a && \
+	(strip --strip-debug usr/lib/*.so* || true) && \
+	make-deb \
+		/build/libz-deb \
+		/build/libz-root \
+		/control/libz\
+		/packages/libz_2.8-0_amd64.deb && \
+
+	cp -a /build/zlib-root /build/libz-devel-root && \
+	cd /build/libz-devel-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libz-devel-deb \
+		/build/libz-devel-root \
+		/control/libz-devel \
+		/packages/libz-devel_2.8-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P libz-bootstrap libz-devel-bootstrap && \
+	dpkg --force-depends -i /packages/libz_*.deb && \
+	dpkg --force-depends -i /packages/libz-devel_*.deb
+
 CMD ["/bin/sh"]
