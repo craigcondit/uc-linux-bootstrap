@@ -1,0 +1,10 @@
+Package: libgpgme
+Source: gpgme
+Version: 1.6.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libassuan, libc, libgpg-error
+Description: GPGME - GnuPG Made Easy (library)
+Homepage: http://www.gnupg.org/gpgme.html
+Section: libs
+Priority: optional

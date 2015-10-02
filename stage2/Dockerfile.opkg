@@ -1,4 +1,4 @@
-# still needs libcurl
+# needs gpgme
 
 # opkg
 RUN \

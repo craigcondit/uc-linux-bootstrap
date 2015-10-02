@@ -1025,4 +1025,153 @@ RUN \
 	dpkg --force-depends -i \
 		/packages/libcurl_*.deb /packages/libcurl-devel_*.deb /packages/curl_*.deb
 
+# libgpg-error
+ADD control/libgpg-error-all control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/libgpg-error-1.20.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.20.tar.bz2 && \
+	cd /build && \
+	tar xf /download/libgpg-error-1.20.tar.bz2 && \
+	cd libgpg-error-1.20 && \
+	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/libgpg-error-base-root && \
+	make DESTDIR=/build/libgpg-error-base-root install-strip && \
+	post-root /build/libgpg-error-base-root && \
+	cd /build/libgpg-error-base-root && \
+	rm -rf usr/share/info usr/share/locale usr/share/man && \
+	rm -rf usr/share/common-lisp && \
+	
+	cp -a /build/libgpg-error-base-root /build/gpg-error-root && \
+	cd /build/gpg-error-root && \
+	rm -rf usr/lib usr/share usr/include usr/bin/gpg-error-config && \
+	make-deb \
+		/build/gpg-error-deb \
+		/build/gpg-error-root \
+		/control/gpg-error \
+		/packages/gpg-error_1.20-0_amd64.deb && \
+	
+	cp -a /build/libgpg-error-base-root /build/libgpg-error-root && \
+	cd /build/libgpg-error-root && \
+	rm -rf usr/bin usr/share usr/include && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libgpg-error-deb \
+		/build/libgpg-error-root \
+		/control/libgpg-error \
+		/packages/libgpg-error_1.20-0_amd64.deb && \
+	
+	cp -a /build/libgpg-error-base-root /build/libgpg-error-devel-root && \
+	cd /build/libgpg-error-devel-root && \
+	rm -f usr/bin/gpg-error usr/lib/*.so* && \
+	make-deb \
+		/build/libgpg-error-devel-deb \
+		/build/libgpg-error-devel-root \
+		/control/libgpg-error-devel \
+		/packages/libgpg-error-devel_1.20-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/libgpg-error_*.deb /packages/libgpg-error-devel_*.deb /packages/gpg-error_*.deb
+
+# libassuan
+ADD control/libassuan-all control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/libassuan-2.3.0.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-2.3.0.tar.bz2 && \
+	cd /build && \
+	tar xf /download/libassuan-2.3.0.tar.bz2 && \
+	cd libassuan-2.3.0 && \
+	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/libassuan-base-root && \
+	make DESTDIR=/build/libassuan-base-root install-strip && \
+	post-root /build/libassuan-base-root && \
+	cd /build/libassuan-base-root && \
+	rm -rf usr/share/info && \
+
+	cp -a /build/libassuan-base-root /build/libassuan-root && \
+	cd /build/libassuan-root && \
+	rm -rf usr/bin usr/include usr/share && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libassuan-deb \
+		/build/libassuan-root \
+		/control/libassuan \
+		/packages/libassuan_2.3.0-0_amd64.deb && \
+
+	cp -a /build/libassuan-base-root /build/libassuan-devel-root && \
+	cd /build/libassuan-devel-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libassuan-devel-deb \
+		/build/libassuan-devel-root \
+		/control/libassuan-devel \
+		/packages/libassuan-devel_2.3.0-0_amd64.deb && \
+	
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/libassuan_*.deb /packages/libassuan-devel_*.deb
+
+# gpgme
+ADD control/gpgme-all control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/gpgme-1.6.0.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.6.0.tar.bz2 && \
+	cd /build && \
+	tar xf /download/gpgme-1.6.0.tar.bz2 && \
+	cd gpgme-1.6.0 && \
+	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/gpgme-base-root && \
+	make DESTDIR=/build/gpgme-base-root install-strip && \
+	post-root /build/gpgme-base-root && \
+	cd /build/gpgme-base-root && \
+	rm -rf usr/share/info usr/share/common-lisp && \
+
+	cp -a /build/gpgme-base-root /build/gpgme-root && \
+	cd /build/gpgme-root && \
+	rm -rf usr/bin/gpgme-config usr/lib usr/include usr/share && \
+	make-deb \
+		/build/gpgme-deb \
+		/build/gpgme-root \
+		/control/gpgme \
+		/packages/gpgme_1.6.0-0_amd64.deb && \
+
+	cp -a /build/gpgme-base-root /build/libgpgme-root && \
+	cd /build/libgpgme-root && \
+	rm -rf usr/bin usr/include usr/share && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libgpgme-deb \
+		/build/libgpgme-root \
+		/control/libgpgme \
+		/packages/libgpgme_1.6.0-0_amd64.deb && \
+
+	cp -a /build/gpgme-base-root /build/libgpgme-devel-root && \
+	cd /build/libgpgme-devel-root && \
+	rm -rf usr/bin/gpgme-tool && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libgpgme-devel-deb \
+		/build/libgpgme-devel-root \
+		/control/libgpgme-devel \
+		/packages/libgpgme-devel_1.6.0-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/libgpgme_*.deb /packages/libgpgme-devel_*.deb /packages/gpgme_*.deb
+
 CMD ["/bin/sh"]
