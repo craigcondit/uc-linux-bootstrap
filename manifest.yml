@@ -340,6 +340,12 @@ repos:
       vcs_url: svn://gcc.gnu.org/svn/gcc/
       licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
+    - name: libcc1
+      desc: GCC plugin for GDB
+      website_url: https://gcc.gnu.org/
+      vcs_url: svn://gcc.gnu.org/svn/gcc/
+      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
+
     - name: libstdcxx
       desc: GNU Standard C++ Library v3
       website_url: https://gcc.gnu.org/

@@ -3,6 +3,6 @@ Source: gcc
 Version: 5.2.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: binutils, libc-devel, libz-devel, libgmp, libmpfr, libmpc, libasan, libatomic, libcilkrts, libgomp, libitm, liblsan, libquadmath, libssp, libstdcxx, libtsan, libubsan, libvtv
+Requires: binutils, libc-devel, libz-devel, libgmp, libmpfr, libmpc, libasan, libatomic, libcilkrts, libgomp, libitm, liblsan, libquadmath, libssp, libstdcxx, libtsan, libubsan, libvtv, libcc1
 Description: This is the GNU C compiler, a fairly portable optimizing compiler for C.
 Section: devel

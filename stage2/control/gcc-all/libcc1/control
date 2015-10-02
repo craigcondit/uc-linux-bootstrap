@@ -1,0 +1,9 @@
+Package: libcc1
+Source: gcc
+Version: 5.2.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: libc
+Description: GCC plugin for GDB
+Section: libs
+Priority: required
