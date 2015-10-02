@@ -614,6 +614,7 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	dpkg --force-depends -P make && \
 	rm -f /packages/make_*.deb && \
 	wget -O /download/make-4.1.tar.bz2 \
@@ -621,7 +622,7 @@ RUN \
 	cd /build && \
 	tar xf /download/make-4.1.tar.bz2 && \
 	cd make-4.1 && \
-	./configure --prefix=/usr --without-guile && \
+	./configure --prefix=/usr --without-guile --build="${TARGET_PLATFORM}" && \
 	sh ./build.sh && \
 	./make && \
 	pre-root /build/make-root && \
