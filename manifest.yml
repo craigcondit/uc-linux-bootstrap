@@ -438,6 +438,30 @@ repos:
       licenses: [ GPL-2.0 ]
       vcs_url: git://busybox.net/busybox.git
 
+    - name: bzip2
+      desc: "high-quality block-sorting file compressor - utilities"
+      website_url: http://www.bzip.org/
+      vcs_url: https://github.com/enthought/bzip2-1.0.6
+      licenses: [ BSD ]
+      
+    - name: libbz2
+      desc: "high-quality block-sorting file compressor - shared libraries"
+      website_url: http://www.bzip.org/
+      vcs_url: https://github.com/enthought/bzip2-1.0.6
+      licenses: [ BSD ]
+      
+    - name: libbz2-devel
+      desc: "high-quality block-sorting file compressor - headers and static libraries"
+      website_url: http://www.bzip.org/
+      vcs_url: https://github.com/enthought/bzip2-1.0.6
+      licenses: [ BSD ]
+      
+    - name: perl
+      desc: "Larry Wall's Practical Extraction and Report Language"
+      website_url: http://dev.perl.org/perl5/
+      vcs_url: git://perl5.git.perl.org/perl.git
+      licenses: [ GPL-2.0 ]
+
     - name: openssl
       desc: Secure Sockets Layer toolkit - binaries
       website_url: https://www.openssl.org/
