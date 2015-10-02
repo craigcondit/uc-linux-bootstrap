@@ -1,0 +1,10 @@
+Package: libbz2
+Source: bzip2
+Version: 1.0.6-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc
+Description: high-quality block-sorting file compressor - shared libraries
+Homepage: http://www.bzip.org/
+Section: libs
+Priority: standard

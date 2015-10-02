@@ -228,7 +228,7 @@ RUN \
 	rm -rf usr/share/i18n && \
 	rm -f etc/rpc usr/sbin/sln && \
 	rm -rf var && \
-	sed -i 's@/usr/bin/bash@/bin/sh@' usr/bin/ldd && \
+	sed -i 's/^#!.*/#!\/bin\/sh/' usr/bin/ldd && \
 	post-root /build/glibc-root && \
 
 	cp -a /build/glibc-root /build/libc-root && \
@@ -715,5 +715,87 @@ RUN \
 	dpkg --force-depends -i /packages/patch_*.deb && \
 	dpkg --force-depends -i /packages/sed_*.deb && \
 	dpkg --force-depends -i /packages/gawk_*.deb
+
+# bzip2
+ADD control/bzip2-all control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+        wget -O /download/bzip2-1.0.6.tar.gz \
+		http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz && \
+	cd /build && \
+	tar xf /download/bzip2-1.0.6.tar.gz && \
+	cd bzip2-1.0.6 && \
+	sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile && \
+	sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile && \
+	pre-root /build/bzip2-base-root && \
+	make -f Makefile-libbz2_so && \
+	make clean && \
+	MAKE="make -j4" make && \
+	make PREFIX=/build/bzip2-base-root/usr install && \
+	cp -v bzip2-shared /build/bzip2-base-root/usr/bin/bzip2 && \
+	cp -av libbz2.so* /build/bzip2-base-root/usr/lib/ && \
+	post-root /build/bzip2-base-root && \
+	cd /build/bzip2-base-root && \
+	rm -rf usr/share && \
+	ln -sv libbz2.so.1.0 usr/lib/libbz2.so && \
+	rm -f usr/bin/bunzip2 usr/bin/bzcat && \
+	ln -sv bzip2 usr/bin/bunzip2 && \
+	ln -sv bzip2 usr/bin/bzcat && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+
+	cp -a /build/bzip2-base-root /build/bzip2-root && \
+	cd /build/bzip2-root && \
+	rm -rf usr/lib usr/include && \
+	make-deb \
+		/build/bzip2-deb \
+		/build/bzip2-root \
+		/control/bzip2 \
+		/packages/bzip2_1.0.6-0_amd64.deb && \
+
+	cp -a /build/bzip2-base-root /build/libbz2-root && \
+	cd /build/libbz2-root && \
+	rm -rf usr/bin usr/include && \
+	rm -f usr/lib/*.a && \
+	make-deb \
+		/build/libbz2-deb \
+		/build/libbz2-root \
+		/control/libbz2 \
+		/packages/libbz2_1.0.6-0_amd64.deb && \
+
+	cp -a /build/bzip2-base-root /build/libbz2-devel-root && \
+	cd /build/libbz2-devel-root && \
+	rm -rf usr/bin && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libbz2-devel-deb \
+		/build/libbz2-devel-root \
+		/control/libbz2-devel \
+		/packages/libbz2-devel_1.0.6-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/libbz2_*.deb /packages/libbz2-devel_*.deb /packages/bzip2_*.deb
+		
+# perl
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+        wget -O /download/perl-5.22.0.tar.bz2 \
+		http://www.cpan.org/src/5.0/perl-5.22.0.tar.bz2 && \
+	cd /build && \
+	tar xf /download/perl-5.22.0.tar.bz2 && \
+	cd perl-5.22.0 && \
+	export BUILD_ZLIB=False && \
+	export BUILD_BZIP2=0 && \
+	sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr \
+		-Dman1dir=/usr/share/man/man1 \
+		-Dman3dir=/usr/share/man/man3 \
+		-Dpager="/usr/bin/less -isR" \
+		-Duseshrplib && \
+	MAKE="make -j4" make
 
 CMD ["/bin/sh"]
