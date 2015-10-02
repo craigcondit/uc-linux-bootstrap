@@ -533,7 +533,7 @@ RUN \
 	mkdir gcc-build && \
 	cd gcc-build && \
 	dpkg --force-depends -P \
-		libssl-devel-bootstrap openssl-bootstrap libssl-devel-bootstrap && \
+		libssl-devel-bootstrap && \
 	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
 	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
 	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
@@ -597,10 +597,7 @@ RUN \
 		dpkg --force-depends -P ${pkg}-bootstrap && \
 		dpkg --force-depends -i /packages/${pkg}_*.deb ; done && \
 	dpkg --force-depends -i /packages/libcc1_*.deb && \
-	dpkg --force-depends -i \
-		/bootstrap/libssl-bootstrap_*.deb \
-		/bootstrap/openssl-bootstrap_*.deb \
-		/bootstrap/libssl-devel-bootstrap_*.deb && \
+	dpkg --force-depends -i /bootstrap/libssl-devel-bootstrap_*.deb && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
 	readelf -l a.out | grep ': /lib' && \
@@ -642,6 +639,36 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/make_*.deb
 
+# m4
+ADD control/m4 /control/m4
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/m4-1.4.17.tar.xz \
+		http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz && \
+	cd /build && \
+	tar xf /download/m4-1.4.17.tar.xz && \
+	cd m4-1.4.17 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/m4-root && \
+	make DESTDIR=/build/m4-root install && \
+	cd /build/m4-root && \
+	rm -rf usr/share && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/m4-root && \
+	make-deb \
+		/build/m4-deb \
+		/build/m4-root \
+		/control/m4 \
+		/packages/m4_1.4.17-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P m4-bootstrap && \
+	dpkg --force-depends -i /packages/m4_*.deb
+
 # patch
 ADD control/patch /control/patch
 RUN \
@@ -673,3 +700,4 @@ RUN \
 	dpkg --force-depends -i /packages/patch_*.deb
 
 CMD ["/bin/sh"]
+

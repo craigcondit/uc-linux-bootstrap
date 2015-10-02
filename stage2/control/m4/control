@@ -1,0 +1,9 @@
+Package: m4
+Source: m4
+Version: 1.4.17-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files, libc
+Description: macro processing language
+Section: interpreters
+Priority: standard
