@@ -1,0 +1,9 @@
+Package: libmpc-devel
+Source: mpc
+Version: 1.0.3-1
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files, libc
+Description: multiple precision complex floating-point library (headers and static libs)
+Section: devel
+Priority: extra

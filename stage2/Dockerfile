@@ -475,4 +475,48 @@ RUN \
 	dpkg --force-depends -P libmpfr-bootstrap libmpfr-devel-bootstrap && \
 	dpkg --force-depends -i /packages/libmpfr_*.deb /packages/libmpfr-devel_*.deb
 
+# libmpc
+ADD control/libmpc-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/mpc-1.0.3.tar.gz \
+		http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz && \
+	cd /build && \
+	tar xf /download/mpc-1.0.3.tar.gz && \
+	cd mpc-1.0.3 && \
+	./configure --prefix=/usr --disable-static && \
+	MAKE="make -j4" make && \
+	pre-root /build/mpc-root && \
+	make DESTDIR=/build/mpc-root install && \
+        cd /build/mpc-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	post-root /build/mpc-root && \
+
+	cp -a /build/mpc-root /build/libmpc-root && \
+	cd /build/libmpc-root && \
+	rm -rf usr/include && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libmpc-deb \
+		/build/libmpc-root \
+		/control/libmpc \
+		/packages/libmpc_1.0.3-1_amd64.deb && \
+
+	cp -a /build/mpc-root /build/libmpc-devel-root && \
+	cd /build/libmpc-devel-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libmpc-devel-deb \
+		/build/libmpc-devel-root \
+		/control/libmpc-devel \
+		/packages/libmpc-devel_1.0.3-1_amd64.deb && \
+
+	cd / && \
+        rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P libmpc-bootstrap && \
+	dpkg --force-depends -i /packages/libmpc_*.deb /packages/libmpc-devel_*.deb
+
 CMD ["/bin/sh"]
