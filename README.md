@@ -5,10 +5,20 @@ extensible (support for Debian .deb packages), and functional. Further,
 images should be able to have reproducible builds.
 
 ### Base Packages ###
-    - glibc 2.22
-    - zlib 1.2.8
-    - busybox 1.23.2
-    - openssl 1.0.2d
+    - base-files - 0.0.1-0
+    - busybox - 1.23.2-0
+    - libarchive - 3.1.2-0
+    - libassuan - 2.3.0-0
+    - libbz2 - 1.0.6-0
+    - libc - 2.22-0
+    - libcurl - 7.44.0-0
+    - libgpg-error - 1.20-0
+    - libgpgme - 1.6.0-0
+    - liblzma - 5.2.1-0
+    - libopkg - 0.3.0-0
+    - libssl - 1.0.2d-0
+    - libz - 1.2.8-1
+    - opkg - 0.3.0-0
 
 This small base gives us wide compatibility with a large range of existing
 software as well as the ability to build and deploy simple .deb packages.
@@ -147,13 +157,14 @@ Currently, stage 2 consists of the following packages:
 
 This is enough to download any remaining packages and begin the process of
 building permanent images.
-	
+
+#### stage3 ####
+
+Stage 3 is a complete, funtional OS pre-configured to download from BinTray
+using opkg.	
 
 ### Future Plans ###
 
- - Update stage2 Dockerfile to produce non-bootstrap versions of all
-   packages (in progress).
- - Use stage3 (non-bootstrap version of stage2) as the final OS image.
  - Build additional packages using docker run... scripts.
  - Upload all final packages to bintray.
 
