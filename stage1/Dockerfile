@@ -38,8 +38,8 @@ RUN \
 	set -xe && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/linux-4.2.1.tar.xz -c \
-		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz && \
+	wget -O /download/linux-4.2.2.tar.xz -c \
+		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.2.tar.xz && \
 	cd /build && \
 	pre-root destroot && \
 	mkdir -p destroot/usr/include && \
@@ -53,7 +53,7 @@ RUN \
 		/build/linux-devel-deb \
 		/build/destroot \
 		/control/linux-devel \
-		/packages/linux-devel_4.2.1-0_amd64.deb && \
+		/packages/linux-devel_4.2.2-0_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg -i /packages/linux-devel_*.deb
@@ -220,7 +220,7 @@ RUN \
 		/build/libz-bootstrap-deb \
 		/build/libz-bootstrap-root \
 		/control/libz-bootstrap \
-		/packages/libz-bootstrap_1.2.8-0_amd64.deb && \
+		/packages/libz-bootstrap_1.2.8-1_amd64.deb && \
 
 	cp -a /build/zlib-root /build/libz-devel-bootstrap-root && \
 	cd /build/libz-devel-bootstrap-root && \
@@ -229,7 +229,7 @@ RUN \
 		/build/libz-devel-bootstrap-deb \
 		/build/libz-devel-bootstrap-root \
 		/control/libz-devel-bootstrap \
-		/packages/libz-devel-bootstrap_1.2.8-0_amd64.deb && \
+		/packages/libz-devel-bootstrap_1.2.1-0_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/libz-bootstrap_*.deb && \

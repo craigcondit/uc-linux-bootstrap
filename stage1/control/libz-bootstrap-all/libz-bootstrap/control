@@ -1,12 +1,12 @@
 Package: libz-bootstrap
 Source: zlib
-Version: 1.2.8-0
+Version: 1.2.8-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libz
 Conflicts: libz
 Requires: base-files, libc
-Description: GNU C Library: Shared libraries
+Description: compression library - runtime
 Section: libs
 Priority: optional
 Build-Essential: true
