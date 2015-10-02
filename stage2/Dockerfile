@@ -384,4 +384,48 @@ RUN \
 	dpkg --force-depends -i \
 		/packages/libmagic_*.deb /packages/libmagic-devel_*.deb /packages/file_*.deb
 
+# libgmp
+ADD control/libgmp-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/gmp-6.0.0a.tar.xz \
+		http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz && \
+	cd /build && \
+	tar xf /download/gmp-6.0.0a.tar.xz && \
+	cd gmp-6.0.0 && \
+	./configure --prefix=/usr --enable-cxx --disable-static && \
+	MAKE="make -j4" make && \
+	pre-root /build/gmp-root && \
+	make DESTDIR=/build/gmp-root install && \
+	cd /build/gmp-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	post-root /build/gmp-root && \
+
+	cp -a /build/gmp-root /build/libgmp-root && \
+	cd /build/libgmp-root && \
+	rm -rf usr/include && \
+	rm -rf usr/lib/*.la && \
+	make-deb \
+		/build/libgmp-deb \
+		/build/libgmp-root \
+		/control/libgmp \
+		/packages/libgmp_6.0.0a-0_amd64.deb && \
+
+	cp -a /build/gmp-root /build/libgmp-devel-root && \
+	cd /build/libgmp-devel-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libgmp-devel-deb \
+		/build/libgmp-devel-root \
+		/control/libgmp-devel \
+		/packages/libgmp-devel_6.0.0a-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P libgmp-bootstrap libgmp-devel-bootstrap && \
+	dpkg --force-depends -i /packages/libgmp_*.deb /packages/libgmp-devel_*.deb
+
 CMD ["/bin/sh"]
