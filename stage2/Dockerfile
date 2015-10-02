@@ -583,7 +583,7 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
 		liblsan libquadmath libssp libstdcxx libtsan libubsan libvtv gcc ; do \
-		dpkg --force-depends -P ${pkg} && \
+		dpkg --force-depends -P ${pkg}-bootstrap && \
 		dpkg --force-depends -i /packages/${pkg}_*.deb ; done && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
