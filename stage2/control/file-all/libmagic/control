@@ -1,0 +1,9 @@
+Package: libmagic
+Source: file
+Version: 5.25-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Requires: base-files, libc, libz
+Description: Determines file type using "magic" numbers  (libmagic shared libs)
+Section: libs
+Priority: standard

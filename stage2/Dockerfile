@@ -329,4 +329,59 @@ RUN \
 	dpkg --force-depends -i /packages/libz_*.deb && \
 	dpkg --force-depends -i /packages/libz-devel_*.deb
 
+# file
+ADD control/file-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/file-5.25.tar.gz \
+		ftp://ftp.astron.com/pub/file/file-5.25.tar.gz && \
+	cd /build && \
+	tar xf /download/file-5.25.tar.gz && \
+	cd file-5.25 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/file-root-orig && \
+	make DESTDIR=/build/file-root-orig install && \
+	cd /build/file-root-orig && \
+	rm -rf usr/share/man && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	(strip --strip-debug usr/lib/*.so* || true) && \
+	post-root /build/file-root-orig && \
+
+	cp -a /build/file-root-orig /build/file-root && \
+	cd /build/file-root && \
+	rm -rf usr/lib usr/include && \
+	make-deb \
+		/build/file-deb \
+		/build/file-root \
+		/control/file \
+		/packages/file_5.25-0_amd64.deb && \
+
+	cp -a /build/file-root-orig /build/libmagic-root && \
+	cd /build/libmagic-root && \
+	rm -rf usr/include usr/share usr/bin && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libmagic-deb \
+		/build/libmagic-root \
+		/control/libmagic \
+		/packages/libmagic_5.25-0_amd64.deb && \
+
+	cp -a /build/file-root-orig /build/libmagic-devel-root && \
+	cd /build/libmagic-devel-root && \
+	rm -rf usr/share usr/bin usr/lib/*.so* && \
+	make-deb \
+		/build/libmagic-devel-deb \
+		/build/libmagic-devel-root \
+		/control/libmagic-devel \
+		/packages/libmagic-devel_5.25-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P file-bootstrap libmagic-bootstrap libmagic-devel-bootstrap && \
+	dpkg --force-depends -i \
+		/packages/libmagic_*.deb /packages/libmagic-devel_*.deb /packages/file_*.deb
+
 CMD ["/bin/sh"]
