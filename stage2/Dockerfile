@@ -532,12 +532,21 @@ RUN \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
-	SED=sed && \
+	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
+	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
+	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
+		--build="${TARGET_PLATFORM}" \
 		--disable-bootstrap --with-system-zlib && \
+	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
+	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
+	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
 	MAKE="make -j4" make && \
 	pre-root /build/gcc-root && \
+	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
+	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
+	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
 	make DESTDIR=/build/gcc-root install-strip && \
 	post-root /build/gcc-root && \
 	cd /build/gcc-root && \
@@ -553,7 +562,7 @@ RUN \
 	rm -f usr/lib/libsupc++* && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
-	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
+	for pkg in libasan libatomic libcilkrts libcc1 libgcc libgomp libitm \
 		liblsan libquadmath libssp libtsan libubsan libvtv ; do ( \
 		mkdir -p /build/${pkg}-root/usr/lib && \
 		cp -a usr/lib/${pkg}*.so* /build/${pkg}-root/usr/lib/ && \
@@ -585,6 +594,7 @@ RUN \
 		liblsan libquadmath libssp libstdcxx libtsan libubsan libvtv gcc ; do \
 		dpkg --force-depends -P ${pkg}-bootstrap && \
 		dpkg --force-depends -i /packages/${pkg}_*.deb ; done && \
+	dpkg --force-depends -i /packages/libcc1_*.deb && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
 	readelf -l a.out | grep ': /lib' && \
