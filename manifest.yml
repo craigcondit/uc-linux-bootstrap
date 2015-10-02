@@ -420,3 +420,39 @@ repos:
       vcs_url: svn://gcc.gnu.org/svn/gcc/
       licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
+    - name: patch
+      desc: Apply a diff file to an original
+      website_url: http://savannah.gnu.org/projects/patch/
+      licenses: [ GPL-3.0 ]
+      vcs_url: git://git.savannah.gnu.org/patch.git
+
+    - name: m4
+      desc: macro processing language
+      website_url: http://www.gnu.org/software/m4/m4.html
+      vcs_url: http://git.savannah.gnu.org/r/m4.git
+      licenses: [ GPL-3.0 ]
+
+    - name: busybox
+      desc: Tiny utilities for small and embedded systems
+      website_url: http://www.busybox.net/
+      licenses: [ GPL-2.0 ]
+      vcs_url: git://busybox.net/busybox.git
+
+    - name: openssl
+      desc: Secure Sockets Layer toolkit - binaries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
+
+    - name: libssl
+      desc: Secure Sockets Layer toolkit - shared libraries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
+
+    - name: libssl-devel
+      desc: Secure Sockets Layer toolkit - headers and static libraries
+      website_url: https://www.openssl.org/
+      vcs_url: https://github.com/openssl/openssl
+      licenses: [ BSD ]
+
