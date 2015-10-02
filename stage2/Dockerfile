@@ -532,13 +532,10 @@ RUN \
 	tar xf /download/gcc-5.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
-	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
-	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
-	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
+	SED=sed && \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
-		--disable-bootstrap --with-system-zlib \
-		--with-build-sysroot=/ && \
+		--disable-bootstrap --with-system-zlib && \
 	MAKE="make -j4" make && \
 	pre-root /build/gcc-root && \
 	make DESTDIR=/build/gcc-root install-strip && \
