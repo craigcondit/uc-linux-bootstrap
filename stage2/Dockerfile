@@ -866,7 +866,8 @@ RUN \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
-	dpkg --force-depends -P libssl-devel-bootstrap && \
+	dpkg --force-depends -P \
+		libssl-devel-bootstrap openssl-bootstrap libssl-bootstrap && \
 	dpkg --force-depends -i /packages/libssl_*.deb && \
 	dpkg --force-depends -i /packages/libssl-devel_*.deb && \
 	dpkg --force-depends -i /packages/openssl_*.deb
