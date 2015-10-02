@@ -1,0 +1,10 @@
+Package: perl
+Version: 5.222.0-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc, libbz2, libc, libz
+Description: Larry Wall's Practical Extraction and Report Language
+Homepage: http://dev.perl.org/perl5/
+Build-Essential: yes
+Section: perl
+Priority: standard

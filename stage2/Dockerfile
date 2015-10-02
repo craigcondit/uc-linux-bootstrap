@@ -780,6 +780,7 @@ RUN \
 		/packages/libbz2_*.deb /packages/libbz2-devel_*.deb /packages/bzip2_*.deb
 		
 # perl
+ADD control/perl /control/perl
 RUN \
 	set -x && \
 	umask 022 && \
@@ -796,6 +797,21 @@ RUN \
 		-Dman3dir=/usr/share/man/man3 \
 		-Dpager="/usr/bin/less -isR" \
 		-Duseshrplib && \
-	MAKE="make -j4" make
+	MAKE="make -j4" make && \
+	pre-root /build/perl-root && \
+	make DESTDIR=/build/perl-root install-strip && \
+        unset BUILD_ZLIB BUILD_BZIP2 && \
+	post-root /build/perl-root && \
+	cd /build/perl-root && \
+	rm -rf usr/share && \
+	make-deb \
+		/build/perl-deb \
+		/build/perl-root \
+		/control/perl \
+		/packages/perl-5.22.0-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i /packages/perl_*.deb
 
 CMD ["/bin/sh"]
