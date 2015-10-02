@@ -642,4 +642,34 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/make_*.deb
 
+# patch
+ADD control/patch /control/patch
+RUN \
+	set -x && \
+	set +h && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/patch-2.7.5.tar.xz \
+		http://ftp.gnu.org/gnu/patch/patch-2.7.5.tar.xz && \
+	cd /build && \
+	tar xf /download/patch-2.7.5.tar.xz && \
+	cd patch-2.7.5 && \
+	./configure --prefix=/usr && \
+	MAKE="make -j4" make && \
+	pre-root /build/patch-root && \
+	make DESTDIR=/build/patch-root install && \
+	cd /build/patch-root && \
+	rm -rf usr/share && \
+	(strip --strip-unneeded usr/bin/* || true) && \
+	post-root /build/patch-root && \
+	make-deb \
+		/build/patch-deb \
+		/build/patch-root \
+		/control/patch \
+		/packages/patch_2.7.5-0_amd64.deb && \
+	cd / && \
+        rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P patch-bootstrap && \
+	dpkg --force-depends -i /packages/patch_*.deb
+
 CMD ["/bin/sh"]
