@@ -538,7 +538,6 @@ RUN \
 	../gcc-5.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
 		--disable-bootstrap --with-system-zlib \
-		--host="${TARGET_PLATFORM}" --target="${TARGET_PLATFORM}" \
 		--with-build-sysroot=/ && \
 	MAKE="make -j4" make && \
 	pre-root /build/gcc-root && \
