@@ -229,7 +229,7 @@ RUN \
 		/build/libz-devel-bootstrap-deb \
 		/build/libz-devel-bootstrap-root \
 		/control/libz-devel-bootstrap \
-		/packages/libz-devel-bootstrap_1.2.1-0_amd64.deb && \
+		/packages/libz-devel-bootstrap_1.2.8-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/libz-bootstrap_*.deb && \
