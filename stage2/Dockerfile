@@ -872,6 +872,63 @@ RUN \
 	dpkg --force-depends -i /packages/libssl-devel_*.deb && \
 	dpkg --force-depends -i /packages/openssl_*.deb
 
+# xz
+add control/xz-all control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/xz-5.2.1.tar.xz \
+		http://tukaani.org/xz/xz-5.2.1.tar.xz && \
+	cd /build && \
+	tar xf /download/xz-5.2.1.tar.xz && \
+	cd xz-5.2.1 && \
+	./configure \
+		--prefix=/usr --disable-static \
+		--docdir=/usr/share/doc/xz-5.2.1 && \
+	MAKE="make -j4" make && \
+	pre-root /build/xz-base-root && \
+	make DESTDIR=/build/xz-base-root install-strip && \
+	post-root /build/xz-base-root && \
+	cd /build/xz-base-root && \
+	rm -rf usr/share && \
+
+	cp -a /build/xz-base-root /build/xz-root && \
+	cd /build/xz-root && \
+	rm -rf usr/lib usr/include && \
+	make-deb \
+		/build/xz-deb \
+		/build/xz-root \
+		/control/xz \
+		/packages/xz_5.2.1-0_amd64.deb && \
+		
+	cp -a /build/xz-base-root /build/liblzma-root && \
+	cd /build/liblzma-root && \
+	rm -rf usr/bin usr/include usr/lib/pkgconfig && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/liblzma-deb \
+		/build/liblzma-root \
+		/control/liblzma \
+		/packages/liblzma_5.2.1-0_amd64.deb && \
+		
+	cp -a /build/xz-base-root /build/liblzma-devel-root && \
+	cd /build/liblzma-devel-root && \
+	rm -rf usr/bin && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/liblzma-devel-deb \
+		/build/liblzma-devel-root \
+		/control/liblzma-devel \
+		/packages/liblzma-devel_5.2.1-0_amd64.deb && \
+		
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/liblzma_*.deb \
+		/packages/liblzma-devel_*.deb \
+		/packages/xz_*.deb
+
 # libarchive
 ADD control/libarchive-all control
 RUN \

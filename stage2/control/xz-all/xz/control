@@ -1,0 +1,10 @@
+Package: xz
+Source: xz
+Version: 5.2.1-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Depends: libc, liblzma (>= 5.2.1-0)
+Description: XZ-format compression utilities
+Homepage: http://tukaani.org/xz/
+Section: utils
+Priority: standard

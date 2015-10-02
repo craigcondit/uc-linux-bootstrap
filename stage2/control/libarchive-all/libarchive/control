@@ -3,7 +3,7 @@ Source: libarchive
 Version: 3.1.2-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc, libbz2, libz
+Depends: libc, libbz2, libz, liblzma, libssl
 Description: Multi-format archive and compression library (shared library)
 Homepage: http://www.libarchive.org/
 Section: libs
