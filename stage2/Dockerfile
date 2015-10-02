@@ -643,7 +643,6 @@ RUN \
 ADD control/m4 /control/m4
 RUN \
 	set -x && \
-	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	wget -O /download/m4-1.4.17.tar.xz \
@@ -673,7 +672,6 @@ RUN \
 ADD control/patch /control/patch
 RUN \
 	set -x && \
-	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	wget -O /download/patch-2.7.5.tar.xz \
