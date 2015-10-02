@@ -21,7 +21,8 @@ time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 time docker run --rm=true -v "$(pwd)/../stage1":/output:rw insideo/uc-stage0 \
 	bash -c "tar cC /build/deb . > /output/stage1-packages.tar"
 
-cd ../packages
+cd ../packages-stage0
+find . -name *.deb -delete
 tar xf ../stage1/stage1-packages.tar
 
 echo "stage0 build complete."
