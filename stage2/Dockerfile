@@ -428,4 +428,51 @@ RUN \
 	dpkg --force-depends -P libgmp-bootstrap libgmp-devel-bootstrap && \
 	dpkg --force-depends -i /packages/libgmp_*.deb /packages/libgmp-devel_*.deb
 
+# libmpfr
+ADD control/libmpfr-all /control
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/mpfr-3.1.3.tar.xz \
+		http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz && \
+	wget -O /download/mpfr-3.1.3-upstream_fixes-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/systemd/mpfr-3.1.3-upstream_fixes-1.patch && \
+	cd /build && \
+	tar xf /download/mpfr-3.1.3.tar.xz && \
+	cd mpfr-3.1.3 && \
+	patch -Np1 -i /download/mpfr-3.1.3-upstream_fixes-1.patch && \
+	./configure --prefix=/usr --disable-static --enable-thread-safe && \
+	MAKE="make -j4" make && \
+	pre-root /build/mpfr-root && \
+	make DESTDIR=/build/mpfr-root install && \
+	cd /build/mpfr-root && \
+	rm -rf usr/share && \
+	(strip --strip-debug usr/lib/* || true) && \
+	post-root /build/mpfr-root && \
+
+	cp -a /build/mpfr-root /build/libmpfr-root && \
+	cd /build/libmpfr-root && \
+	rm -rf usr/include && \
+	rm -f usr/lib/*.la && \
+	make-deb \
+		/build/libmpfr-deb \
+		/build/libmpfr-root \
+		/control/libmpfr \
+		/packages/libmpfr_3.1.3-0_amd64.deb && \
+
+	cp -a /build/mpfr-root /build/libmpfr-devel-root && \
+	cd /build/libmpfr-devel-root && \
+	rm -f usr/lib/*.so* && \
+	make-deb \
+		/build/libmpfr-devel-deb \
+		/build/libmpfr-devel-root \
+		/control/libmpfr-devel \
+		/packages/libmpfr-devel_3.1.3-0_amd64.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -P libmpfr-bootstrap libmpfr-devel-bootstrap && \
+	dpkg --force-depends -i /packages/libmpfr_*.deb /packages/libmpfr-devel_*.deb
+
 CMD ["/bin/sh"]
