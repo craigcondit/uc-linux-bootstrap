@@ -4,8 +4,8 @@ set -ex
 cd "$(dirname $0)"
 cd "$(pwd -P)"/stage0
 
-chmod g+rws ../stage1 ../packages || /bin/true
-setfacl -m "default:group::rw" ../stage1 ../packages || /bin/true
+chmod g+rws ../stage1 ../packages-stage0 || /bin/true
+setfacl -m "default:group::rw" ../stage1 ../packages-stage0 || /bin/true
 
 time docker build -t insideo/uc-stage0 --pull .
 
