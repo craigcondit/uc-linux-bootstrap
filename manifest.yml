@@ -480,3 +480,21 @@ repos:
       vcs_url: https://github.com/openssl/openssl
       licenses: [ BSD ]
 
+    - name: xz
+      desc: XZ-format compression utilities
+      website_url: http://tukaani.org/xz/
+      vcs_url: http://git.tukaani.org/xz.git
+      licenses: [ "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
+
+    - name: liblzma
+      desc: XZ-format shared libraries
+      website_url: http://tukaani.org/xz/
+      vcs_url: http://git.tukaani.org/xz.git
+      licenses: [ "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
+
+    - name: liblzma-utils
+      desc: XZ-format development headers and libraries
+      website_url: http://tukaani.org/xz/
+      vcs_url: http://git.tukaani.org/xz.git
+      licenses: [ "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
+
