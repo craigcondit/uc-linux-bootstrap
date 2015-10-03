@@ -225,8 +225,8 @@ repos:
     - name: base-files
       desc: UC Docker Linux base system miscellaneous files
       licenses: [ Public Domain ]
-      vcs_url: https://github.com/insideo/uc-docker
-      website_url: https://github.com/insideo/uc-docker
+      vcs_url: https://github.com/insideo/uc-linux-bootstrap
+      website_url: https://github.com/insideo/uc-linux
 
     - name: linux-devel
       desc: Linux kernel development headers
