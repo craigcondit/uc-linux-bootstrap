@@ -496,5 +496,16 @@ repos:
       desc: XZ-format development headers and libraries
       website_url: http://tukaani.org/xz/
       vcs_url: http://git.tukaani.org/xz.git
-      licenses: [ "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
+      licenses: [ "Public Domain", "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
 
+    - name: libarchive
+      desc: Multi-format archive and compression library (shared library)
+      website_url: http://www.libarchive.org/
+      vcs_url: git://github.com/libarchive/libarchive
+      licenses: [ BSD ]
+
+    - name: libarchive-devel
+      desc: Multi-format archive and compression library (headers and static library)
+      website_url: http://www.libarchive.org/
+      vcs_url: git://github.com/libarchive/libarchive
+      licenses: [ BSD ]
