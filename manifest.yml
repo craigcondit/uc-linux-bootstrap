@@ -546,3 +546,15 @@ repos:
       vcs_url: git://git.gnupg.org/libgpg-error.git
       licenses: [ "LGPL-2.1", "GPL-2.0" ]
 
+    - name: libassuan
+      desc: PC library for the GnuPG components
+      website_url: http://www.gnupg.org/(en)/related_software/libassuan/index.html
+      vcs_url: git://git.gnupg.org/libassuan.git
+      licenses: [ "LGPL-2.1", "GPL-3.0" ]
+
+    - name: libassuan-devel
+      desc: PC library for the GnuPG components (headers)
+      website_url: http://www.gnupg.org/(en)/related_software/libassuan/index.html
+      vcs_url: git://git.gnupg.org/libassuan.git
+      licenses: [ "LGPL-2.1", "GPL-3.0" ]
+
