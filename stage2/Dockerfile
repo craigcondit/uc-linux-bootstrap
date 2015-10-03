@@ -1242,6 +1242,7 @@ RUN \
 	chroot /stage3 /sbin/ldconfig && \
 	opkg --add-dest stage3:/stage3 -d stage3 install /packages/busybox_*.deb && \
 	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libssl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 install /packages/openssl_*.deb && \
 	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libz_*.deb && \
 	opkg --add-dest stage3:/stage3 -d stage3 install /packages/liblzma_*.deb && \
 	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libbz2_*.deb && \
