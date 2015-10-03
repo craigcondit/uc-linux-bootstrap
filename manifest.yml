@@ -576,4 +576,21 @@ repos:
       vcs_url: git://git.gnupg.org/gpgme.git
       licenses: [ "LGPL-2.1", "GPL-2.0" ]
 
+    - name: opkg
+      desc: lightweight package management system
+      webpage_url: https://code.google.com/p/opkg/
+      vcs_url: git://git.yoctoproject.org/opkg
+      licenses: [ GPL-2.0 ]
+
+    - name: libopkg
+      desc: lightweight package management system (libraries)
+      webpage_url: https://code.google.com/p/opkg/
+      vcs_url: git://git.yoctoproject.org/opkg
+      licenses: [ GPL-2.0 ]
+
+    - name: libopkg-devel
+      desc: lightweight package management system (headers)
+      webpage_url: https://code.google.com/p/opkg/
+      vcs_url: git://git.yoctoproject.org/opkg
+      licenses: [ GPL-2.0 ]
 
