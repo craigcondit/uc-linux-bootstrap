@@ -983,7 +983,7 @@ RUN \
 	cd /build && \
 	tar xf /download/curl-7.44.0.tar.bz2 && \
 	cd curl-7.44.0 && \
-	./configure --prefix=/usr --disable-static && \
+	./configure --prefix=/usr --disable-static --build=$(gcc -dumpmachine) && \
 	MAKE="make -j4" make && \
 	pre-root /build/curl-base-root && \
 	make DESTDIR=/build/curl-base-root install-strip && \
