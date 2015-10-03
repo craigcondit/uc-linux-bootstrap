@@ -528,3 +528,21 @@ repos:
       vcs_url: https://github.com/bagder/curl
       licenses: [ BSD ]
 
+    - name: gpg-error
+      desc: GnuPG error values (binaries)
+      website_url: http://www.gnupg.org/related_software/libgpg-error/
+      vcs_url: git://git.gnupg.org/libgpg-error.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
+    - name: libgpg-error
+      desc: library for common error values and messages in GnuPG components
+      website_url: http://www.gnupg.org/related_software/libgpg-error/
+      vcs_url: git://git.gnupg.org/libgpg-error.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
+    - name: libgpg-error-devel
+      desc: library for common error values and messages in GnuPG components (headers)
+      website_url: http://www.gnupg.org/related_software/libgpg-error/
+      vcs_url: git://git.gnupg.org/libgpg-error.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
