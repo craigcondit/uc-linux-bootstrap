@@ -558,3 +558,22 @@ repos:
       vcs_url: git://git.gnupg.org/libassuan.git
       licenses: [ "LGPL-2.1", "GPL-3.0" ]
 
+    - name: gpgme
+      desc: GPGME - GnuPG Made Easy (utilities)
+      website_url: http://www.gnupg.org/gpgme.html
+      vcs_url: git://git.gnupg.org/gpgme.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
+    - name: libgpgme
+      desc: GPGME - GnuPG Made Easy (library)
+      website_url: http://www.gnupg.org/gpgme.html
+      vcs_url: git://git.gnupg.org/gpgme.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
+    - name: libgpgme-devel
+      desc: GPGME - GnuPG Made Easy (headers)
+      website_url: http://www.gnupg.org/gpgme.html
+      vcs_url: git://git.gnupg.org/gpgme.git
+      licenses: [ "LGPL-2.1", "GPL-2.0" ]
+
+
