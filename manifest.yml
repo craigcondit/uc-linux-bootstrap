@@ -492,7 +492,7 @@ repos:
       vcs_url: http://git.tukaani.org/xz.git
       licenses: [ "LGPL-2.1", "GPL-2.0", "GPL-3.0" ]
 
-    - name: liblzma-utils
+    - name: liblzma-devel
       desc: XZ-format development headers and libraries
       website_url: http://tukaani.org/xz/
       vcs_url: http://git.tukaani.org/xz.git
@@ -578,19 +578,43 @@ repos:
 
     - name: opkg
       desc: lightweight package management system
-      webpage_url: https://code.google.com/p/opkg/
+      webpage_url: 'https://code.google.com/p/opkg/'
       vcs_url: git://git.yoctoproject.org/opkg
       licenses: [ GPL-2.0 ]
 
     - name: libopkg
       desc: lightweight package management system (libraries)
-      webpage_url: https://code.google.com/p/opkg/
+      webpage_url: 'https://code.google.com/p/opkg/'
       vcs_url: git://git.yoctoproject.org/opkg
       licenses: [ GPL-2.0 ]
 
     - name: libopkg-devel
       desc: lightweight package management system (headers)
-      webpage_url: https://code.google.com/p/opkg/
+      webpage_url: 'https://code.google.com/p/opkg/'
       vcs_url: git://git.yoctoproject.org/opkg
+      licenses: [ GPL-2.0 ]
+
+    - name: libz
+      desc: 'compression library - runtime'
+      website_url: http://www.zlib.net/
+      licenses: [ BSD 3-Clause ]
+      vcs_url: https://github.com/madler/zlib
+
+    - name: libz-devel
+      desc: 'compression library - shared libs'
+      website_url: http://www.zlib.net/
+      licenses: [ BSD 3-Clause ]
+      vcs_url: https://github.com/madler/zlib
+
+    - name: binutils
+      desc: GNU assembler, linker and binary utilities
+      website_url: http://www.gnu.org/software/binutils/
+      vcs_url: git://sourceware.org/git/binutils-gdb.git
+      licenses: [ GPL-2.0 ]
+
+    - name: binutils-devel
+      desc: GNU assembler, linker and binary utilities (headers and static libraries)
+      website_url: http://www.gnu.org/software/binutils/
+      vcs_url: git://sourceware.org/git/binutils-gdb.git
       licenses: [ GPL-2.0 ]
 
