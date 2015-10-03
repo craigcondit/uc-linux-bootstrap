@@ -509,3 +509,22 @@ repos:
       website_url: http://www.libarchive.org/
       vcs_url: git://github.com/libarchive/libarchive
       licenses: [ BSD ]
+
+    - name: curl
+      desc: command line tool for transferring data with URL syntax
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
+    - name: libcurl
+      desc: library for transferring data with URL syntax
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
+    - name: libcurl-devel
+      desc: library for transferring data with URL syntax (headers)
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
