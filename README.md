@@ -166,5 +166,4 @@ using opkg.
 ### Future Plans ###
 
  - Build additional packages using docker run... scripts.
- - Upload all final packages to bintray.
 
