@@ -3,10 +3,8 @@ Source: zlib
 Version: 1.2.8-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Provides: libz-devel
-Conflicts: libz-devel
-Requires: base-files, libz (>= 1.2.8-1), libc-devel
-Description: compression library - shared libs
+Depends: libc-devel, libz (>= 1.2.8-1)
+Description: compression library - headers
 Section: libs
 Priority: optional
 Build-Essential: true

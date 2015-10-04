@@ -3,7 +3,7 @@ Source: gmp
 Version: 6.0.0a-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc, libz
+Depends: libc, libz
 Description: Multiprecision arithmetic library
 Section: libs
 Priority: optional

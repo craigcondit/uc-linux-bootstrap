@@ -3,7 +3,7 @@ Source: bzip2
 Version: 1.0.6-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc, libbz2 (>= 1.0.6-0)
+Depends: libc-devel, libbz2 (>= 1.0.6-0)
 Description: high-quality block-sorting file compressor - headers and static libraries
 Homepage: http://www.bzip.org/
 Section: devel

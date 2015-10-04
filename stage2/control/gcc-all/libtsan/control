@@ -3,7 +3,7 @@ Source: gcc
 Version: 5.2.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: libc, libstdcxx, libgcc
+Depends: libc, libstdcxx, libgcc
 Description: ThreadSanitizer -- a Valgrind-based detector of data races (runtime)
 Section: libs
 Priority: optional

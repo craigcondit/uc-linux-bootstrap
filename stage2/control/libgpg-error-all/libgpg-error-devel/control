@@ -3,7 +3,7 @@ Source: libgpg-error
 Version: 1.20-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc, libgpg-error (>= 1.20-0)
+Depends: libc-devel, libgpg-error (>= 1.20-0)
 Description: library for common error values and messages in GnuPG components (headers)
 Homepage: http://www.gnupg.org/related_software/libgpg-error/
 Section: devel

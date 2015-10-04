@@ -3,7 +3,7 @@ Source: glibc
 Version: 2.22-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc (>= 2.22-0)
+Depends: libc (>= 2.22-0)
 Description: GNU C Library: Binaries
 Section: devel
 Priority: optional

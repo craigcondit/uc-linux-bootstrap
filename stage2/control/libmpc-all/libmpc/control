@@ -3,7 +3,7 @@ Source: mpc
 Version: 1.0.3-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc
+Depends: libc
 Description: multiple precision complex floating-point library
 Section: libs
 Priority: extra

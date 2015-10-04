@@ -3,7 +3,7 @@ Source: gpgme
 Version: 1.6.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libassuan, libc, libgpg-error, libgpgme (>= 1.6.0-0)
+Depends: libassuan-devel, libc-devel, libgpg-error-devel, libgpgme (>= 1.6.0-0)
 Description: GPGME - GnuPG Made Easy (headers)
 Homepage: http://www.gnupg.org/gpgme.html
 Section: libs

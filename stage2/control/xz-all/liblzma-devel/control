@@ -3,7 +3,7 @@ Source: xz
 Version: 5.2.1-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc, liblzma (>= 5.2.1-0)
+Depends: libc-devel, liblzma (>= 5.2.1-0)
 Description: XZ-format development headers and libraries
 Homepage: http://tukaani.org/xz/
 Section: devel

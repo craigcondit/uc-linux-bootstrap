@@ -2,8 +2,7 @@ Package: busybox
 Version: 1.23.2-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Provides: busybox
 Description: Tiny utilities for small and embedded systems
-Requires: libc
+Depends: libc
 Section: utils
 Priority: required

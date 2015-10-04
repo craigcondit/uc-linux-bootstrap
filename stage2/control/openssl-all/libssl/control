@@ -3,7 +3,7 @@ Source: openssl
 Version: 1.0.2d-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc, libz
+Depends: libc, libz
 Description: Secure Sockets Layer toolkit - shared libraries
 Section: libs
 Priority: optional

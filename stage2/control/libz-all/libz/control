@@ -3,7 +3,7 @@ Source: zlib
 Version: 1.2.8-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc
+Depends: libc
 Description: compression library - runtime
 Section: libs
 Priority: optional

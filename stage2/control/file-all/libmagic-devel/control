@@ -3,7 +3,7 @@ Source: file
 Version: 5.25-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: base-files, libc, libz, libmagic
+Depends: libc-devel, libz-devel, libmagic (>= 5.25-0)
 Description: Determines file type using "magic" numbers  (headers and static libraries)
 Section: devel
 Priority: standard

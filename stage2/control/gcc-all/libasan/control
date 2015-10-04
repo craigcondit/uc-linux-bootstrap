@@ -3,7 +3,7 @@ Source: gcc
 Version: 5.2.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Requires: libc, libstdcxx, libgcc
+Depends: libc, libstdcxx, libgcc
 Description: AddressSanitizer -- a fast memory error detector
 Section: libs
 Priority: optional
