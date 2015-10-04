@@ -1237,22 +1237,22 @@ RUN \
 	chmod 644 /etc/opkg/base-feeds.conf && \
 	opkg update && \
 	mkdir -p /stage3 && \
-	opkg --add-dest stage3:/stage3 -d stage3 install base-files && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libc_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install base-files && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libc_*.deb && \
 	chroot /stage3 /sbin/ldconfig && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/busybox_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libssl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/openssl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libz_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/liblzma_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libbz2_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libarchive_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libcurl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libgpg-error_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libassuan_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libgpgme_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/libopkg_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 install /packages/opkg_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/busybox_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libssl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/openssl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libz_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/liblzma_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libbz2_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libarchive_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libcurl_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libgpg-error_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libassuan_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libgpgme_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libopkg_*.deb && \
+	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/opkg_*.deb && \
 	mkdir -p /stage3/etc/opkg && \
 	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg
 	
