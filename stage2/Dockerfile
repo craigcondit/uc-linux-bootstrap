@@ -112,6 +112,8 @@ RUN \
 	cp -a /build/binutils-master-root /build/binutils-root && \
 	cd /build/binutils-root && \
 	rm -rf usr/include usr/lib/*.a usr/lib/*.la && \
+	mv usr/bin/ar usr/bin/ar.binutils && \
+	mv usr/bin/strings usr/bin/strings.binutils && \
 	make-deb \
 		/build/binutils-deb \
 		/build/binutils-root \
@@ -179,6 +181,7 @@ RUN \
 	cd /build/gawk-root && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 	rm -f usr/bin/gawk-4.1.3 && \
+	rm -f usr/bin/awk && \
 	make-deb \
 		/build/gawk-deb \
 		/build/gawk-root \
@@ -206,6 +209,7 @@ RUN \
 	post-root /build/sed-root && \
 	cd /build/sed-root && \
 	rm -rf usr/share && \
+	mv usr/bin/sed usr/bin/sed.sed && \
 	make-deb \
 		/build/sed-deb \
 		/build/sed-root \
@@ -694,6 +698,7 @@ RUN \
 	cd /build/patch-root && \
 	rm -rf usr/share && \
 	(strip --strip-unneeded usr/bin/* || true) && \
+	mv usr/bin/patch usr/bin/patch.patch && \
 	post-root /build/patch-root && \
 	make-deb \
 		/build/patch-deb \
@@ -733,26 +738,32 @@ RUN \
 	MAKE="make -j4" make && \
 	make install && \
 	rm -f _install/linuxrc && \
-	mkdir -p /build/busybox-root/usr && \
-	cp -a _install/* /build/busybox-root/usr/ && \
+	mkdir -p /build/busybox-root/usr/bin /build/busybox-root/usr/share/busybox/libexec && \
+	cp -a _install/bin/busybox /build/busybox-root/usr/share/busybox/libexec/busybox && \
 	cd /build/busybox-root && \
-	chmod 4755 /build/busybox-root/usr/bin/busybox && \
+	ln -sfv busybox usr/share/busybox/libexec/sh && \
+	chmod 4755 /build/busybox-root/usr/share/busybox/libexec/busybox && \
 	make-deb \
 		/build/busybox-deb \
 		/build/busybox-root \
 		/control/busybox \
 		/packages/busybox_1.23.2-0_amd64.deb && \
-
-	cd / && \
-	rm -rf /build/* /download/* /control/* && \
-	cp -a /usr/bin/busybox /build/dpkg && \
+	cp -a /usr/bin/busybox /build/busybox.temp && \
+	ln -sfv /build/busybox.temp /build/dpkg && \
+	ln -sfv /build/busybox.temp /build/cp && \
+	ln -sfv /build/busybox.temp /build/ln && \
+	ln -sfv /build/busybox.temp /build/ls && \
 	dpkg --force-depends -P busybox-bootstrap && \
+	/build/cp -a /build/busybox.temp /usr/bin/busybox && \
+	/build/ln -sfv /usr/bin/busybox /usr/bin/sh && \
 	/build/dpkg --force-depends -i /packages/busybox_*.deb && \
-	rm -f /build/dpkg && \
 	dpkg --force-depends -i /packages/binutils_*.deb && \
 	dpkg --force-depends -i /packages/patch_*.deb && \
 	dpkg --force-depends -i /packages/sed_*.deb && \
-	dpkg --force-depends -i /packages/gawk_*.deb
+	dpkg --force-depends -i /packages/gawk_*.deb && \
+
+	cd / && \
+	rm -rf /build/* /download/* /control/*
 
 # bzip2
 ADD control/bzip2-all control
@@ -786,6 +797,10 @@ RUN \
 	cp -a /build/bzip2-base-root /build/bzip2-root && \
 	cd /build/bzip2-root && \
 	rm -rf usr/lib usr/include && \
+	mv usr/bin/bzcat usr/bin/bzcat.bzip2 && \
+	mv usr/bin/bunzip2 usr/bin/bunzip2.bzip2 && \
+	mv usr/bin/bzip2 usr/bin/bzip2.bzip2 && \
+	mv usr/bin/bzip2recover usr/bin/bzip2recover.bzip2 && \
 	make-deb \
 		/build/bzip2-deb \
 		/build/bzip2-root \
@@ -816,7 +831,7 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i \
 		/packages/libbz2_*.deb /packages/libbz2-devel_*.deb /packages/bzip2_*.deb
-		
+
 # perl
 ADD control/perl /control/perl
 RUN \
@@ -842,6 +857,7 @@ RUN \
 	post-root /build/perl-root && \
 	cd /build/perl-root && \
 	rm -rf usr/share && \
+	mv usr/bin/shasum usr/bin/shasum.perl && \
 	make-deb \
 		/build/perl-deb \
 		/build/perl-root \
@@ -934,6 +950,20 @@ RUN \
 	cp -a /build/xz-base-root /build/xz-root && \
 	cd /build/xz-root && \
 	rm -rf usr/lib usr/include && \
+	mv usr/bin/lzmadec usr/bin/lzmadec.xz && \
+	mv usr/bin/lzmainfo usr/bin/lzmainfo.xz && \
+	mv usr/bin/xz usr/bin/xz.xz && \
+	mv usr/bin/xzdec usr/bin/xzdec.xz && \
+	mv usr/bin/xzdiff usr/bin/xzdiff.xz && \
+	mv usr/bin/xzgrep usr/bin/xzgrep.xz && \
+	mv usr/bin/xzless usr/bin/xzless.xz && \
+	mv usr/bin/xzmore usr/bin/xzmore.xz && \
+	rm -f \
+		usr/bin/lzcat usr/bin/lzcmp usr/bin/lzdiff \
+		usr/bin/lzegrep usr/bin/lzfgrep usr/bin/lzgrep \
+		usr/bin/lzless usr/bin/lzma usr/bin/lzmore \
+		usr/bin/unlzma usr/bin/unxz usr/bin/xzcat \
+		usr/bin/xzcmp usr/bin/xzegrep usr/bin/xzfgrep && \
 	make-deb \
 		/build/xz-deb \
 		/build/xz-root \
@@ -1295,9 +1325,12 @@ RUN \
 	opkg -o /stage3 --nodeps install /packages/libgpgme_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libopkg_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/opkg_*.deb && \
-	chroot /stage3 opkg configure \
+	chroot /stage3 /usr/share/busybox/libexec/busybox ln -sf /usr/share/busybox/libexec/busybox /usr/bin/sh && \
+	for pkg in \
 		base-files update-alternatives busybox libssl \
 		openssl libz liblzma libbz2 libarchive libcurl libgpg-error \
-		libassuan libgpgme libopkg opkg
+		libassuan libgpgme libopkg opkg ; do ( \
+			chroot /stage3 /usr/bin/opkg configure "${pkg}" \
+	) ; done
 	
 CMD ["/bin/sh"]
