@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+update-alternatives --quiet --install /usr/bin/ar ar /usr/bin/ar.binutils 100
+update-alternatives --quiet --install /usr/bin/strings strings /usr/bin/strings.binutils 100

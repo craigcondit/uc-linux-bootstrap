@@ -3,6 +3,6 @@ Version: 1.23.2-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Description: Tiny utilities for small and embedded systems
-Depends: libc
+Depends: libc, update-alternatives
 Section: utils
 Priority: required

@@ -3,7 +3,7 @@ Source: patch
 Version: 2.7.5-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc
+Depends: libc, update-alternatives
 Description: Apply a diff file to an original
 Section: vcs
 Priority: standard

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+
+update-alternatives --quiet --install /usr/bin/sed sed /usr/bin/sed.sed 100

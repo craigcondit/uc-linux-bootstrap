@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+update-alternatives --quiet --remove bzcat /usr/bin/bzcat.bzip2
+update-alternatives --quiet --remove bunzip2 /usr/bin/bunzip2.bzip2
+update-alternatives --quiet --remove bzip2 /usr/bin/bzip2.bzip2
+update-alternatives --quiet --remove bzcip2recover /usr/bin/bzip2recover.bzip2
