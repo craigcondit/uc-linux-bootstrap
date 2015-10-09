@@ -6,6 +6,7 @@ images should be able to have reproducible builds.
 
 ### Base Packages ###
     - base-files - 0.0.1-0
+    - update-alternatives - 1.18.3-0
     - busybox - 1.23.2-0
     - libarchive - 3.1.2-0
     - libassuan - 2.3.0-0
@@ -162,8 +163,4 @@ building permanent images.
 
 Stage 3 is a complete, funtional OS pre-configured to download from BinTray
 using opkg.	
-
-### Future Plans ###
-
- - Build additional packages using docker run... scripts.
 
