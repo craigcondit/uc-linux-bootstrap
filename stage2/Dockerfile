@@ -1275,7 +1275,10 @@ RUN \
 	chmod 644 /etc/opkg/base-feeds.conf && \
 	opkg update && \
 	mkdir -p /stage3 && \
-	opkg -o /stage3 --nodeps install base-files && \
+	(opkg download base-files || true) && \
+	opkg -o /stage3 --nodeps install /var/cache/opkg/*_base-files_*.deb && \
+	mkdir -p /stage3/etc/opkg && \
+	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg && \
 	opkg -o /stage3 --nodeps install /packages/libc_*.deb && \
 	chroot /stage3 /sbin/ldconfig && \
 	opkg -o /stage3 --nodeps install /packages/update-alternatives_*.deb && \
@@ -1292,10 +1295,8 @@ RUN \
 	opkg -o /stage3 --nodeps install /packages/libgpgme_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libopkg_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/opkg_*.deb && \
-	mkdir -p /stage3/etc/opkg && \
-	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg && \
 	chroot /stage3 opkg configure \
-		base-files update-alternaties busybox libssl \
+		base-files update-alternatives busybox libssl \
 		openssl libz liblzma libbz2 libarchive libcurl libgpg-error \
 		libassuan libgpgme libopkg opkg
 	

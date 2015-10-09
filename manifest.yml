@@ -618,3 +618,8 @@ repos:
       vcs_url: git://sourceware.org/git/binutils-gdb.git
       licenses: [ GPL-2.0 ]
 
+    - name: update-alternatives
+      desc: Software alternatives manager
+      website_url: https://packages.debian.org/source/sid/dpkg
+      licenses: [ GPL-2.0 ]
+      vcs_url: git://git.debian.org/git/dpkg/dpkg.git
