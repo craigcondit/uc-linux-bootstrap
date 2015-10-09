@@ -137,16 +137,16 @@ RUN \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.1.tar.xz >  \
-		/download/linux-4.2.1.tar.xz && \
+	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.3.tar.xz >  \
+		/download/linux-4.2.3.tar.xz && \
 	cd /build && \
-	tar Pxf /download/linux-4.2.1.tar.xz && \
-	cd linux-4.2.1 && \
+	tar Pxf /download/linux-4.2.3.tar.xz && \
+	cd linux-4.2.3 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
 	cp -rv dest/include/* /tools/include && \
 	cd /build && \
-	rm -rf linux-4.2.1
+	rm -rf linux-4.2.3
 
 # glibc
 RUN \
