@@ -14,7 +14,7 @@ RUN \
 	for pkg in $(cat /Manifest) ; do wget -O "$(echo $pkg | sed 's@.*/@@')" "${pkg}" ; done && \
 	for pkg in $(cat /Manifest) ; do dpkg --force-depends -i "$(echo $pkg | sed 's@.*/@@')" ; done
 
-# make (will need to replace later after gcc is installed)
+# make
 ADD control/make /control/make
 RUN \
 	set -x && \
@@ -44,6 +44,44 @@ RUN \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/make_*.deb
 
+# update-alternatives
+ADD patches/update-alternatives /patches/update-alternatives
+ADD control/update-alternatives /control/update-alternatives
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
+	wget -O /download/dpkg_1.18.3.tar.xz \
+		http://http.debian.net/debian/pool/main/d/dpkg/dpkg_1.18.3.tar.xz && \
+	cd /build && \
+	tar xf /download/dpkg_1.18.3.tar.xz && \
+	cd dpkg-1.18.3 && \
+	patch -p0 < \
+		/patches/update-alternatives/update-alternatives-bootstrap.patch && \
+	./configure --prefix=/usr --sysconfdir=/etc && \
+	sed -i 's/debian-dpkg@lists.debian.org/insideo@randomcoder.org/' config.h && \
+	sed -i 's/dpkg/update-alternatives/g' config.h && \
+	cd lib/compat && \
+	make && \
+	cd ../../utils && \
+	make admindir=/var/lib logdir=/var/log && \
+	strip --strip-unneeded update-alternatives && \
+	pre-root /build/update-alternatives-root && \
+	cp update-alternatives /build/update-alternatives-root/usr/bin/ && \
+	cd /build/update-alternatives-root && \
+	chmod 755 usr/bin/update-alternatives && \
+	mkdir -p etc/alternatives var/lib/alternatives && \
+	post-root /build/update-alternatives-root && \
+	make-deb \
+		/build/update-alternatives-deb \
+		/build/update-alternatives-root \
+		/control/update-alternatives \
+		/packages/update-alternatives_1.18.3-0_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* /patches/* && \
+	dpkg --force-depends -i /packages/update-alternatives_*.deb
+	
 # binutils
 ADD control/binutils-all /control
 RUN \
@@ -1237,23 +1275,28 @@ RUN \
 	chmod 644 /etc/opkg/base-feeds.conf && \
 	opkg update && \
 	mkdir -p /stage3 && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install base-files && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libc_*.deb && \
+	opkg -o /stage3 --nodeps install base-files && \
+	opkg -o /stage3 --nodeps install /packages/libc_*.deb && \
 	chroot /stage3 /sbin/ldconfig && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/busybox_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libssl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/openssl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libz_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/liblzma_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libbz2_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libarchive_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libcurl_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libgpg-error_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libassuan_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libgpgme_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/libopkg_*.deb && \
-	opkg --add-dest stage3:/stage3 -d stage3 --nodeps install /packages/opkg_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/update-alternatives_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/busybox_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libssl_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/openssl_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libz_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/liblzma_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libbz2_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libarchive_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libcurl_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libgpg-error_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libassuan_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libgpgme_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libopkg_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/opkg_*.deb && \
 	mkdir -p /stage3/etc/opkg && \
-	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg
+	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg && \
+	chroot /stage3 opkg configure \
+		base-files update-alternaties busybox libssl \
+		openssl libz liblzma libbz2 libarchive libcurl libgpg-error \
+		libassuan libgpgme libopkg opkg
 	
 CMD ["/bin/sh"]

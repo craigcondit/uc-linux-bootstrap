@@ -1,0 +1,8 @@
+Package: update-alternatives
+Version: 1.18.3-0
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Architecture: amd64
+Description: Software alternatives manager
+Depends: libc
+Section: utils
+Priority: required
