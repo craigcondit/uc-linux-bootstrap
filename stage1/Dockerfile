@@ -38,13 +38,13 @@ RUN \
 	set -xe && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/linux-4.2.2.tar.xz -c \
-		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.2.tar.xz && \
+	wget -O /download/linux-4.2.3.tar.xz -c \
+		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.3.tar.xz && \
 	cd /build && \
 	pre-root destroot && \
 	mkdir -p destroot/usr/include && \
-	tar xf /download/linux-4.2.2.tar.xz && \
-	cd linux-4.2.2 && \
+	tar xf /download/linux-4.2.3.tar.xz && \
+	cd linux-4.2.3 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
 	cp -rv dest/include/* /build/destroot/usr/include && \
@@ -53,7 +53,7 @@ RUN \
 		/build/linux-devel-deb \
 		/build/destroot \
 		/control/linux-devel \
-		/packages/linux-devel_4.2.2-0_amd64.deb && \
+		/packages/linux-devel_4.2.3-0_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg -i /packages/linux-devel_*.deb

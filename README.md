@@ -91,7 +91,7 @@ with a very basic stage2 image, and install or build packages at will.
 The following packages are built in stage1 (bootstrap packages are intented to
 be temporary until the system is fully self-hosting):
 
-  - linux 4.2.1
+  - linux 4.2.3
     - linux-devel
   - glibc 2.22
     - libc-bootstrap
