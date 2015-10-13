@@ -528,24 +528,6 @@ repos:
       vcs_url: https://github.com/bagder/curl
       licenses: [ BSD ]
 
-    - name: curl
-      desc: command line tool for transferring data with URL syntax
-      website_url: http://curl.haxx.se
-      vcs_url: https://github.com/bagder/curl
-      licenses: [ BSD ]
-
-    - name: libcurl
-      desc: library for transferring data with URL syntax
-      website_url: http://curl.haxx.se
-      vcs_url: https://github.com/bagder/curl
-      licenses: [ BSD ]
-
-    - name: libcurl-devel
-      desc: library for transferring data with URL syntax (headers)
-      website_url: http://curl.haxx.se
-      vcs_url: https://github.com/bagder/curl
-      licenses: [ BSD ]
-
     - name: gpg-error
       desc: GnuPG error values (binaries)
       website_url: http://www.gnupg.org/related_software/libgpg-error/
