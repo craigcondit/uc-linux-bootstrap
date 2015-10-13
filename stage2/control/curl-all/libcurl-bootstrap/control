@@ -1,9 +1,10 @@
-Package: libcurl
+Package: libcurl-bootstrap
 Source: curl
 Version: 7.44.0-0
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Depends: libc, libz, libssl
+Provides: libcurl (= 7.44.0-0)
 Description: library for transferring data with URL syntax
 Homepage: http://curl.haxx.se
 Section: libs

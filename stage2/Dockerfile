@@ -1065,8 +1065,8 @@ RUN \
 	make-deb \
 		/build/curl-deb \
 		/build/curl-root \
-		/control/curl \
-		/packages/curl_7.44.0-0_amd64.deb && \
+		/control/curl-bootstrap \
+		/packages/curl-bootstrap_7.44.0-0_amd64.deb && \
 	
 	cp -a /build/curl-base-root /build/libcurl-root && \
 	cd /build/libcurl-root && \
@@ -1075,8 +1075,8 @@ RUN \
 	make-deb \
 		/build/libcurl-deb \
 		/build/libcurl-root \
-		/control/libcurl \
-		/packages/libcurl_7.44.0-0_amd64.deb && \
+		/control/libcurl-bootstrap \
+		/packages/libcurl-bootstrap_7.44.0-0_amd64.deb && \
 	
 	cp -a /build/curl-base-root /build/libcurl-devel-root && \
 	cd /build/libcurl-devel-root && \
@@ -1085,13 +1085,15 @@ RUN \
 	make-deb \
 		/build/libcurl-devel-deb \
 		/build/libcurl-devel-root \
-		/control/libcurl-devel \
-		/packages/libcurl-devel_7.44.0-0_amd64.deb && \
+		/control/libcurl-devel-bootstrap \
+		/packages/libcurl-devel-bootstrap_7.44.0-0_amd64.deb && \
 	
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i \
-		/packages/libcurl_*.deb /packages/libcurl-devel_*.deb /packages/curl_*.deb
+		/packages/libcurl-bootstrap_*.deb \
+		/packages/libcurl-devel-bootstrap_*.deb \
+		/packages/curl-bootstrap_*.deb
 
 # libgpg-error
 ADD control/libgpg-error-all control
@@ -1319,7 +1321,7 @@ RUN \
 	opkg -o /stage3 --nodeps install /packages/liblzma_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libbz2_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libarchive_*.deb && \
-	opkg -o /stage3 --nodeps install /packages/libcurl_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libcurl-bootstrap_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libgpg-error_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libassuan_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libgpgme_*.deb && \
@@ -1328,7 +1330,7 @@ RUN \
 	chroot /stage3 /usr/share/busybox/libexec/busybox ln -sf /usr/share/busybox/libexec/busybox /usr/bin/sh && \
 	for pkg in \
 		base-files update-alternatives busybox libssl \
-		openssl libz liblzma libbz2 libarchive libcurl libgpg-error \
+		openssl libz liblzma libbz2 libarchive libcurl-bootstrap libgpg-error \
 		libassuan libgpgme libopkg opkg ; do ( \
 			chroot /stage3 /usr/bin/opkg configure "${pkg}" \
 	) ; done
