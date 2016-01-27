@@ -11,11 +11,11 @@ images should be able to have reproducible builds.
     - libassuan - 2.4.2-0
     - libbz2 - 1.0.6-0
     - libc - 2.22-0
-    - libcurl - 7.47.0-0
+    - libcurl - 7.47.0-1
     - libgpg-error - 1.21-0
     - libgpgme - 1.6.0-0
     - liblzma - 5.2.2-0
-    - libnghttp2 - 1.3.4-0
+    - libnghttp2 - 1.7.0-0
     - libopkg - 0.3.0-0
     - libssl - 1.0.2d-0
     - libz - 1.2.8-1
