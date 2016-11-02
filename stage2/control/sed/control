@@ -1,6 +1,6 @@
 Package: sed
 Source: sed
-Version: 4.2.2-0
+Version: 4.2.2-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Depends: libc, update-alternatives

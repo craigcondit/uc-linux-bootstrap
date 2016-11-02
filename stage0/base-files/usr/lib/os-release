@@ -1,7 +1,8 @@
-PRETTY_NAME="UC Linux 0 (buggy)"
+PRETTY_NAME="UC Linux 2016R1 (Hydrogen)"
 NAME="UC Linux"
-VERSION_ID="0 (buggy)"
-VERSION="0"
+VERSION_ID="2016.01"
+VERSION="2016R1 (Hydrogen)"
+VERSION_CODENAME="hydrogen"
 ID=uclinux
 HOME_URL="https://github.com/insideo/uc-linux"
 SUPPORT_URL="https://github.com/insideo/uc-linux/wiki"

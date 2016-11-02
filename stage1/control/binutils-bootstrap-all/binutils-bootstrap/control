@@ -1,6 +1,6 @@
 Package: binutils-bootstrap
 Source: binutils
-Version: 2.25.1-0
+Version: 2.27.0-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: binutils

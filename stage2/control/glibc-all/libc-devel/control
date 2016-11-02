@@ -1,9 +1,9 @@
 Package: libc-devel
 Source: glibc
-Version: 2.22-0
+Version: 2.24-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc (>= 2.22-0)
+Depends: libc (>= 2.24-1)
 Description: GNU C Library: Shared libraries (headers / static libs)
 Section: devel
 Priority: optional

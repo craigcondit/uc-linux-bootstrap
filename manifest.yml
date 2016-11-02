@@ -2,7 +2,7 @@
 
 repos: 
 
-  uc-linux-bootstrap-buggy:
+  uc-linux-bootstrap:
 
     - name: libc-bootstrap
       desc: 'GNU C Library: Shared libraries'
@@ -190,12 +190,6 @@ repos:
       vcs_url: svn://gcc.gnu.org/svn/gcc/
       licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
-    - name: libvtv-bootstrap
-      desc: GCC Virtual Table Verification library (runtime)
-      website_url: https://gcc.gnu.org/
-      vcs_url: svn://gcc.gnu.org/svn/gcc/
-      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
-
     - name: busybox-bootstrap
       desc: Tiny utilities for small and embedded systems
       website_url: http://www.busybox.net/
@@ -220,7 +214,7 @@ repos:
       vcs_url: https://github.com/openssl/openssl
       licenses: [ BSD ]
 
-  uc-linux-main-buggy:
+  uc-linux:
 
     - name: base-files
       desc: UC Docker Linux base system miscellaneous files
@@ -414,12 +408,6 @@ repos:
       vcs_url: svn://gcc.gnu.org/svn/gcc/
       licenses: [ 'GPL-2.0', 'GPL-3.0' ]
 
-    - name: libvtv
-      desc: GCC Virtual Table Verification library (runtime)
-      website_url: https://gcc.gnu.org/
-      vcs_url: svn://gcc.gnu.org/svn/gcc/
-      licenses: [ 'GPL-2.0', 'GPL-3.0' ]
-
     - name: patch
       desc: Apply a diff file to an original
       website_url: http://savannah.gnu.org/projects/patch/
@@ -510,19 +498,19 @@ repos:
       vcs_url: git://github.com/libarchive/libarchive
       licenses: [ BSD ]
 
-    - name: curl-bootstrap
+    - name: curl
       desc: command line tool for transferring data with URL syntax
       website_url: http://curl.haxx.se
       vcs_url: https://github.com/bagder/curl
       licenses: [ BSD ]
 
-    - name: libcurl-bootstrap
+    - name: libcurl
       desc: library for transferring data with URL syntax
       website_url: http://curl.haxx.se
       vcs_url: https://github.com/bagder/curl
       licenses: [ BSD ]
 
-    - name: libcurl-devel-bootstrap
+    - name: libcurl-devel
       desc: library for transferring data with URL syntax (headers)
       website_url: http://curl.haxx.se
       vcs_url: https://github.com/bagder/curl

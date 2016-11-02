@@ -1,9 +1,9 @@
 Package: libgmp-devel
 Source: gmp
-Version: 6.0.0a-0
+Version: 6.1.1-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc-devel, libz-devel, libgmp (>= 6.0.0a-0)
+Depends: libc-devel, libz-devel, libgmp (>= 6.1.1-1)
 Description: Multiprecision arithmetic library (headers and static libraries)
 Section: devel
 Priority: optional

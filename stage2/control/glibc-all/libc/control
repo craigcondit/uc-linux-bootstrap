@@ -1,6 +1,6 @@
 Package: libc
 Source: glibc
-Version: 2.22-0
+Version: 2.24-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Depends: base-files

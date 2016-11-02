@@ -1,6 +1,6 @@
 Package: libbz2
 Source: bzip2
-Version: 1.0.6-0
+Version: 1.0.6-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Depends: libc

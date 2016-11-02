@@ -1,6 +1,6 @@
 Package: libz-bootstrap
 Source: zlib
-Version: 1.2.8-1
+Version: 1.2.8-2
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libz

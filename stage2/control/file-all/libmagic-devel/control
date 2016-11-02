@@ -1,9 +1,9 @@
 Package: libmagic-devel
 Source: file
-Version: 5.25-0
+Version: 5.29-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc-devel, libz-devel, libmagic (>= 5.25-0)
+Depends: libc-devel, libz-devel, libmagic (>= 5.29-1)
 Description: Determines file type using "magic" numbers  (headers and static libraries)
 Section: devel
 Priority: standard

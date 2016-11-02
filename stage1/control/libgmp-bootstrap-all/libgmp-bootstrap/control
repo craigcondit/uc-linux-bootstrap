@@ -1,6 +1,6 @@
 Package: libgmp-bootstrap
 Source: gmp
-Version: 6.0.0a-0
+Version: 6.1.1-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libgmp

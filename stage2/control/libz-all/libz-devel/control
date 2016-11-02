@@ -1,9 +1,9 @@
 Package: libz-devel
 Source: zlib
-Version: 1.2.8-1
+Version: 1.2.8-2
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libc-devel, libz (>= 1.2.8-1)
+Depends: libc-devel, libz (>= 1.2.8-2)
 Description: compression library - headers
 Section: libs
 Priority: optional

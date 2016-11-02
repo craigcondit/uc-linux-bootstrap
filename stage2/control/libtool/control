@@ -1,0 +1,9 @@
+Package: libtool
+Version: 1:2.4.6-1
+Source: libtool
+Priority: optional
+Depends: gcc, libc-devel, file, autoconf, automake
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Description: Generic library support script
+Architecture: amd64
+Section: devel

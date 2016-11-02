@@ -1,9 +1,9 @@
 Package: file
 Source: file
-Version: 5.25-0
+Version: 5.29-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: base-files, libc, libz, libmagic (>= 5.25-0)
+Depends: base-files, libc, libz, libmagic (>= 5.29-1)
 Description: Determines file type using "magic" numbers
 Section: utils
 Priority: standard

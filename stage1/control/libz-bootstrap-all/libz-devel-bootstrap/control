@@ -1,11 +1,11 @@
 Package: libz-devel-bootstrap
 Source: zlib
-Version: 1.2.8-1
+Version: 1.2.8-2
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libz-devel
 Conflicts: libz-devel
-Requires: base-files, libz (>= 1.2.8-1), libc-devel
+Requires: base-files, libz (>= 1.2.8-2), libc-devel
 Description: compression library - shared libs
 Section: libs
 Priority: optional

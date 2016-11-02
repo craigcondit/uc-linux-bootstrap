@@ -38,13 +38,13 @@ RUN \
 	set -xe && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/linux-4.2.3.tar.xz -c \
-		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.3.tar.xz && \
+	wget -O /download/linux-4.8.6.tar.xz -c \
+		https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.8.6.tar.xz && \
 	cd /build && \
 	pre-root destroot && \
 	mkdir -p destroot/usr/include && \
-	tar xf /download/linux-4.2.3.tar.xz && \
-	cd linux-4.2.3 && \
+	tar xf /download/linux-4.8.6.tar.xz && \
+	cd linux-4.8.6 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
 	cp -rv dest/include/* /build/destroot/usr/include && \
@@ -53,7 +53,7 @@ RUN \
 		/build/linux-devel-deb \
 		/build/destroot \
 		/control/linux-devel \
-		/packages/linux-devel_4.2.3-0_amd64.deb && \
+		/packages/linux-devel_4.8.6-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg -i /packages/linux-devel_*.deb
@@ -64,20 +64,17 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/glibc-2.22.tar.xz \
-		http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz && \
-	wget -O /download/glibc-2.22-fhs-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-fhs-1.patch && \
-	wget -O /download/glibc-2.22-upstream_i386_fix-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-upstream_i386_fix-1.patch && \
+	wget -O /download/glibc-2.24.tar.xz \
+		http://ftp.gnu.org/gnu/glibc/glibc-2.24.tar.xz && \
+	wget -O /download/glibc-2.24-fhs-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/7.10/glibc-2.24-fhs-1.patch && \
 	cd /build && \
-	tar xf /download/glibc-2.22.tar.xz && \
-	cd glibc-2.22 && \
-	patch -Np1 -i /download/glibc-2.22-fhs-1.patch && \
-	patch -Np1 -i /download/glibc-2.22-upstream_i386_fix-1.patch && \
+	tar xf /download/glibc-2.24.tar.xz && \
+	cd glibc-2.24 && \
+	patch -Np1 -i /download/glibc-2.24-fhs-1.patch && \
 	mkdir -p ../glibc-build && \
 	cd ../glibc-build && \
-	../glibc-2.22/configure \
+	../glibc-2.24/configure \
 		--prefix=/usr --disable-profile --enable-kernel=2.6.32\
 		--enable-obsolete-rpc && \
 	MAKE="make -j4" make && \
@@ -87,15 +84,15 @@ RUN \
 	make install_root=/build/glibc-root install && \
 	rm -f /build/glibc-root/etc/ld.so.conf && \
 	mkdir -p /build/glibc-root/usr/lib/locale && \
-	I18NPATH=/build/glibc-2.22/localedata \
-	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/ISO-8859-1 \
+	I18NPATH=/build/glibc-2.24/localedata \
+	locale/localedef --alias-file=../glibc-2.24/intl/locale.alias \
+		-i ../glibc-2.24/localedata/locales/en_US -c \
+		-f ../glibc-2.24/localedata/charmaps/ISO-8859-1 \
 		--prefix=/build/glibc-root en_US && \
-	I18NPATH=/build/glibc-2.22/localedata \
-	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
+	I18NPATH=/build/glibc-2.24/localedata \
+	locale/localedef --alias-file=../glibc-2.24/intl/locale.alias \
+		-i ../glibc-2.24/localedata/locales/en_US -c \
+		-f ../glibc-2.24/localedata/charmaps/UTF-8 \
 		--prefix=/build/glibc-root en_US && \
 	cd /build/glibc-root && \
 	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
@@ -129,7 +126,7 @@ RUN \
 		/build/libc-bootstrap-deb \
 		/build/libc-bootstrap-root \
 		/control/libc-bootstrap \
-		/packages/libc-bootstrap_2.22-0_amd64.deb && \
+		/packages/libc-bootstrap_2.24-1_amd64.deb && \
 
 	cp -a /build/glibc-root /build/glibc-bin-bootstrap-root && \
 	cd /build/glibc-bin-bootstrap-root && \
@@ -145,7 +142,7 @@ RUN \
 		/build/glibc-bin-bootstrap-deb \
 		/build/glibc-bin-bootstrap-root \
 		/control/glibc-bin-bootstrap \
-		/packages/glibc-bin-bootstrap_2.22-0_amd64.deb && \
+		/packages/glibc-bin-bootstrap_2.24-1_amd64.deb && \
 
 	cp -a /build/glibc-root /build/libc-devel-bootstrap-root && \
 	cd /build/libc-devel-bootstrap-root && \
@@ -155,7 +152,7 @@ RUN \
 		/build/libc-devel-bootstrap-deb \
 		/build/libc-devel-bootstrap-root \
 		/control/libc-devel-bootstrap \
-		/packages/libc-devel-bootstrap_2.22-0_amd64.deb && \
+		/packages/libc-devel-bootstrap_2.24-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/*
 
@@ -220,7 +217,7 @@ RUN \
 		/build/libz-bootstrap-deb \
 		/build/libz-bootstrap-root \
 		/control/libz-bootstrap \
-		/packages/libz-bootstrap_1.2.8-1_amd64.deb && \
+		/packages/libz-bootstrap_1.2.8-2_amd64.deb && \
 
 	cp -a /build/zlib-root /build/libz-devel-bootstrap-root && \
 	cd /build/libz-devel-bootstrap-root && \
@@ -229,7 +226,7 @@ RUN \
 		/build/libz-devel-bootstrap-deb \
 		/build/libz-devel-bootstrap-root \
 		/control/libz-devel-bootstrap \
-		/packages/libz-devel-bootstrap_1.2.8-1_amd64.deb && \
+		/packages/libz-devel-bootstrap_1.2.8-2_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/libz-bootstrap_*.deb && \
@@ -242,11 +239,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/file-5.25.tar.gz \
-		ftp://ftp.astron.com/pub/file/file-5.25.tar.gz && \
+	wget -O /download/file-5.29.tar.gz \
+		ftp://ftp.astron.com/pub/file/file-5.29.tar.gz && \
 	cd /build && \
-	tar xf /download/file-5.25.tar.gz && \
-	cd file-5.25 && \
+	tar xf /download/file-5.29.tar.gz && \
+	cd file-5.29 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
 	pre-root /build/file-root && \
@@ -264,7 +261,7 @@ RUN \
 		/build/file-bootstrap-deb \
 		/build/file-bootstrap-root \
 		/control/file-bootstrap \
-		/packages/file-bootstrap_5.25-0_amd64.deb && \
+		/packages/file-bootstrap_5.29-1_amd64.deb && \
 
 	cp -a /build/file-root /build/libmagic-bootstrap-root && \
 	cd /build/libmagic-bootstrap-root && \
@@ -274,7 +271,7 @@ RUN \
 		/build/libmagic-bootstrap-deb \
 		/build/libmagic-bootstrap-root \
 		/control/libmagic-bootstrap \
-		/packages/libmagic-bootstrap_5.25-0_amd64.deb && \
+		/packages/libmagic-bootstrap_5.29-1_amd64.deb && \
 
 	cp -a /build/file-root /build/libmagic-devel-bootstrap-root && \
 	cd /build/libmagic-devel-bootstrap-root && \
@@ -283,7 +280,7 @@ RUN \
 		/build/libmagic-devel-bootstrap-deb \
 		/build/libmagic-devel-bootstrap-root \
 		/control/libmagic-devel-bootstrap \
-		/packages/libmagic-devel-bootstrap_5.25-0_amd64.deb && \
+		/packages/libmagic-devel-bootstrap_5.29-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -297,14 +294,14 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/binutils-2.25.1.tar.bz2 \
-		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
+	wget -O /download/binutils-2.27.tar.bz2 \
+		http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.bz2 && \
 	cd /build && \
-	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	tar xf /download/binutils-2.27.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
 	CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
-	../binutils-2.25.1/configure \
+	../binutils-2.27/configure \
 		--prefix=/usr --enable-shared --disable-werror \
 		--target="${TARGET_PLATFORM}" --host="${TARGET_PLATFORM}" \
 		--disable-multilib --with-build-sysroot=/ && \
@@ -324,7 +321,7 @@ RUN \
 		/build/binutils-bootstrap-deb \
 		/build/binutils-bootstrap-root \
 		/control/binutils-bootstrap \
-		/packages/binutils-bootstrap_2.25.1-0_amd64.deb && \
+		/packages/binutils-bootstrap_2.27.0-1_amd64.deb && \
 
 	cp -a /build/binutils-root /build/binutils-devel-bootstrap-root && \
 	cd /build/binutils-devel-bootstrap-root && \
@@ -333,7 +330,7 @@ RUN \
 		/build/binutils-devel-bootstrap-deb \
 		/build/binutils-devel-bootstrap-root \
 		/control/binutils-devel-bootstrap \
-		/packages/binutils-devel-bootstrap_2.25.1-0_amd64.deb && \
+		/packages/binutils-devel-bootstrap_2.27.0-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -364,7 +361,7 @@ RUN \
 		/build/m4-bootstrap-deb \
 		/build/m4-bootstrap-root \
 		/control/m4-bootstrap \
-		/packages/m4-bootstrap_1.4.17-0_amd64.deb && \
+		/packages/m4-bootstrap_1.4.17-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/m4-bootstrap_*.deb
@@ -376,11 +373,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/gmp-6.0.0a.tar.xz \
-		http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz && \
+	wget -O /download/gmp-6.1.1.tar.xz \
+		http://ftp.gnu.org/gnu/gmp/gmp-6.1.1.tar.xz && \
 	cd /build && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	cd gmp-6.0.0 && \
+	tar xf /download/gmp-6.1.1.tar.xz && \
+	cd gmp-6.1.1 && \
 	./configure --prefix=/usr --enable-cxx --disable-static && \
 	MAKE="make -j4" make && \
 	pre-root /build/gmp-root && \
@@ -398,7 +395,7 @@ RUN \
 		/build/libgmp-bootstrap-deb \
 		/build/libgmp-bootstrap-root \
 		/control/libgmp-bootstrap \
-		/packages/libgmp-bootstrap_6.0.0a-0_amd64.deb && \
+		/packages/libgmp-bootstrap_6.1.1-1_amd64.deb && \
 
 	cp -a /build/gmp-root /build/libgmp-devel-bootstrap-root && \
 	cd /build/libgmp-devel-bootstrap-root && \
@@ -407,7 +404,7 @@ RUN \
 		/build/libgmp-devel-bootstrap-deb \
 		/build/libgmp-devel-bootstrap-root \
 		/control/libgmp-devel-bootstrap \
-		/packages/libgmp-devel-bootstrap_6.0.0a-0_amd64.deb && \
+		/packages/libgmp-devel-bootstrap_6.1.1-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -438,7 +435,7 @@ RUN \
 		/build/patch-bootstrap-deb \
 		/build/patch-bootstrap-root \
 		/control/patch-bootstrap \
-		/packages/patch-bootstrap_2.7.5-0_amd64.deb && \
+		/packages/patch-bootstrap_2.7.5-1_amd64.deb && \
 	cd / && \
         rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/patch-bootstrap_*.deb
@@ -450,14 +447,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/mpfr-3.1.3.tar.xz \
-		http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz && \
-	wget -O /download/mpfr-3.1.3-upstream_fixes-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/mpfr-3.1.3-upstream_fixes-1.patch && \
+	wget -O /download/mpfr-3.1.4.tar.xz \
+		http://www.mpfr.org/mpfr-3.1.4/mpfr-3.1.4.tar.xz && \
 	cd /build && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	cd mpfr-3.1.3 && \
-	patch -Np1 -i /download/mpfr-3.1.3-upstream_fixes-1.patch && \
+	tar xf /download/mpfr-3.1.4.tar.xz && \
+	cd mpfr-3.1.4 && \
 	./configure --prefix=/usr --disable-static --enable-thread-safe && \
 	MAKE="make -j4" make && \
 	pre-root /build/mpfr-root && \
@@ -475,7 +469,7 @@ RUN \
 		/build/libmpfr-bootstrap-deb \
 		/build/libmpfr-bootstrap-root \
 		/control/libmpfr-bootstrap \
-		/packages/libmpfr-bootstrap_3.1.3-0_amd64.deb && \
+		/packages/libmpfr-bootstrap_3.1.4-1_amd64.deb && \
 
 	cp -a /build/mpfr-root /build/libmpfr-devel-bootstrap-root && \
 	cd /build/libmpfr-devel-bootstrap-root && \
@@ -484,7 +478,7 @@ RUN \
 		/build/libmpfr-devel-bootstrap-deb \
 		/build/libmpfr-devel-bootstrap-root \
 		/control/libmpfr-devel-bootstrap \
-		/packages/libmpfr-devel-bootstrap_3.1.3-0_amd64.deb && \
+		/packages/libmpfr-devel-bootstrap_3.1.4-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -520,7 +514,7 @@ RUN \
 		/build/libmpc-bootstrap-deb \
 		/build/libmpc-bootstrap-root \
 		/control/libmpc-bootstrap \
-		/packages/libmpc-bootstrap_1.0.3-1_amd64.deb && \
+		/packages/libmpc-bootstrap_1.0.3-2_amd64.deb && \
 
 	cp -a /build/mpc-root /build/libmpc-devel-bootstrap-root && \
 	cd /build/libmpc-devel-bootstrap-root && \
@@ -529,7 +523,7 @@ RUN \
 		/build/libmpc-devel-bootstrap-deb \
 		/build/libmpc-devel-bootstrap-root \
 		/control/libmpc-devel-bootstrap \
-		/packages/libmpc-devel-bootstrap_1.0.3-1_amd64.deb && \
+		/packages/libmpc-devel-bootstrap_1.0.3-2_amd64.deb && \
 
 	cd / && \
         rm -rf /build/* /download/* /control/* && \
@@ -544,14 +538,14 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/gcc-5.2.0.tar.bz2 \
-		http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 && \
+	wget -O /download/gcc-6.2.0.tar.bz2 \
+		http://ftp.gnu.org/gnu/gcc/gcc-6.2.0/gcc-6.2.0.tar.bz2 && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
+	tar xf /download/gcc-6.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
 	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
-	../gcc-5.2.0/configure \
+	../gcc-6.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
 		--disable-bootstrap --with-system-zlib \
 		--host="${TARGET_PLATFORM}" --target="${TARGET_PLATFORM}" \
@@ -563,18 +557,17 @@ RUN \
 	cd /build/gcc-bootstrap-root && \
 	rm -f usr/bin/${TARGET_PLATFORM}-* && \
 	for tool in c++ g++ gcc gcc-ar gcc-nm gcc-ranlib ; do ln -sf $tool usr/bin/${TARGET_PLATFORM}-$tool ; done && \
-	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-5.2.0 && \
+	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-6.2.0 && \
 	ln -sv ../bin/cpp usr/lib/cpp && \
 	ln -sv gcc usr/bin/cc && \
 	mkdir -p usr/lib/bfd-plugins && \
-	ln -sfv ../../libexec/gcc/${TARGET_PLATFORM}/5.2.0/liblto_plugin.so usr/lib/bfd-plugins/ && \
+	ln -sfv ../../libexec/gcc/${TARGET_PLATFORM}/6.2.0/liblto_plugin.so usr/lib/bfd-plugins/ && \
 	mkdir -pv usr/share/gdb/auto-load/usr/lib && \
 	mv -v usr/lib/*gdb.py usr/share/gdb/auto-load/usr/lib && \
 	rm -f usr/lib/libsupc++* && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
-
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libtsan libubsan libvtv ; do ( \
+		liblsan libquadmath libssp libtsan libubsan ; do ( \
 		mkdir -p /build/${pkg}-bootstrap-root/usr/lib && \
 		cp -a usr/lib/${pkg}*.so* /build/${pkg}-bootstrap-root/usr/lib/ && \
 		rm -f usr/lib/${pkg}*.so* && \
@@ -582,7 +575,7 @@ RUN \
 			/build/${pkg}-bootstrap-deb \
 			/build/${pkg}-bootstrap-root \
 			/control/${pkg}-bootstrap \
-			/packages/${pkg}-bootstrap_5.2.0-0_amd64.deb) ; done && \
+			/packages/${pkg}-bootstrap_6.2.0-1_amd64.deb) ; done && \
 
 	mkdir -p /build/libstdcxx-bootstrap-root/usr/lib && \
 	cp -a usr/lib/libstdc++*.so* /build/libstdcxx-bootstrap-root/usr/lib/ && \
@@ -591,18 +584,18 @@ RUN \
 		/build/libstdcxx-bootstrap-deb \
 		/build/libstdcxx-bootstrap-root \
 		/control/libstdcxx-bootstrap \
-		/packages/libstdcxx-bootstrap_5.2.0-0_amd64.deb && \
+		/packages/libstdcxx-bootstrap_6.2.0-1_amd64.deb && \
 
 	make-deb \
 		/build/gcc-bootstrap-deb \
 		/build/gcc-bootstrap-root \
 		/control/gcc-bootstrap \
-		/packages/gcc-bootstrap_5.2.0-0_amd64.deb && \
+		/packages/gcc-bootstrap_6.2.0-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libstdcxx libtsan libubsan libvtv gcc ; do \
+		liblsan libquadmath libssp libstdcxx libtsan libubsan gcc ; do \
 		dpkg --force-depends -i /packages/${pkg}-bootstrap_*.deb ; done && \
 	echo 'int main(){}' > dummy.c && \
 	cc dummy.c -v -Wl,--verbose &> dummy.log && \
@@ -621,11 +614,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-        wget -O /download/busybox-1.23.2.tar.bz2 \
-		http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 && \
+        wget -O /download/busybox-1.25.1.tar.bz2 \
+		http://www.busybox.net/downloads/busybox-1.25.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/busybox-1.23.2.tar.bz2 && \
-	cd busybox-1.23.2 && \
+	tar xf /download/busybox-1.25.1.tar.bz2 && \
+	cd busybox-1.25.1 && \
 	confs=' \
 		CONFIG_INSTALL_NO_USR \
 		CONFIG_AR \
@@ -651,7 +644,7 @@ RUN \
 		/build/busybox-bootstrap-deb \
 		/build/busybox-bootstrap-root \
 		/control/busybox-bootstrap \
-		/packages/busybox-bootstrap_1.23.2-0_amd64.deb && \
+		/packages/busybox-bootstrap_1.25.1-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -667,11 +660,11 @@ RUN \
 	set +h && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/openssl-1.0.2d.tar.gz \
-		https://www.openssl.org/source/openssl-1.0.2d.tar.gz && \
+	wget -O /download/openssl-1.0.2j.tar.gz \
+		https://www.openssl.org/source/openssl-1.0.2j.tar.gz && \
 	cd /build && \
-	tar xf /download/openssl-1.0.2d.tar.gz && \
-	cd openssl-1.0.2d && \
+	tar xf /download/openssl-1.0.2j.tar.gz && \
+	cd openssl-1.0.2j && \
 	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
 	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
 	make && \
@@ -690,7 +683,7 @@ RUN \
 		/build/libssl-bootstrap-deb \
 		/build/libssl-bootstrap-root \
 		/control/libssl-bootstrap \
-		/packages/libssl-bootstrap_1.0.2d-0_amd64.deb && \
+		/packages/libssl-bootstrap_1.0.2j-1_amd64.deb && \
 
 	cp -a /build/openssl-root /build/libssl-devel-bootstrap-root && \
 	cd /build/libssl-devel-bootstrap-root && \
@@ -700,7 +693,7 @@ RUN \
 		/build/libssl-devel-bootstrap-deb \
 		/build/libssl-devel-bootstrap-root \
 		/control/libssl-devel-bootstrap \
-		/packages/libssl-devel-bootstrap_1.0.2d-0_amd64.deb && \
+		/packages/libssl-devel-bootstrap_1.0.2j-1_amd64.deb && \
 
 	cp -a /build/openssl-root /build/openssl-bootstrap-root && \
 	cd /build/openssl-bootstrap-root && \
@@ -709,7 +702,7 @@ RUN \
 		/build/openssl-bootstrap-deb \
 		/build/openssl-bootstrap-root \
 		/control/openssl-bootstrap \
-		/packages/openssl-bootstrap_1.0.2d-0_amd64.deb && \
+		/packages/openssl-bootstrap_1.0.2j-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \

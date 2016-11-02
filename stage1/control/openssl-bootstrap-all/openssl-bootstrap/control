@@ -1,11 +1,11 @@
 Package: openssl-bootstrap
 Source: openssl
-Version: 1.0.2d-0
+Version: 1.0.2j-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: openssl
 Conflicts: openssl
-Requires: libssl (>= 1.0.2d-0)
+Requires: libssl (>= 1.0.2j-1)
 Description: Secure Sockets Layer toolkit - binaries
 Section: apps
 Priority: optional

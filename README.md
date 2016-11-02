@@ -5,23 +5,22 @@ extensible (support for Debian .deb packages), and functional. Further,
 images should be able to have reproducible builds.
 
 ### Base Packages ###
-    - base-files - 0.0.1-0
-    - busybox - 1.24.1-0
-    - libarchive - 3.1.2-0
-    - libassuan - 2.4.2-0
-    - libbz2 - 1.0.6-0
-    - libc - 2.22-0
-    - libcurl - 7.47.0-1
-    - libgpg-error - 1.21-0
-    - libgpgme - 1.6.0-0
-    - liblzma - 5.2.2-0
-    - libnghttp2 - 1.7.0-0
-    - libopkg - 0.3.1-0
-    - libssl - 1.0.2e-0
-    - libz - 1.2.8-1
-    - openssl - 1.0.2e-0
-    - opkg - 0.3.1-0
-    - update-alternatives - 1.18.3-0
+    - base-files - 1.0.0-1
+    - busybox - 1.25.1-1
+    - libarchive - 3.2.2-1
+    - libassuan - 2.4.3-1
+    - libbz2 - 1.0.6-1
+    - libc - 2.24-1
+    - libcurl - 7.51.0-1
+    - libgpg-error - 1.22-1
+    - libgpgme - 1.7.1-1
+    - liblzma - 5.2.2-1
+    - libopkg - 0.3.3-1
+    - libssl - 1.0.2j-1
+    - libz - 1.2.8-2
+    - openssl - 1.0.2j-1
+    - opkg - 0.3.3-1
+    - update-alternatives - 1.18.10-1
 
 This small base gives us wide compatibility with a large range of existing
 software as well as the ability to build and deploy simple .deb packages.
@@ -93,36 +92,36 @@ with a very basic stage2 image, and install or build packages at will.
 The following packages are built in stage1 (bootstrap packages are intented to
 be temporary until the system is fully self-hosting):
 
-  - linux 4.2.3
+  - linux 4.8.6
     - linux-devel
-  - glibc 2.22
+  - glibc 2.24
     - libc-bootstrap
     - libc-devel-bootstrap
     - glibc-bin-bootstrap
   - zlib 1.2.8
     - libz-bootstrap
     - libz-devel-bootstrap
-  - file 5.25
+  - file 5.27
     - file-bootstrap
     - libmagic-bootstrap
     - libmagic-devel-bootstrap
-  - binutils 2.25.1
+  - binutils 2.27.0
     - binutils-bootstrap
     - binutils-devel-bootstrap
   - m4 1.4.17
     - m4-bootstrap
-  - gmp 6.0.0a
+  - gmp 6.1.1
     - libgmp-bootstrap
     - libgmp-devel-bootstrap
   - patch 2.7.5
     - patch-bootstrap
-  - mpfr 3.1.3
+  - mpfr 3.1.4
     - libmpfr-bootstrap
     - libmpfr-devel-bootstrap
   - mpc 1.0.3
     - libmpc-bootstrap
     - libmpc-devel-bootstrap
-  - gcc 5.2.0
+  - gcc 6.2.0
     - gcc-bootstrap
     - libgcc-bootstrap
     - libstdcxx-bootstrap
@@ -136,10 +135,9 @@ be temporary until the system is fully self-hosting):
     - libssp-bootstrap
     - libtsan-bootstrap
     - libubsan-bootstrap
-    - libvtv-bootstrap
-  - busybox 1.23.2
+  - busybox 1.25.1
     - busybox-bootstrap
-  - openssl 1.0.2d
+  - openssl 1.0.2j
     - openssl-bootstrap
     - libssl-bootstrap
     - libssl-devel-bootstrap
@@ -150,16 +148,37 @@ To build stage2, execute the following:
 
     ./build-stage2.sh
 
-Currently, stage 2 consists of the following packages:
+Stage 2 builds (or rebuilds) each of the following packages:
 
-  - base-files
-  - libc-bootstrap
-  - libssl-bootstrap
-  - openssl-bootstrap
-  - busybox-bootstrap
-
-This is enough to download any remaining packages and begin the process of
-building permanent images.
+  - make
+  - update-alternatives
+  - binutils
+  - pkg-config
+  - gawk
+  - sed
+  - glibc
+  - libz
+  - file
+  - libgmp
+  - libmpfr
+  - libmpc
+  - gcc
+  - m4
+  - patch
+  - busybox
+  - bzip2
+  - perl
+  - openssl
+  - xz
+  - libarchive
+  - curl
+  - libgpg-error
+  - libassuan
+  - gpgme
+  - autoconf
+  - automake
+  - libtool
+  - opkg
 
 #### stage3 ####
 

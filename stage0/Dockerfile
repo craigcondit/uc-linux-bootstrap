@@ -59,8 +59,8 @@ RUN \
 		/build/base-files-deb \
 		/build/base-files-root \
 		/build/control/base-files \
-		/build/deb/base-files_0.0.1-0_all.deb && \
-	dpkg-deb -x /build/deb/base-files_0.0.1-0_all.deb /build/root && \
+		/build/deb/base-files_1.0.0-1_all.deb && \
+	dpkg-deb -x /build/deb/base-files_1.0.0-1_all.deb /build/root && \
 	rm -rf /build/base-files-root /build/control/base-files
 
 # cross toolchain
@@ -73,13 +73,13 @@ RUN \
 	PATH=/tools/bin:/bin:/usr/bin && \
 	mkdir -p /chroot/tools && \
 	ln -sv /chroot/tools / && \
-	curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 > \
-		/download/binutils-2.25.1.tar.bz2 && \
+	curl -ksSL http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.bz2 > \
+		/download/binutils-2.27.tar.bz2 && \
 	cd /build && \
-	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	tar xf /download/binutils-2.27.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
-	../binutils-2.25.1/configure \
+	../binutils-2.27/configure \
 		--prefix=/tools --with-sysroot=/chroot --with-lib-path=/tools/lib \
 		--target="$TARGET_PLATFORM" --disable-nls --disable-werror && \
 	MAKE="make -j4" make && \
@@ -87,7 +87,7 @@ RUN \
 	ln -sv lib /tools/lib64 && \
 	make install && \
 	cd /build && \
-	rm -rf binutils-2.25.1 binutils-build
+	rm -rf binutils-2.27 binutils-build
 
 # gcc (stage 1)
 ADD tools-resources/gcc-fix-paths.sh /build/gcc-fix-paths.sh
@@ -97,38 +97,38 @@ RUN \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 > \
-		/download/gcc-5.2.0.tar.bz2 && \
-	curl -ksSL http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz > \
-		/download/mpfr-3.1.3.tar.xz && \
-	curl -ksSL http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz > \
-		/download/gmp-6.0.0a.tar.xz && \
+	curl -ksSL http://ftp.gnu.org/gnu/gcc/gcc-6.2.0/gcc-6.2.0.tar.bz2 > \
+		/download/gcc-6.2.0.tar.bz2 && \
+	curl -ksSL http://www.mpfr.org/mpfr-3.1.4/mpfr-3.1.4.tar.xz > \
+		/download/mpfr-3.1.4.tar.xz && \
+	curl -ksSL http://ftp.gnu.org/gnu/gmp/gmp-6.1.1.tar.xz > \
+		/download/gmp-6.1.1.tar.xz && \
 	curl -ksSL http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz > \
 		/download/mpc-1.0.3.tar.gz && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
-	cd gcc-5.2.0 && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	mv -f mpfr-3.1.3 mpfr && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	mv -f gmp-6.0.0 gmp && \
+	tar xf /download/gcc-6.2.0.tar.bz2 && \
+	cd gcc-6.2.0 && \
+	tar xf /download/mpfr-3.1.4.tar.xz && \
+	mv -f mpfr-3.1.4 mpfr && \
+	tar xf /download/gmp-6.1.1.tar.xz && \
+	mv -f gmp-6.1.1 gmp && \
 	tar xf /download/mpc-1.0.3.tar.gz && \
 	mv -f mpc-1.0.3 mpc && \
 	bash /build/gcc-fix-paths.sh && \
 	mkdir -p /build/gcc-build && \
 	cd ../gcc-build && \
-	../gcc-5.2.0/configure \
+	../gcc-6.2.0/configure \
 		--target=$TARGET_PLATFORM --prefix=/tools \
 		--with-glibc-version=2.11 --with-sysroot=/chroot \
 		--with-newlib --without-headers --with-local-prefix=/tools \
 		--with-native-system-header-dir=/tools/include --disable-nls \
 		--disable-shared --disable-multilib --disable-decimal-float \
 		--disable-threads --disable-libatomic --disable-libgomp \
-		--disable-libquadmath --disable-libssp --disable-libvtv \
-		--disable-libstdcxx --enable-languages=c,c++ && \
+		--disable-libmpx --disable-libquadmath --disable-libssp \
+		--disable-libvtv --disable-libstdcxx --enable-languages=c,c++ && \
 	MAKE="make -j4" make && make install && \
 	cd /build && \
-	rm -rf gcc-5.2.0 gcc-build gcc-fix-paths.sh
+	rm -rf gcc-6.2.0 gcc-build gcc-fix-paths.sh
 
 # linux headers
 RUN \
@@ -137,16 +137,16 @@ RUN \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.2.3.tar.xz >  \
-		/download/linux-4.2.3.tar.xz && \
+	curl -ksSL https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.8.6.tar.xz >  \
+		/download/linux-4.8.6.tar.xz && \
 	cd /build && \
-	tar Pxf /download/linux-4.2.3.tar.xz && \
-	cd linux-4.2.3 && \
+	tar Pxf /download/linux-4.8.6.tar.xz && \
+	cd linux-4.8.6 && \
 	make mrproper && \
 	make INSTALL_HDR_PATH=dest headers_install && \
 	cp -rv dest/include/* /tools/include && \
 	cd /build && \
-	rm -rf linux-4.2.3
+	rm -rf linux-4.8.6
 
 # glibc
 RUN \
@@ -155,22 +155,19 @@ RUN \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz > \
-		/download/glibc-2.22.tar.xz && \
-	curl -ksSL http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-upstream_i386_fix-1.patch > \
-		/download/libc-2.22-upstream_i386_fix-1.patch && \
+	curl -ksSL http://ftp.gnu.org/gnu/glibc/glibc-2.24.tar.xz > \
+		/download/glibc-2.24.tar.xz && \
         cd /build && \
-        tar xf /download/glibc-2.22.tar.xz && \
-	cd glibc-2.22 && \
-	patch -Np1 -i /download/libc-2.22-upstream_i386_fix-1.patch && \
+        tar xf /download/glibc-2.24.tar.xz && \
+	cd glibc-2.24 && \
 	mkdir -p ../glibc-build && \
 	cd ../glibc-build && \
-	../glibc-2.22/configure \
+	../glibc-2.24/configure \
 		--prefix=/tools --host=$TARGET_PLATFORM \
-		--build=$(../glibc-2.22/scripts/config.guess) \
-		--disable-profile --enable-kernel=2.6.32 --enable-obsolete-rpc \
-		--with-headers=/tools/include libc_cv_forced_unwind=yes \
-		libc_cv_ctors_header=yes libc_cv_c_cleanup=yes && \
+		--build=$(../glibc-2.24/scripts/config.guess) \
+		--disable-profile --enable-kernel=2.6.32 \
+		--with-headers=/tools/include \
+		libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes && \
 	MAKE="make -j4" make && \
 	make install && \
 	echo 'main(){}' > dummy.c && \
@@ -178,7 +175,7 @@ RUN \
 	readelf -l a.out | grep ': /tools' && \
 	rm -v dummy.c a.out && \
 	cd /build && \
-	rm -rf glibc-2.22 glibc-build
+	rm -rf glibc-2.24 glibc-build
 
 # libstdc++
 RUN \
@@ -188,25 +185,25 @@ RUN \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
-	cd gcc-5.2.0 && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	mv -f mpfr-3.1.3 mpfr && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	mv -f gmp-6.0.0 gmp && \
+	tar xf /download/gcc-6.2.0.tar.bz2 && \
+	cd gcc-6.2.0 && \
+	tar xf /download/mpfr-3.1.4.tar.xz && \
+	mv -f mpfr-3.1.4 mpfr && \
+	tar xf /download/gmp-6.1.1.tar.xz && \
+	mv -f gmp-6.1.1 gmp && \
 	tar xf /download/mpc-1.0.3.tar.gz && \
 	mv -f mpc-1.0.3 mpc && \
 	mkdir ../gcc-build && \
 	cd ../gcc-build && \
-	../gcc-5.2.0/libstdc++-v3/configure \
+	../gcc-6.2.0/libstdc++-v3/configure \
 		--host=$TARGET_PLATFORM --prefix=/tools --disable-multilib \
 		--disable-nls --disable-libstdcxx-threads \
 		--disable-libstdcxx-pch \
-		--with-gxx-include-dir=/tools/$TARGET_PLATFORM/include/c++/5.2.0 && \
+		--with-gxx-include-dir=/tools/$TARGET_PLATFORM/include/c++/6.2.0 && \
 	MAKE="make -j4" && \
 	make install && \
 	cd /build && \
-	rm -rf gcc-5.2.0 gcc-build
+	rm -rf gcc-6.2.0 gcc-build
 
 # binutils (stage 2)
 RUN \
@@ -215,13 +212,13 @@ RUN \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
 	cd /build && \
-	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	tar xf /download/binutils-2.27.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
 	CC=$TARGET_PLATFORM-gcc \
 	AR=$TARGET_PLATFORM-ar \
 	RANLIB=$TARGET_PLATFORM-ranlib \
-	../binutils-2.25.1/configure \
+	../binutils-2.27/configure \
 		--prefix=/tools --disable-nls --disable-werror \
 		--with-lib-path=/tools/lib --with-sysroot && \
 	MAKE="make -j4" make && \
@@ -230,7 +227,7 @@ RUN \
 	make -C ld LIB_PATH=/usr/lib:/lib && \
 	cp -v ld/ld-new /tools/bin && \
 	cd /build && \
-	rm -rf binutils-2.25.1 binutils-build
+	rm -rf binutils-2.27 binutils-build
 
 # gcc (stage 2)
 ADD tools-resources/gcc-fix-paths.sh /build/gcc-fix-paths.sh
@@ -240,15 +237,15 @@ RUN \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
 	PATH=/tools/bin:/bin:/usr/bin && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
-	cd gcc-5.2.0 && \
+	tar xf /download/gcc-6.2.0.tar.bz2 && \
+	cd gcc-6.2.0 && \
 	cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 		$(dirname $($TARGET_PLATFORM-gcc -print-libgcc-file-name))/include-fixed/limits.h && \
 	bash /build/gcc-fix-paths.sh && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	mv -f mpfr-3.1.3 mpfr && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	mv -f gmp-6.0.0 gmp && \
+	tar xf /download/mpfr-3.1.4.tar.xz && \
+	mv -f mpfr-3.1.4 mpfr && \
+	tar xf /download/gmp-6.1.1.tar.xz && \
+	mv -f gmp-6.1.1 gmp && \
 	tar xf /download/mpc-1.0.3.tar.gz && \
 	mv -f mpc-1.0.3 mpc && \
 	mkdir -p /build/gcc-build && \
@@ -257,7 +254,7 @@ RUN \
 	CXX=$TARGET_PLATFORM-g++ \
 	AR=$TARGET_PLATFORM-ar \
 	RANLIB=$TARGET_PLATFORM-ranlib \
-	../gcc-5.2.0/configure \
+	../gcc-6.2.0/configure \
 		--prefix=/tools --with-local-prefix=/tools \
 		--with-native-system-header-dir=/tools/include \
 		--enable-languages=c,c++ --disable-libstdcxx-pch \
@@ -269,7 +266,7 @@ RUN \
 	cc dummy.c && \
 	readelf -l a.out | grep ': /tools' && \
 	cd /build && \
-	rm -rf gcc-5.2.0 gcc-build /build/gcc-fix-paths.sh /build/gcc-pass2-make-limits-h.sh
+	rm -rf gcc-6.2.0 gcc-build /build/gcc-fix-paths.sh /build/gcc-pass2-make-limits-h.sh
 
 # busybox
 RUN \
@@ -277,11 +274,11 @@ RUN \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-        curl -ksSL http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 > \
-                /download/busybox-1.23.2.tar.bz2 && \
+        curl -ksSL http://www.busybox.net/downloads/busybox-1.25.1.tar.bz2 > \
+                /download/busybox-1.25.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/busybox-1.23.2.tar.bz2 && \
-	cd busybox-1.23.2 && \
+	tar xf /download/busybox-1.25.1.tar.bz2 && \
+	cd busybox-1.25.1 && \
 	confs=' \
 		CONFIG_AR \
 		CONFIG_FEATURE_AR_LONG_FILENAMES \
@@ -307,7 +304,7 @@ RUN \
 	cp -an _install/* /tools/ && \
 	chmod 4755 /tools/bin/busybox && \
 	cd /build && \
-	rm -rf busybox-1.23.2
+	rm -rf busybox-1.25.1
 
 # make
 RUN \
@@ -315,16 +312,16 @@ RUN \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 > \
-		/download/make-4.1.tar.bz2 && \
+	curl -ksSL http://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2 > \
+		/download/make-4.2.1.tar.bz2 && \
         cd /build && \
-	tar xf /download/make-4.1.tar.bz2 && \
-	cd make-4.1 && \
+	tar xf /download/make-4.2.1.tar.bz2 && \
+	cd make-4.2.1 && \
 	./configure --prefix=/tools --without-guile && \
 	MAKE="make -j4" make && \
 	make install && \
 	cd /build && \
-	rm -rf make-4.1
+	rm -rf make-4.2.1
 
 # bash
 RUN \
@@ -332,19 +329,17 @@ RUN \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz > \
-		/download/bash-4.3.30.tar.gz && \
-	curl ksSL http://www.linuxfromscratch.org/patches/lfs/systemd/bash-4.3.30-upstream_fixes-2.patch > \
-		/download/bash-4.3.30-upstream_fixes-2.patch && \
+	curl -ksSL http://ftp.gnu.org/gnu/bash/bash-4.4.tar.gz > \
+		/download/bash-4.4.tar.gz && \
 	cd /build && \
-	tar xf /download/bash-4.3.30.tar.gz && \
-	cd bash-4.3.30 && \
+	tar xf /download/bash-4.4.tar.gz && \
+	cd bash-4.4 && \
 	./configure --prefix=/tools --without-bash-malloc && \
 	MAKE="make -j4" && \
 	make install && \
 	ln -sfv bash /tools/bin/sh && \
 	cd /build && \
-	rm -rf bash-4.3.30
+	rm -rf bash-4.4
 
 # gawk
 RUN \
@@ -352,16 +347,16 @@ RUN \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://ftp.gnu.org/gnu/gawk/gawk-4.1.3.tar.xz > \
-		/download/gawk-4.1.3.tar.xz && \
+	curl -ksSL http://ftp.gnu.org/gnu/gawk/gawk-4.1.4.tar.xz > \
+		/download/gawk-4.1.4.tar.xz && \
 	cd /build && \
-	tar xf /download/gawk-4.1.3.tar.xz && \
-	cd gawk-4.1.3 && \
+	tar xf /download/gawk-4.1.4.tar.xz && \
+	cd gawk-4.1.4 && \
 	./configure --prefix=/tools && \
 	MAKE="make -j4" make && \
 	make install && \
 	cd /build && \
-	rm -rf gawk-4.1.3
+	rm -rf gawk-4.1.4
 
 # sed
 RUN \
@@ -386,27 +381,27 @@ RUN \
         umask 022 && \
         TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
         PATH=/tools/bin:/bin:/usr/bin && \
-	curl -ksSL http://www.cpan.org/src/5.0/perl-5.22.0.tar.bz2 > \
-		/download/perl-5.22.0.tar.bz2 && \
+	curl -ksSL http://www.cpan.org/src/5.0/perl-5.24.0.tar.bz2 > \
+		/download/perl-5.24.0.tar.bz2 && \
 	cd /build && \
-	tar xf /download/perl-5.22.0.tar.bz2 && \
-	cd perl-5.22.0 && \
+	tar xf /download/perl-5.24.0.tar.bz2 && \
+	cd perl-5.24.0 && \
 	sh Configure -des -Dprefix=/tools -Dlibs=-lm && \
 	MAKE="make -j4" make && \
-	cp -v perl cpan/podlators/pod2man /tools/bin && \
-	mkdir -pv /tools/lib/perl5/5.22.0 && \
-	cp -Rv lib/* /tools/lib/perl5/5.22.0 && \	
+	cp -v perl cpan/podlators/scripts/pod2man /tools/bin && \
+	mkdir -pv /tools/lib/perl5/5.24.0 && \
+	cp -Rv lib/* /tools/lib/perl5/5.24.0 && \	
 	cd /build && \
-	rm -rf perl-5.22.0
+	rm -rf perl-5.24.0
 
 # openssl
 RUN \
 	set -xe && \
-	curl -ksSL https://www.openssl.org/source/openssl-1.0.2d.tar.gz > \
-		/download/openssl-1.0.2d.tar.gz && \
+	curl -ksSL https://www.openssl.org/source/openssl-1.0.2j.tar.gz > \
+		/download/openssl-1.0.2j.tar.gz && \
 	cd /build && \
-	tar xf /download/openssl-1.0.2d.tar.gz && \
-	cd openssl-1.0.2d && \
+	tar xf /download/openssl-1.0.2j.tar.gz && \
+	cd openssl-1.0.2j && \
 	./config --prefix=/tools --openssldir=/tools/etc/ssl --libdir=lib shared zlib-dynamic && \
 	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
 	CC=$TARGET_PLATFORM-gcc \
@@ -416,7 +411,7 @@ RUN \
 	make && \
 	make install && \
 	cd /build && \
-	rm -rf openssl-1.0.2d
+	rm -rf openssl-1.0.2j
 
 # cleanup
 RUN \

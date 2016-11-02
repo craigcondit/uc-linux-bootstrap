@@ -1,5 +1,5 @@
 Package: update-alternatives
-Version: 1.18.3-0
+Version: 1.18.10-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Description: Software alternatives manager

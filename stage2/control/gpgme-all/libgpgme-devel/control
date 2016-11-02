@@ -1,9 +1,9 @@
 Package: libgpgme-devel
 Source: gpgme
-Version: 1.6.0-0
+Version: 1.7.1-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libassuan-devel, libc-devel, libgpg-error-devel, libgpgme (>= 1.6.0-0)
+Depends: libassuan-devel, libc-devel, libgpg-error-devel, libgpgme (>= 1.7.1-1)
 Description: GPGME - GnuPG Made Easy (headers)
 Homepage: http://www.gnupg.org/gpgme.html
 Section: libs

@@ -1,6 +1,6 @@
 Package: libasan-bootstrap
 Source: gcc
-Version: 5.2.0-0
+Version: 6.2.0-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: libasan

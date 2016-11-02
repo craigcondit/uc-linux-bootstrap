@@ -1,6 +1,6 @@
 Package: linux-devel
 Source: linux
-Version: 4.2.3-0
+Version: 4.8.6-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Requires: base-files

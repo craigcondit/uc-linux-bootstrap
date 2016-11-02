@@ -1,9 +1,9 @@
 Package: bzip2
 Source: bzip2
-Version: 1.0.6-0
+Version: 1.0.6-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: libbz2 (>= 1.0.6-0), libc, update-alternatives
+Depends: libbz2 (>= 1.0.6-1), libc, update-alternatives
 Description: high-quality block-sorting file compressor - utilities
 Homepage: http://www.bzip.org/
 Section: utils

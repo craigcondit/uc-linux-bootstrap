@@ -12,7 +12,8 @@ RUN \
 	mkdir -p /bootstrap /download /packages /build /control && \
 	cd /bootstrap && \
 	for pkg in $(cat /Manifest) ; do wget -O "$(echo $pkg | sed 's@.*/@@')" "${pkg}" ; done && \
-	for pkg in $(cat /Manifest) ; do dpkg --force-depends -i "$(echo $pkg | sed 's@.*/@@')" ; done
+	for pkg in $(cat /Manifest) ; do dpkg --force-depends -i "$(echo $pkg | sed 's@.*/@@')" ; done && \
+	ls -la
 
 # make
 ADD control/make /control/make
@@ -21,12 +22,12 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/make-4.1.tar.bz2 \
-		http://ftp.gnu.org/gnu/make/make-4.1.tar.bz2 && \
+	wget -O /download/make-4.2.1.tar.bz2 \
+		http://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/make-4.1.tar.bz2 && \
-	cd make-4.1 && \
-	./configure --prefix=/usr --without-guile --build="${TARGET_PLATFORM}" && \
+	tar xf /download/make-4.2.1.tar.bz2 && \
+	cd make-4.2.1 && \
+	./configure --prefix=/usr  --without-guile --build="${TARGET_PLATFORM}" && \
 	sh ./build.sh && \
 	./make && \
 	pre-root /build/make-root && \
@@ -39,7 +40,7 @@ RUN \
 		/build/make-deb \
 		/build/make-root \
 		/control/make \
-		/packages/make_4.1-0_amd64.deb && \
+		/packages/make_4.2.1-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/make_*.deb
@@ -52,12 +53,12 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/dpkg_1.18.3.tar.xz \
-		http://http.debian.net/debian/pool/main/d/dpkg/dpkg_1.18.3.tar.xz && \
+	wget -O /download/dpkg_1.18.10.tar.xz \
+		http://http.debian.net/debian/pool/main/d/dpkg/dpkg_1.18.10.tar.xz && \
 	cd /build && \
-	tar xf /download/dpkg_1.18.3.tar.xz && \
-	cd dpkg-1.18.3 && \
-	patch -p0 < \
+	tar xf /download/dpkg_1.18.10.tar.xz && \
+	cd dpkg-1.18.10 && \
+	patch -p1 < \
 		/patches/update-alternatives/update-alternatives-bootstrap.patch && \
 	./configure --prefix=/usr --sysconfdir=/etc && \
 	sed -i 's/debian-dpkg@lists.debian.org/insideo@randomcoder.org/' config.h && \
@@ -77,11 +78,11 @@ RUN \
 		/build/update-alternatives-deb \
 		/build/update-alternatives-root \
 		/control/update-alternatives \
-		/packages/update-alternatives_1.18.3-0_amd64.deb && \
+		/packages/update-alternatives_1.18.10-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* /patches/* && \
 	dpkg --force-depends -i /packages/update-alternatives_*.deb
-	
+
 # binutils
 ADD control/binutils-all /control
 RUN \
@@ -89,14 +90,14 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/binutils-2.25.1.tar.bz2 \
-		http://ftp.gnu.org/gnu/binutils/binutils-2.25.1.tar.bz2 && \
+	wget -O /download/binutils-2.27.tar.bz2 \
+		http://ftp.gnu.org/gnu/binutils/binutils-2.27.tar.bz2 && \
 	cd /build && \
-	tar xf /download/binutils-2.25.1.tar.bz2 && \
+	tar xf /download/binutils-2.27.tar.bz2 && \
 	mkdir binutils-build && \
 	cd binutils-build && \
 	CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
-	../binutils-2.25.1/configure \
+	../binutils-2.27/configure \
 		--prefix=/usr --enable-shared --disable-werror \
 		--target="${TARGET_PLATFORM}" --host="${TARGET_PLATFORM}" \
 		--disable-multilib --with-build-sysroot=/ && \
@@ -118,7 +119,7 @@ RUN \
 		/build/binutils-deb \
 		/build/binutils-root \
 		/control/binutils \
-		/packages/binutils_2.25.1-0_amd64.deb && \
+		/packages/binutils_2.27.0-1_amd64.deb && \
 
 	cp -a /build/binutils-master-root /build/binutils-devel-root && \
 	cd /build/binutils-devel-root && \
@@ -127,7 +128,7 @@ RUN \
 		/build/binutils-devel-deb \
 		/build/binutils-devel-root \
 		/control/binutils-devel \
-		/packages/binutils-devel_2.25.1-0_amd64.deb && \
+		/packages/binutils-devel_2.27.0-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -140,12 +141,12 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/pkg-config-0.28.tar.gz \
-		http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz && \
+	wget -O /download/pkg-config-0.29.1.tar.gz \
+		http://pkgconfig.freedesktop.org/releases/pkg-config-0.29.1.tar.gz && \
 	cd /build && \
-	tar xf /download/pkg-config-0.28.tar.gz && \
-	cd pkg-config-0.28 && \
-	./configure --prefix=/usr --with-internal-glib --disable-host-tool && \
+	tar xf /download/pkg-config-0.29.1.tar.gz && \
+	cd pkg-config-0.29.1 && \
+	./configure --prefix=/usr --with-internal-glib --disable-compile-warnings --disable-host-tool && \
 	MAKE="make -j4" make && \
 	pre-root /build/pkg-config-root && \
 	make DESTDIR=/build/pkg-config-root install && \
@@ -157,7 +158,7 @@ RUN \
 		/build/pkg-config-deb \
 		/build/pkg-config-root \
 		/control/pkg-config \
-		/packages/pkg-config_0.28-0_amd64.deb && \
+		/packages/pkg-config_0.29.1-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/pkg-config_*.deb
@@ -168,11 +169,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/gawk-4.1.3.tar.xz \
-		http://ftp.gnu.org/gnu/gawk/gawk-4.1.3.tar.xz && \
+	wget -O /download/gawk-4.1.4.tar.xz \
+		http://ftp.gnu.org/gnu/gawk/gawk-4.1.4.tar.xz && \
 	cd /build && \
-	tar xf /download/gawk-4.1.3.tar.xz && \
-	cd gawk-4.1.3 && \
+	tar xf /download/gawk-4.1.4.tar.xz && \
+	cd gawk-4.1.4 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
 	pre-root /build/gawk-root && \
@@ -180,13 +181,13 @@ RUN \
 	post-root /build/gawk-root && \
 	cd /build/gawk-root && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
-	rm -f usr/bin/gawk-4.1.3 && \
+	rm -f usr/bin/gawk-4.1.4 && \
 	rm -f usr/bin/awk && \
 	make-deb \
 		/build/gawk-deb \
 		/build/gawk-root \
 		/control/gawk \
-		/packages/gawk_4.1.3-0_amd64.deb && \
+		/packages/gawk_4.1.4-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/gawk_*.deb
@@ -214,7 +215,7 @@ RUN \
 		/build/sed-deb \
 		/build/sed-root \
 		/control/sed\
-		/packages/sed_4.2.2-0_amd64.deb && \
+		/packages/sed_4.2.2-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i /packages/sed_*.deb
@@ -225,20 +226,17 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/glibc-2.22.tar.xz \
-		http://ftp.gnu.org/gnu/glibc/glibc-2.22.tar.xz && \
-	wget -O /download/glibc-2.22-fhs-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-fhs-1.patch && \
-	wget -O /download/glibc-2.22-upstream_i386_fix-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/glibc-2.22-upstream_i386_fix-1.patch && \
+	wget -O /download/glibc-2.24.tar.xz \
+		http://ftp.gnu.org/gnu/glibc/glibc-2.24.tar.xz && \
+	wget -O /download/glibc-2.24-fhs-1.patch \
+		http://www.linuxfromscratch.org/patches/lfs/7.10/glibc-2.24-fhs-1.patch && \
 	cd /build && \
-	tar xf /download/glibc-2.22.tar.xz && \
-	cd glibc-2.22 && \
-	patch -Np1 -i /download/glibc-2.22-fhs-1.patch && \
-	patch -Np1 -i /download/glibc-2.22-upstream_i386_fix-1.patch && \
+	tar xf /download/glibc-2.24.tar.xz && \
+	cd glibc-2.24 && \
+	patch -Np1 -i /download/glibc-2.24-fhs-1.patch && \
 	mkdir -p ../glibc-build && \
 	cd ../glibc-build && \
-	../glibc-2.22/configure \
+	../glibc-2.24/configure \
 		--prefix=/usr --disable-profile --enable-kernel=2.6.32\
 		--enable-obsolete-rpc && \
 	MAKE="make -j4" make && \
@@ -248,15 +246,15 @@ RUN \
 	make install_root=/build/glibc-root install && \
 	rm -f /build/glibc-root/etc/ld.so.conf && \
 	mkdir -p /build/glibc-root/usr/lib/locale && \
-	I18NPATH=/build/glibc-2.22/localedata \
-	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/ISO-8859-1 \
+	I18NPATH=/build/glibc-2.24/localedata \
+	locale/localedef --alias-file=../glibc-2.24/intl/locale.alias \
+		-i ../glibc-2.24/localedata/locales/en_US -c \
+		-f ../glibc-2.24/localedata/charmaps/ISO-8859-1 \
 		--prefix=/build/glibc-root en_US && \
-	I18NPATH=/build/glibc-2.22/localedata \
-	locale/localedef --alias-file=../glibc-2.22/intl/locale.alias \
-		-i ../glibc-2.22/localedata/locales/en_US -c \
-		-f ../glibc-2.22/localedata/charmaps/UTF-8 \
+	I18NPATH=/build/glibc-2.24/localedata \
+	locale/localedef --alias-file=../glibc-2.24/intl/locale.alias \
+		-i ../glibc-2.24/localedata/locales/en_US -c \
+		-f ../glibc-2.24/localedata/charmaps/UTF-8 \
 		--prefix=/build/glibc-root en_US && \
 	cd /build/glibc-root && \
 	(strip --strip-debug usr/lib/* usr/lib/*/* || true) && \
@@ -290,7 +288,7 @@ RUN \
 		/build/libc-deb \
 		/build/libc-root \
 		/control/libc \
-		/packages/libc_2.22-0_amd64.deb && \
+		/packages/libc_2.24-1_amd64.deb && \
 
 	cp -a /build/glibc-root /build/glibc-bin-root && \
 	cd /build/glibc-bin-root && \
@@ -306,7 +304,7 @@ RUN \
 		/build/glibc-bin-deb \
 		/build/glibc-bin-root \
 		/control/glibc-bin \
-		/packages/glibc-bin_2.22-0_amd64.deb && \
+		/packages/glibc-bin_2.24-1_amd64.deb && \
 
 	cp -a /build/glibc-root /build/libc-devel-root && \
 	cd /build/libc-devel-root && \
@@ -316,7 +314,7 @@ RUN \
 		/build/libc-devel-deb \
 		/build/libc-devel-root \
 		/control/libc-devel \
-		/packages/libc-devel_2.22-0_amd64.deb && \
+		/packages/libc-devel_2.24-1_amd64.deb && \
 	dpkg --force-depends -P \
 		libc-devel-bootstrap glibc-bin-bootstrap libc-bootstrap && \
 	LD_LIBRARY_PATH=/build/libc-root/usr/lib \
@@ -356,7 +354,7 @@ RUN \
 		/build/libz-deb \
 		/build/libz-root \
 		/control/libz\
-		/packages/libz_1.2.8-1_amd64.deb && \
+		/packages/libz_1.2.8-2_amd64.deb && \
 
 	cp -a /build/zlib-root /build/libz-devel-root && \
 	cd /build/libz-devel-root && \
@@ -365,7 +363,7 @@ RUN \
 		/build/libz-devel-deb \
 		/build/libz-devel-root \
 		/control/libz-devel \
-		/packages/libz-devel_1.2.8-1_amd64.deb && \
+		/packages/libz-devel_1.2.8-2_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -P libz-bootstrap libz-devel-bootstrap && \
@@ -378,11 +376,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/file-5.25.tar.gz \
-		ftp://ftp.astron.com/pub/file/file-5.25.tar.gz && \
+	wget -O /download/file-5.29.tar.gz \
+		ftp://ftp.astron.com/pub/file/file-5.29.tar.gz && \
 	cd /build && \
-	tar xf /download/file-5.25.tar.gz && \
-	cd file-5.25 && \
+	tar xf /download/file-5.29.tar.gz && \
+	cd file-5.29 && \
 	./configure --prefix=/usr && \
 	MAKE="make -j4" make && \
 	pre-root /build/file-root-orig && \
@@ -400,7 +398,7 @@ RUN \
 		/build/file-deb \
 		/build/file-root \
 		/control/file \
-		/packages/file_5.25-0_amd64.deb && \
+		/packages/file_5.29-1_amd64.deb && \
 
 	cp -a /build/file-root-orig /build/libmagic-root && \
 	cd /build/libmagic-root && \
@@ -410,7 +408,7 @@ RUN \
 		/build/libmagic-deb \
 		/build/libmagic-root \
 		/control/libmagic \
-		/packages/libmagic_5.25-0_amd64.deb && \
+		/packages/libmagic_5.29-1_amd64.deb && \
 
 	cp -a /build/file-root-orig /build/libmagic-devel-root && \
 	cd /build/libmagic-devel-root && \
@@ -419,7 +417,7 @@ RUN \
 		/build/libmagic-devel-deb \
 		/build/libmagic-devel-root \
 		/control/libmagic-devel \
-		/packages/libmagic-devel_5.25-0_amd64.deb && \
+		/packages/libmagic-devel_5.29-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -433,11 +431,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/gmp-6.0.0a.tar.xz \
-		http://ftp.gnu.org/gnu/gmp/gmp-6.0.0a.tar.xz && \
+	wget -O /download/gmp-6.1.1.tar.xz \
+		http://ftp.gnu.org/gnu/gmp/gmp-6.1.1.tar.xz && \
 	cd /build && \
-	tar xf /download/gmp-6.0.0a.tar.xz && \
-	cd gmp-6.0.0 && \
+	tar xf /download/gmp-6.1.1.tar.xz && \
+	cd gmp-6.1.1 && \
 	./configure --prefix=/usr --enable-cxx --disable-static && \
 	MAKE="make -j4" make && \
 	pre-root /build/gmp-root && \
@@ -455,7 +453,7 @@ RUN \
 		/build/libgmp-deb \
 		/build/libgmp-root \
 		/control/libgmp \
-		/packages/libgmp_6.0.0a-0_amd64.deb && \
+		/packages/libgmp_6.1.1-1_amd64.deb && \
 
 	cp -a /build/gmp-root /build/libgmp-devel-root && \
 	cd /build/libgmp-devel-root && \
@@ -464,7 +462,7 @@ RUN \
 		/build/libgmp-devel-deb \
 		/build/libgmp-devel-root \
 		/control/libgmp-devel \
-		/packages/libgmp-devel_6.0.0a-0_amd64.deb && \
+		/packages/libgmp-devel_6.1.1-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -477,14 +475,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/mpfr-3.1.3.tar.xz \
-		http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz && \
-	wget -O /download/mpfr-3.1.3-upstream_fixes-1.patch \
-		http://www.linuxfromscratch.org/patches/lfs/systemd/mpfr-3.1.3-upstream_fixes-1.patch && \
+	wget -O /download/mpfr-3.1.4.tar.xz \
+		http://www.mpfr.org/mpfr-3.1.4/mpfr-3.1.4.tar.xz && \
 	cd /build && \
-	tar xf /download/mpfr-3.1.3.tar.xz && \
-	cd mpfr-3.1.3 && \
-	patch -Np1 -i /download/mpfr-3.1.3-upstream_fixes-1.patch && \
+	tar xf /download/mpfr-3.1.4.tar.xz && \
+	cd mpfr-3.1.4 && \
 	./configure --prefix=/usr --disable-static --enable-thread-safe && \
 	MAKE="make -j4" make && \
 	pre-root /build/mpfr-root && \
@@ -502,7 +497,7 @@ RUN \
 		/build/libmpfr-deb \
 		/build/libmpfr-root \
 		/control/libmpfr \
-		/packages/libmpfr_3.1.3-0_amd64.deb && \
+		/packages/libmpfr_3.1.4-1_amd64.deb && \
 
 	cp -a /build/mpfr-root /build/libmpfr-devel-root && \
 	cd /build/libmpfr-devel-root && \
@@ -511,7 +506,7 @@ RUN \
 		/build/libmpfr-devel-deb \
 		/build/libmpfr-devel-root \
 		/control/libmpfr-devel \
-		/packages/libmpfr-devel_3.1.3-0_amd64.deb && \
+		/packages/libmpfr-devel_3.1.4-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -546,7 +541,7 @@ RUN \
 		/build/libmpc-deb \
 		/build/libmpc-root \
 		/control/libmpc \
-		/packages/libmpc_1.0.3-1_amd64.deb && \
+		/packages/libmpc_1.0.3-2_amd64.deb && \
 
 	cp -a /build/mpc-root /build/libmpc-devel-root && \
 	cd /build/libmpc-devel-root && \
@@ -555,7 +550,7 @@ RUN \
 		/build/libmpc-devel-deb \
 		/build/libmpc-devel-root \
 		/control/libmpc-devel \
-		/packages/libmpc-devel_1.0.3-1_amd64.deb && \
+		/packages/libmpc-devel_1.0.3-2_amd64.deb && \
 
 	cd / && \
         rm -rf /build/* /download/* /control/* && \
@@ -569,10 +564,10 @@ RUN \
 	umask 022 && \
 	LC_ALL=POSIX && \
 	TARGET_PLATFORM=$(uname -m)-uc-linux-gnu && \
-	wget -O /download/gcc-5.2.0.tar.bz2 \
-		http://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2 && \
+	wget -O /download/gcc-6.2.0.tar.bz2 \
+		http://ftp.gnu.org/gnu/gcc/gcc-6.2.0/gcc-6.2.0.tar.bz2 && \
 	cd /build && \
-	tar xf /download/gcc-5.2.0.tar.bz2 && \
+	tar xf /download/gcc-6.2.0.tar.bz2 && \
 	mkdir gcc-build && \
 	cd gcc-build && \
 	dpkg --force-depends -P \
@@ -580,7 +575,7 @@ RUN \
 	SED=sed CC=gcc CXX=g++ AR=ar RANLIB=ranlib LD=ld STRIP=strip \
 	CD_FOR_TARGET=gcc CXX_FOR_TARGET=g++ AR_FOR_TARGET=ar \
 	RANLIB_FOR_TARGET=ranlib LD_FOR_TARGET=ld STRIP_FOR_TARGET=strip \
-	../gcc-5.2.0/configure \
+	../gcc-6.2.0/configure \
 		--prefix=/usr --enable-languages=c,c++ --disable-multilib \
 		--build="${TARGET_PLATFORM}" \
 		--disable-bootstrap --with-system-zlib && \
@@ -597,18 +592,18 @@ RUN \
 	cd /build/gcc-root && \
 	rm -f usr/bin/${TARGET_PLATFORM}-* && \
 	for tool in c++ g++ gcc gcc-ar gcc-nm gcc-ranlib ; do ln -sf $tool usr/bin/${TARGET_PLATFORM}-$tool ; done && \
-	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-5.2.0 && \
+	ln -sf gcc usr/bin/${TARGET_PLATFORM}-gcc-6.2.0 && \
 	ln -sv ../bin/cpp usr/lib/cpp && \
 	ln -sv gcc usr/bin/cc && \
 	mkdir -p usr/lib/bfd-plugins && \
-	ln -sfv ../../libexec/gcc/${TARGET_PLATFORM}/5.2.0/liblto_plugin.so usr/lib/bfd-plugins/ && \
+	ln -sfv ../../libexec/gcc/${TARGET_PLATFORM}/6.2.0/liblto_plugin.so usr/lib/bfd-plugins/ && \
 	mkdir -pv usr/share/gdb/auto-load/usr/lib && \
 	mv -v usr/lib/*gdb.py usr/share/gdb/auto-load/usr/lib && \
 	rm -f usr/lib/libsupc++* && \
 	rm -rf usr/share/info usr/share/locale usr/share/man && \
 
 	for pkg in libasan libatomic libcilkrts libcc1 libgcc libgomp libitm \
-		liblsan libquadmath libssp libtsan libubsan libvtv ; do ( \
+		liblsan libquadmath libssp libtsan libubsan ; do ( \
 		mkdir -p /build/${pkg}-root/usr/lib && \
 		cp -a usr/lib/${pkg}*.so* /build/${pkg}-root/usr/lib/ && \
 		rm -f usr/lib/${pkg}*.so* && \
@@ -616,7 +611,7 @@ RUN \
 			/build/${pkg}-deb \
 			/build/${pkg}-root \
 			/control/${pkg} \
-			/packages/${pkg}_5.2.0-0_amd64.deb) ; done && \
+			/packages/${pkg}_6.2.0-1_amd64.deb) ; done && \
 
 	mkdir -p /build/libstdcxx-root/usr/lib && \
 	cp -a usr/lib/libstdc++*.so* /build/libstdcxx-root/usr/lib/ && \
@@ -625,18 +620,18 @@ RUN \
 		/build/libstdcxx-deb \
 		/build/libstdcxx-root \
 		/control/libstdcxx \
-		/packages/libstdcxx_5.2.0-0_amd64.deb && \
+		/packages/libstdcxx_6.2.0-1_amd64.deb && \
 
 	make-deb \
 		/build/gcc-deb \
 		/build/gcc-root \
 		/control/gcc \
-		/packages/gcc_5.2.0-0_amd64.deb && \
+		/packages/gcc_6.2.0-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	for pkg in libasan libatomic libcilkrts libgcc libgomp libitm \
-		liblsan libquadmath libssp libstdcxx libtsan libubsan libvtv gcc ; do \
+		liblsan libquadmath libssp libstdcxx libtsan libubsan gcc ; do \
 		dpkg --force-depends -P ${pkg}-bootstrap && \
 		dpkg --force-depends -i /packages/${pkg}_*.deb ; done && \
 	dpkg --force-depends -i /packages/libcc1_*.deb && \
@@ -674,7 +669,7 @@ RUN \
 		/build/m4-deb \
 		/build/m4-root \
 		/control/m4 \
-		/packages/m4_1.4.17-0_amd64.deb && \
+		/packages/m4_1.4.17-1_amd64.deb && \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -P m4-bootstrap && \
@@ -704,7 +699,7 @@ RUN \
 		/build/patch-deb \
 		/build/patch-root \
 		/control/patch \
-		/packages/patch_2.7.5-0_amd64.deb && \
+		/packages/patch_2.7.5-1_amd64.deb && \
 	cd / && \
         rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -P patch-bootstrap && \
@@ -716,11 +711,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-        wget -O /download/busybox-1.23.2.tar.bz2 \
-		http://www.busybox.net/downloads/busybox-1.23.2.tar.bz2 && \
+        wget -O /download/busybox-1.25.1.tar.bz2 \
+		http://www.busybox.net/downloads/busybox-1.25.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/busybox-1.23.2.tar.bz2 && \
-	cd busybox-1.23.2 && \
+	tar xf /download/busybox-1.25.1.tar.bz2 && \
+	cd busybox-1.25.1 && \
 	confs=' \
 		CONFIG_INSTALL_NO_USR \
 		CONFIG_AR \
@@ -747,7 +742,7 @@ RUN \
 		/build/busybox-deb \
 		/build/busybox-root \
 		/control/busybox \
-		/packages/busybox_1.23.2-0_amd64.deb && \
+		/packages/busybox_1.25.1-1_amd64.deb && \
 	cp -a /usr/bin/busybox /build/busybox.temp && \
 	ln -sfv /build/busybox.temp /build/dpkg && \
 	ln -sfv /build/busybox.temp /build/cp && \
@@ -805,7 +800,7 @@ RUN \
 		/build/bzip2-deb \
 		/build/bzip2-root \
 		/control/bzip2 \
-		/packages/bzip2_1.0.6-0_amd64.deb && \
+		/packages/bzip2_1.0.6-1_amd64.deb && \
 
 	cp -a /build/bzip2-base-root /build/libbz2-root && \
 	cd /build/libbz2-root && \
@@ -815,7 +810,7 @@ RUN \
 		/build/libbz2-deb \
 		/build/libbz2-root \
 		/control/libbz2 \
-		/packages/libbz2_1.0.6-0_amd64.deb && \
+		/packages/libbz2_1.0.6-1_amd64.deb && \
 
 	cp -a /build/bzip2-base-root /build/libbz2-devel-root && \
 	cd /build/libbz2-devel-root && \
@@ -825,7 +820,7 @@ RUN \
 		/build/libbz2-devel-deb \
 		/build/libbz2-devel-root \
 		/control/libbz2-devel \
-		/packages/libbz2-devel_1.0.6-0_amd64.deb && \
+		/packages/libbz2-devel_1.0.6-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -838,11 +833,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-        wget -O /download/perl-5.22.0.tar.bz2 \
-		http://www.cpan.org/src/5.0/perl-5.22.0.tar.bz2 && \
+        wget -O /download/perl-5.24.0.tar.bz2 \
+		http://www.cpan.org/src/5.0/perl-5.24.0.tar.bz2 && \
 	cd /build && \
-	tar xf /download/perl-5.22.0.tar.bz2 && \
-	cd perl-5.22.0 && \
+	tar xf /download/perl-5.24.0.tar.bz2 && \
+	cd perl-5.24.0 && \
 	export BUILD_ZLIB=False && \
 	export BUILD_BZIP2=0 && \
 	sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr \
@@ -862,7 +857,7 @@ RUN \
 		/build/perl-deb \
 		/build/perl-root \
 		/control/perl \
-		/packages/perl_5.22.0-0_amd64.deb && \
+		/packages/perl_5.24.0-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -874,11 +869,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/openssl-1.0.2d.tar.gz \
-		https://www.openssl.org/source/openssl-1.0.2d.tar.gz && \
+	wget -O /download/openssl-1.0.2j.tar.gz \
+		https://www.openssl.org/source/openssl-1.0.2j.tar.gz && \
 	cd /build && \
-	tar xf /download/openssl-1.0.2d.tar.gz && \
-	cd openssl-1.0.2d && \
+	tar xf /download/openssl-1.0.2j.tar.gz && \
+	cd openssl-1.0.2j && \
 	./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic && \
 	sed -i 's# libcrypto.a##;s# libssl.a##' Makefile && \
 	make && \
@@ -897,7 +892,7 @@ RUN \
 		/build/libssl-deb \
 		/build/libssl-root \
 		/control/libssl \
-		/packages/libssl_1.0.2d-0_amd64.deb && \
+		/packages/libssl_1.0.2j-1_amd64.deb && \
 
 	cp -a /build/openssl-base-root /build/libssl-devel-root && \
 	cd /build/libssl-devel-root && \
@@ -907,7 +902,7 @@ RUN \
 		/build/libssl-devel-deb \
 		/build/libssl-devel-root \
 		/control/libssl-devel \
-		/packages/libssl-devel_1.0.2d-0_amd64.deb && \
+		/packages/libssl-devel_1.0.2j-1_amd64.deb && \
 
 	cp -a /build/openssl-base-root /build/openssl-root && \
 	cd /build/openssl-root && \
@@ -916,7 +911,7 @@ RUN \
 		/build/openssl-deb \
 		/build/openssl-root \
 		/control/openssl \
-		/packages/openssl_1.0.2d-0_amd64.deb && \
+		/packages/openssl_1.0.2j-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -932,14 +927,14 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/xz-5.2.1.tar.xz \
-		http://tukaani.org/xz/xz-5.2.1.tar.xz && \
+	wget -O /download/xz-5.2.2.tar.xz \
+		http://tukaani.org/xz/xz-5.2.2.tar.xz && \
 	cd /build && \
-	tar xf /download/xz-5.2.1.tar.xz && \
-	cd xz-5.2.1 && \
+	tar xf /download/xz-5.2.2.tar.xz && \
+	cd xz-5.2.2 && \
 	./configure \
 		--prefix=/usr --disable-static \
-		--docdir=/usr/share/doc/xz-5.2.1 && \
+		--docdir=/usr/share/doc/xz-5.2.2 && \
 	MAKE="make -j4" make && \
 	pre-root /build/xz-base-root && \
 	make DESTDIR=/build/xz-base-root install-strip && \
@@ -968,7 +963,7 @@ RUN \
 		/build/xz-deb \
 		/build/xz-root \
 		/control/xz \
-		/packages/xz_5.2.1-0_amd64.deb && \
+		/packages/xz_5.2.2-1_amd64.deb && \
 		
 	cp -a /build/xz-base-root /build/liblzma-root && \
 	cd /build/liblzma-root && \
@@ -978,7 +973,7 @@ RUN \
 		/build/liblzma-deb \
 		/build/liblzma-root \
 		/control/liblzma \
-		/packages/liblzma_5.2.1-0_amd64.deb && \
+		/packages/liblzma_5.2.2-1_amd64.deb && \
 		
 	cp -a /build/xz-base-root /build/liblzma-devel-root && \
 	cd /build/liblzma-devel-root && \
@@ -988,7 +983,7 @@ RUN \
 		/build/liblzma-devel-deb \
 		/build/liblzma-devel-root \
 		/control/liblzma-devel \
-		/packages/liblzma-devel_5.2.1-0_amd64.deb && \
+		/packages/liblzma-devel_5.2.2-1_amd64.deb && \
 		
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -1003,11 +998,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/libarchive-3.1.2.tar.gz \
-		http://www.libarchive.org/downloads/libarchive-3.1.2.tar.gz && \
+	wget -O /download/libarchive-3.2.2.tar.gz \
+		http://www.libarchive.org/downloads/libarchive-3.2.2.tar.gz && \
 	cd /build && \
-	tar xf /download/libarchive-3.1.2.tar.gz && \
-	cd libarchive-3.1.2 && \
+	tar xf /download/libarchive-3.2.2.tar.gz && \
+	cd libarchive-3.2.2 && \
 	./configure --prefix=/usr --disable-bsdtar --disable-bsdcpio && \
 	MAKE="make -j4" make && \
 	pre-root /build/libarchive-base-root && \
@@ -1024,7 +1019,7 @@ RUN \
 		/build/libarchive-deb \
 		/build/libarchive-root \
 		/control/libarchive \
-		/packages/libarchive_3.1.2-0_amd64.deb && \
+		/packages/libarchive_3.2.2-1_amd64.deb && \
 
 	cp -a /build/libarchive-base-root /build/libarchive-devel-root && \
 	cd /build/libarchive-devel-root && \
@@ -1033,7 +1028,7 @@ RUN \
 		/build/libarchive-devel-deb \
 		/build/libarchive-devel-root \
 		/control/libarchive-devel \
-		/packages/libarchive-devel_3.1.2-0_amd64.deb && \
+		/packages/libarchive-devel_3.2.2-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -1046,11 +1041,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/curl-7.44.0.tar.bz2 \
-		https://github.com/bagder/curl/releases/download/curl-7_44_0/curl-7.44.0.tar.bz2 && \
+	wget -O /download/curl-7.51.0.tar.bz2 \
+		https://curl.haxx.se/download/curl-7.51.0.tar.bz2 && \
 	cd /build && \
-	tar xf /download/curl-7.44.0.tar.bz2 && \
-	cd curl-7.44.0 && \
+	tar xf /download/curl-7.51.0.tar.bz2 && \
+	cd curl-7.51.0 && \
 	./configure --prefix=/usr --disable-static --build=$(gcc -dumpmachine) && \
 	MAKE="make -j4" make && \
 	pre-root /build/curl-base-root && \
@@ -1065,8 +1060,8 @@ RUN \
 	make-deb \
 		/build/curl-deb \
 		/build/curl-root \
-		/control/curl-bootstrap \
-		/packages/curl-bootstrap_7.44.0-0_amd64.deb && \
+		/control/curl \
+		/packages/curl_7.51.0-1_amd64.deb && \
 	
 	cp -a /build/curl-base-root /build/libcurl-root && \
 	cd /build/libcurl-root && \
@@ -1075,8 +1070,8 @@ RUN \
 	make-deb \
 		/build/libcurl-deb \
 		/build/libcurl-root \
-		/control/libcurl-bootstrap \
-		/packages/libcurl-bootstrap_7.44.0-0_amd64.deb && \
+		/control/libcurl \
+		/packages/libcurl_7.51.0-1_amd64.deb && \
 	
 	cp -a /build/curl-base-root /build/libcurl-devel-root && \
 	cd /build/libcurl-devel-root && \
@@ -1085,8 +1080,8 @@ RUN \
 	make-deb \
 		/build/libcurl-devel-deb \
 		/build/libcurl-devel-root \
-		/control/libcurl-devel-bootstrap \
-		/packages/libcurl-devel-bootstrap_7.44.0-0_amd64.deb && \
+		/control/libcurl-devel \
+		/packages/libcurl-devel_7.51.0-1_amd64.deb && \
 	
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -1101,11 +1096,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/libgpg-error-1.20.tar.bz2 \
-		https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.20.tar.bz2 && \
+	wget -O /download/libgpg-error-1.22.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.22.tar.bz2 && \
 	cd /build && \
-	tar xf /download/libgpg-error-1.20.tar.bz2 && \
-	cd libgpg-error-1.20 && \
+	tar xf /download/libgpg-error-1.22.tar.bz2 && \
+	cd libgpg-error-1.22 && \
 	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
 	MAKE="make -j4" make && \
 	pre-root /build/libgpg-error-base-root && \
@@ -1122,7 +1117,7 @@ RUN \
 		/build/gpg-error-deb \
 		/build/gpg-error-root \
 		/control/gpg-error \
-		/packages/gpg-error_1.20-0_amd64.deb && \
+		/packages/gpg-error_1.22-1_amd64.deb && \
 	
 	cp -a /build/libgpg-error-base-root /build/libgpg-error-root && \
 	cd /build/libgpg-error-root && \
@@ -1132,7 +1127,7 @@ RUN \
 		/build/libgpg-error-deb \
 		/build/libgpg-error-root \
 		/control/libgpg-error \
-		/packages/libgpg-error_1.20-0_amd64.deb && \
+		/packages/libgpg-error_1.22-1_amd64.deb && \
 	
 	cp -a /build/libgpg-error-base-root /build/libgpg-error-devel-root && \
 	cd /build/libgpg-error-devel-root && \
@@ -1141,7 +1136,7 @@ RUN \
 		/build/libgpg-error-devel-deb \
 		/build/libgpg-error-devel-root \
 		/control/libgpg-error-devel \
-		/packages/libgpg-error-devel_1.20-0_amd64.deb && \
+		/packages/libgpg-error-devel_1.22-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -1154,11 +1149,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/libassuan-2.3.0.tar.bz2 \
-		https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-2.3.0.tar.bz2 && \
+	wget -O /download/libassuan-2.4.3.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-2.4.3.tar.bz2 && \
 	cd /build && \
-	tar xf /download/libassuan-2.3.0.tar.bz2 && \
-	cd libassuan-2.3.0 && \
+	tar xf /download/libassuan-2.4.3.tar.bz2 && \
+	cd libassuan-2.4.3 && \
 	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
 	MAKE="make -j4" make && \
 	pre-root /build/libassuan-base-root && \
@@ -1175,7 +1170,7 @@ RUN \
 		/build/libassuan-deb \
 		/build/libassuan-root \
 		/control/libassuan \
-		/packages/libassuan_2.3.0-0_amd64.deb && \
+		/packages/libassuan_2.4.3-1_amd64.deb && \
 
 	cp -a /build/libassuan-base-root /build/libassuan-devel-root && \
 	cd /build/libassuan-devel-root && \
@@ -1184,7 +1179,7 @@ RUN \
 		/build/libassuan-devel-deb \
 		/build/libassuan-devel-root \
 		/control/libassuan-devel \
-		/packages/libassuan-devel_2.3.0-0_amd64.deb && \
+		/packages/libassuan-devel_2.4.3-1_amd64.deb && \
 	
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
@@ -1197,11 +1192,11 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/gpgme-1.6.0.tar.bz2 \
-		https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.6.0.tar.bz2 && \
+	wget -O /download/gpgme-1.7.1.tar.bz2 \
+		https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.7.1.tar.bz2 && \
 	cd /build && \
-	tar xf /download/gpgme-1.6.0.tar.bz2 && \
-	cd gpgme-1.6.0 && \
+	tar xf /download/gpgme-1.7.1.tar.bz2 && \
+	cd gpgme-1.7.1 && \
 	./configure --disable-static --prefix=/usr --build=$(gcc -dumpmachine) && \
 	MAKE="make -j4" make && \
 	pre-root /build/gpgme-base-root && \
@@ -1217,7 +1212,7 @@ RUN \
 		/build/gpgme-deb \
 		/build/gpgme-root \
 		/control/gpgme \
-		/packages/gpgme_1.6.0-0_amd64.deb && \
+		/packages/gpgme_1.7.1-1_amd64.deb && \
 
 	cp -a /build/gpgme-base-root /build/libgpgme-root && \
 	cd /build/libgpgme-root && \
@@ -1227,7 +1222,7 @@ RUN \
 		/build/libgpgme-deb \
 		/build/libgpgme-root \
 		/control/libgpgme \
-		/packages/libgpgme_1.6.0-0_amd64.deb && \
+		/packages/libgpgme_1.7.1-1_amd64.deb && \
 
 	cp -a /build/gpgme-base-root /build/libgpgme-devel-root && \
 	cd /build/libgpgme-devel-root && \
@@ -1237,12 +1232,99 @@ RUN \
 		/build/libgpgme-devel-deb \
 		/build/libgpgme-devel-root \
 		/control/libgpgme-devel \
-		/packages/libgpgme-devel_1.6.0-0_amd64.deb && \
+		/packages/libgpgme-devel_1.7.1-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i \
 		/packages/libgpgme_*.deb /packages/libgpgme-devel_*.deb /packages/gpgme_*.deb
+
+# autoconf
+ADD control/autoconf /control/autoconf
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/autoconf-2.69.tar.xz \
+		http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz && \
+	cd /build && \
+	tar xf /download/autoconf-2.69.tar.xz && \
+	cd autoconf-2.69 && \
+	./configure --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/autoconf-root && \
+	make DESTDIR=/build/autoconf-root install-strip && \
+	post-root /build/autoconf-root && \
+	cd /build/autoconf-root && \
+	rm -rf usr/share/man usr/share/info && \
+	make-deb \
+		/build/autoconf-deb \
+		/build/autoconf-root \
+		/control/autoconf \
+		/packages/autoconf_2.69-1_all.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/autoconf_*.deb
+
+# automake
+ADD control/automake /control/automake
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/automake-1.15.tar.xz \
+		http://ftp.gnu.org/gnu/automake/automake-1.15.tar.xz && \
+	cd /build && \
+	tar xf /download/automake-1.15.tar.xz && \
+	cd automake-1.15 && \
+	./configure --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/automake-root && \
+	make DESTDIR=/build/automake-root install-strip && \
+	post-root /build/automake-root && \
+	cd /build/automake-root && \
+	rm -rf usr/share/man usr/share/info usr/share/doc && \
+	rm -f usr/bin/aclocal usr/bin/automake && \
+	ln -sf aclocal-1.15 usr/bin/aclocal && \
+	ln -sf automake-1.15 usr/bin/automake && \
+	make-deb \
+		/build/automake-deb \
+		/build/automake-root \
+		/control/automake \
+		/packages/automake_1.15-1_all.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/automake_*.deb
+
+# libtool
+ADD control/libtool /control/libtool
+RUN \
+	set -x && \
+	umask 022 && \
+	LC_ALL=POSIX && \
+	wget -O /download/libtool-2.4.6.tar.xz \
+		http://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.xz && \
+	cd /build && \
+	tar xf /download/libtool-2.4.6.tar.xz && \
+	cd libtool-2.4.6 && \
+	./configure --prefix=/usr --build=$(gcc -dumpmachine) && \
+	MAKE="make -j4" make && \
+	pre-root /build/libtool-root && \
+	make DESTDIR=/build/libtool-root install-strip && \
+	post-root /build/libtool-root && \
+	cd /build/libtool-root && \
+	rm -rf usr/share/man usr/share/info && \
+	make-deb \
+		/build/libtool-deb \
+		/build/libtool-root \
+		/control/libtool \
+		/packages/libtool_2.4.6-1_amd64.deb && \
+	cd / && \
+	rm -rf /build/* /download/* /control/* && \
+	dpkg --force-depends -i \
+		/packages/libtool_*.deb
 
 # opkg
 ADD control/opkg-all /control
@@ -1250,12 +1332,16 @@ RUN \
 	set -x && \
 	umask 022 && \
 	LC_ALL=POSIX && \
-	wget -O /download/opkg-0.3.0.tar.gz \
-		http://downloads.yoctoproject.org/releases/opkg/opkg-0.3.0.tar.gz && \
+	wget -O /download/opkg-0.3.3.tar.gz \
+		http://downloads.yoctoproject.org/releases/opkg/opkg-0.3.3.tar.gz && \
 	cd /build && \
-	tar xf /download/opkg-0.3.0.tar.gz && \
-	cd opkg-0.3.0 && \
-	./configure --prefix=/usr --build=$(gcc -dumpmachine) --disable-static &&\
+	tar xf /download/opkg-0.3.3.tar.gz && \
+	cd opkg-0.3.3 && \
+	libtoolize && \
+	aclocal && \
+	autoconf && \
+	automake --add-missing && \
+	./configure --prefix=/usr --build=$(gcc -dumpmachine) --disable-static && \
 	MAKE="make -j4" make && \
 	pre-root /build/opkg-base-root && \
 	make DESTDIR=/build/opkg-base-root install-strip && \
@@ -1270,7 +1356,7 @@ RUN \
 		/build/opkg-deb \
 		/build/opkg-root \
 		/control/opkg \
-		/packages/opkg_0.3.0-0_amd64.deb && \
+		/packages/opkg_0.3.3-1_amd64.deb && \
 
 	cp -a /build/opkg-base-root /build/libopkg-root && \
 	cd /build/libopkg-root && \
@@ -1280,7 +1366,7 @@ RUN \
 		/build/libopkg-deb \
 		/build/libopkg-root \
 		/control/libopkg \
-		/packages/libopkg_0.3.0-0_amd64.deb && \
+		/packages/libopkg_0.3.3-1_amd64.deb && \
 
 	cp -a /build/opkg-base-root /build/libopkg-devel-root && \
 	cd /build/libopkg-devel-root && \
@@ -1290,7 +1376,7 @@ RUN \
 		/build/libopkg-devel-deb \
 		/build/libopkg-devel-root \
 		/control/libopkg-devel \
-		/packages/libopkg-devel_0.3.0-0_amd64.deb && \
+		/packages/libopkg-devel_0.3.3-1_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \

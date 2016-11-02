@@ -1,11 +1,11 @@
 Package: glibc-bin-bootstrap
 Source: glibc
-Version: 2.22-0
+Version: 2.24-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: glibc-bin
 Conflicts: glibc-bin
-Requires: base-files, libc-bootstrap (>= 2.22-0)
+Requires: base-files, libc-bootstrap (>= 2.24-1)
 Description: GNU C Library: Binaries
 Section: devel
 Priority: optional

@@ -1,11 +1,11 @@
 Package: binutils-devel-bootstrap
 Source: binutils
-Version: 2.25.1-0
+Version: 2.27.0-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Provides: binutils-devel
 Conflicts: binutils-devel
-Requires: base-files, libc, libz, binutils (>= 2.25.1-0)
+Requires: base-files, libc, libz, binutils (>= 2.27.0-1)
 Description: GNU assembler, linker and binary utilities (headers and static libraries)
 Section: devel
 Priority: optional

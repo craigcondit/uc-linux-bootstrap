@@ -1,0 +1,9 @@
+Package: automake
+Version: 1.15-1
+Source: automake
+Priority: optional
+Depends: perl, m4
+Maintainer: Craig Condit <ccondit@randomcoder.org>
+Description: Tool for generating GNU Standards-compliant Makefiles
+Architecture: all
+Section: devel

@@ -1,5 +1,5 @@
 Package: pkg-config
-Version: 0.28-0
+Version: 0.29.1-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
 Depends: libc
