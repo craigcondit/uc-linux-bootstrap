@@ -1086,9 +1086,9 @@ RUN \
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
 	dpkg --force-depends -i \
-		/packages/libcurl-bootstrap_*.deb \
-		/packages/libcurl-devel-bootstrap_*.deb \
-		/packages/curl-bootstrap_*.deb
+		/packages/libcurl_*.deb \
+		/packages/libcurl-devel_*.deb \
+		/packages/curl_*.deb
 
 # libgpg-error
 ADD control/libgpg-error-all control
@@ -1394,7 +1394,7 @@ RUN \
 	opkg update && \
 	mkdir -p /stage3 && \
 	(opkg download base-files || true) && \
-	opkg -o /stage3 --nodeps install /var/cache/opkg/*_base-files_*.deb && \
+	opkg -o /stage3 --nodeps install /var/cache/opkg/base-files_*.deb && \
 	mkdir -p /stage3/etc/opkg && \
 	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg && \
 	opkg -o /stage3 --nodeps install /packages/libc_*.deb && \
@@ -1407,7 +1407,7 @@ RUN \
 	opkg -o /stage3 --nodeps install /packages/liblzma_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libbz2_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libarchive_*.deb && \
-	opkg -o /stage3 --nodeps install /packages/libcurl-bootstrap_*.deb && \
+	opkg -o /stage3 --nodeps install /packages/libcurl_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libgpg-error_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libassuan_*.deb && \
 	opkg -o /stage3 --nodeps install /packages/libgpgme_*.deb && \
@@ -1416,7 +1416,7 @@ RUN \
 	chroot /stage3 /usr/share/busybox/libexec/busybox ln -sf /usr/share/busybox/libexec/busybox /usr/bin/sh && \
 	for pkg in \
 		base-files update-alternatives busybox libssl \
-		openssl libz liblzma libbz2 libarchive libcurl-bootstrap libgpg-error \
+		openssl libz liblzma libbz2 libarchive libcurl libgpg-error \
 		libassuan libgpgme libopkg opkg ; do ( \
 			chroot /stage3 /usr/bin/opkg configure "${pkg}" \
 	) ; done
