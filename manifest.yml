@@ -2,7 +2,7 @@
 
 repos: 
 
-  uc-linux-bootstrap:
+  uc-linux-bootstrap-hydrogen:
 
     - name: libc-bootstrap
       desc: 'GNU C Library: Shared libraries'
@@ -214,7 +214,7 @@ repos:
       vcs_url: https://github.com/openssl/openssl
       licenses: [ BSD ]
 
-  uc-linux:
+  uc-linux-main-hydrogen:
 
     - name: base-files
       desc: UC Docker Linux base system miscellaneous files
