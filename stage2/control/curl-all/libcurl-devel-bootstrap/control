@@ -1,8 +1,9 @@
-Package: libcurl-devel
+Package: libcurl-devel-bootstrap
 Source: curl
 Version: 7.51.0-1
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
+Provides: libcurl-devel (= 7.51.0-1)
 Depends: libc-devel, libz-devel, libcurl (>= 7.51.0-1)
 Description: library for transferring data with URL syntax (headers)
 Homepage: http://curl.haxx.se

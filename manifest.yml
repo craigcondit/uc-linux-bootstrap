@@ -214,6 +214,24 @@ repos:
       vcs_url: https://github.com/openssl/openssl
       licenses: [ BSD ]
 
+    - name: curl-bootstrap
+      desc: command line tool for transferring data with URL syntax
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
+    - name: libcurl-bootstrap
+      desc: library for transferring data with URL syntax
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
+    - name: libcurl-devel-bootstrap
+      desc: library for transferring data with URL syntax (headers)
+      website_url: http://curl.haxx.se
+      vcs_url: https://github.com/bagder/curl
+      licenses: [ BSD ]
+
   uc-linux-main-hydrogen:
 
     - name: base-files
