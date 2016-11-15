@@ -629,3 +629,22 @@ repos:
       website_url: https://packages.debian.org/source/sid/dpkg
       licenses: [ GPL-2.0 ]
       vcs_url: git://git.debian.org/git/dpkg/dpkg.git
+
+    - name: autoconf
+      desc: automatic configure script builder
+      website_url: http://www.gnu.org/software/autoconf/
+      licenses: [ "GPL-2.0", "GPL-3.0" ]
+      vcs_url: git://git.sv.gnu.org/autoconf
+
+    - name: libtool
+      desc: Generic library support script
+      website_url: http://www.gnu.org/software/libtool/
+      licenses: [ LGPL-2.1 ]
+      vcs_url: git://git.savannah.gnu.org/libtool.git
+
+    - name: automake
+      desc: Tool for generating GNU Standards-compliant Makefiles
+      website_url: http://www.gnu.org/software/automake/
+      licenses: [ GPL-2.0 ]
+      vcs_url: git://git.savannah.gnu.org/automake.git
+
