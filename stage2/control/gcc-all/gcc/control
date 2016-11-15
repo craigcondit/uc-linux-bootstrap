@@ -1,8 +1,8 @@
 Package: gcc
 Source: gcc
-Version: 6.2.0-1
+Version: 6.2.0-2
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: amd64
-Depends: binutils, linux-devel, libc-devel, libz-devel, libgmp, libmpfr, libmpc, libasan, libatomic, libcilkrts, libgomp, libitm, liblsan, libquadmath, libssp, libstdcxx, libtsan, libubsan, libvtv, libcc1
+Depends: binutils, linux-devel, libc-devel, libz-devel, libgmp, libmpfr, libmpc, libasan, libatomic, libcilkrts, libgomp, libitm, liblsan, libquadmath, libssp, libstdcxx, libtsan, libubsan, libcc1
 Description: This is the GNU C compiler, a fairly portable optimizing compiler for C.
 Section: devel

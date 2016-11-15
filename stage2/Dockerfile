@@ -611,7 +611,7 @@ RUN \
 			/build/${pkg}-deb \
 			/build/${pkg}-root \
 			/control/${pkg} \
-			/packages/${pkg}_6.2.0-1_amd64.deb) ; done && \
+			/packages/${pkg}_6.2.0-2_amd64.deb) ; done && \
 
 	mkdir -p /build/libstdcxx-root/usr/lib && \
 	cp -a usr/lib/libstdc++*.so* /build/libstdcxx-root/usr/lib/ && \
@@ -620,13 +620,13 @@ RUN \
 		/build/libstdcxx-deb \
 		/build/libstdcxx-root \
 		/control/libstdcxx \
-		/packages/libstdcxx_6.2.0-1_amd64.deb && \
+		/packages/libstdcxx_6.2.0-2_amd64.deb && \
 
 	make-deb \
 		/build/gcc-deb \
 		/build/gcc-root \
 		/control/gcc \
-		/packages/gcc_6.2.0-1_amd64.deb && \
+		/packages/gcc_6.2.0-2_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
