@@ -1393,8 +1393,8 @@ RUN \
 	chmod 644 /etc/opkg/base-feeds.conf && \
 	opkg update && \
 	mkdir -p /stage3 && \
-	(opkg download base-files || true) && \
-	opkg -o /stage3 --nodeps install /var/cache/opkg/base-files_*.deb && \
+	(opkg install --download-only base-files || true) && \
+	opkg -o /stage3 --nodeps install /var/cache/opkg/*_base-files_*.deb && \
 	mkdir -p /stage3/etc/opkg && \
 	cp /etc/opkg/base-feeds.conf /stage3/etc/opkg && \
 	opkg -o /stage3 --nodeps install /packages/libc_*.deb && \
