@@ -1019,16 +1019,17 @@ RUN \
 		/build/libarchive-deb \
 		/build/libarchive-root \
 		/control/libarchive \
-		/packages/libarchive_3.2.2-1_amd64.deb && \
+		/packages/libarchive_3.2.2-2_amd64.deb && \
 
 	cp -a /build/libarchive-base-root /build/libarchive-devel-root && \
 	cd /build/libarchive-devel-root && \
+	rm -rf usr/bin && \
 	rm -f usr/lib/*.so* && \
 	make-deb \
 		/build/libarchive-devel-deb \
 		/build/libarchive-devel-root \
 		/control/libarchive-devel \
-		/packages/libarchive-devel_3.2.2-1_amd64.deb && \
+		/packages/libarchive-devel_3.2.2-2_amd64.deb && \
 
 	cd / && \
 	rm -rf /build/* /download/* /control/* && \
