@@ -1,6 +1,6 @@
 Package: base-files
 Source: base-files
-Version: 1.0.0-1
+Version: 2018.1-1
 Essential: yes
 Maintainer: Craig Condit <ccondit@randomcoder.org>
 Architecture: all
