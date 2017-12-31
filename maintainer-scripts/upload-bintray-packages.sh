@@ -3,9 +3,9 @@
 BINTRAY_USER=insideo
 BINTRAY_ORG=insideo
 BINTRAY_API_KEY_FILE=~/.bintray/apikey
-DISTRO=hydrogen
-MAIN_REPOSITORY=uc-linux-main-hydrogen
-BOOTSTRAP_REPOSITORY=uc-linux-bootstrap-hydrogen
+DISTRO=helium
+MAIN_REPOSITORY=uc-linux-main-helium
+BOOTSTRAP_REPOSITORY=uc-linux-bootstrap-helium
 
 usage() {
   echo "Usage: $0 [--force] <stage0,stage1,stage2>" >&2
